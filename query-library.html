@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore DataSense Query Library - Business intelligence questions organized by function and industry">
+    <title>Query Library - DataSense</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles-professional.css">
+    <link rel="stylesheet" href="query-library-styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <svg class="nav-logo" viewBox="0 0 32 32" fill="none">
+                    <rect width="32" height="32" rx="8" fill="url(#gradient)"/>
+                    <path d="M8 12h16v8H8z" fill="white" opacity="0.9"/>
+                    <path d="M12 8v16M20 8v16" stroke="white" stroke-width="2" opacity="0.7"/>
+                    <defs>
+                        <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
+                            <stop stop-color="#667eea"/>
+                            <stop offset="1" stop-color="#764ba2"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="nav-brand-text">DataSense</span>
+            </div>
+            <div class="nav-actions">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="#" class="nav-link active">Query Library</a>
+                <a href="case-studies-hub.html" class="nav-link">Case Studies</a>
+                <a href="integrations.html" class="nav-link">Integrations</a>
+                <a href="#beta-signup" class="nav-cta">Join Beta</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="query-hero">
+        <div class="container">
+            <div class="query-hero-content">
+                <h1 class="query-hero-title">
+                    Ask the Right Questions,
+                    <span class="gradient-text">Get Powerful Answers</span>
+                </h1>
+                <p class="query-hero-subtitle">
+                    Explore our library of business intelligence queries designed for every department and industry. 
+                    Find the perfect questions to unlock insights in your data.
+                </p>
+                
+                <!-- Search Bar -->
+                <div class="query-search-container">
+                    <div class="query-search-box">
+                        <svg class="search-icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+                        </svg>
+                        <input type="text" 
+                               id="query-search" 
+                               class="query-search-input" 
+                               placeholder="Search queries... (e.g., 'revenue', 'churn', 'ROI')"
+                               autocomplete="off">
+                        <div class="search-suggestions" id="search-suggestions"></div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="query-stats">
+                    <div class="query-stat">
+                        <span class="stat-number">100+</span>
+                        <span class="stat-label">Example Queries</span>
+                    </div>
+                    <div class="query-stat">
+                        <span class="stat-number">12</span>
+                        <span class="stat-label">Business Functions</span>
+                    </div>
+                    <div class="query-stat">
+                        <span class="stat-number">8</span>
+                        <span class="stat-label">Industries Covered</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Tabs -->
+    <section class="query-filters">
+        <div class="container">
+            <div class="filter-container">
+                <div class="filter-group">
+                    <h3 class="filter-label">By Function:</h3>
+                    <div class="filter-tabs" id="function-filters">
+                        <button class="filter-tab active" data-filter="all">All Queries</button>
+                        <button class="filter-tab" data-filter="revenue">Revenue & Sales</button>
+                        <button class="filter-tab" data-filter="marketing">Marketing</button>
+                        <button class="filter-tab" data-filter="customers">Customer Insights</button>
+                        <button class="filter-tab" data-filter="operations">Operations</button>
+                        <button class="filter-tab" data-filter="finance">Finance</button>
+                        <button class="filter-tab" data-filter="product">Product</button>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <h3 class="filter-label">By Industry:</h3>
+                    <div class="filter-tabs" id="industry-filters">
+                        <button class="filter-tab active" data-industry="all">All Industries</button>
+                        <button class="filter-tab" data-industry="ecommerce">E-commerce</button>
+                        <button class="filter-tab" data-industry="saas">SaaS</button>
+                        <button class="filter-tab" data-industry="services">Services</button>
+                        <button class="filter-tab" data-industry="retail">Retail</button>
+                        <button class="filter-tab" data-industry="hospitality">Hospitality</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Query Grid -->
+    <section class="query-library">
+        <div class="container">
+            <div class="query-grid" id="query-grid">
+                <!-- Query cards will be dynamically inserted here -->
+            </div>
+            
+            <!-- Load More Button -->
+            <div class="load-more-container">
+                <button class="btn btn-secondary" id="load-more-queries">
+                    Load More Queries
+                    <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Query Builder Section -->
+    <section class="query-builder-section">
+        <div class="container">
+            <div class="query-builder">
+                <div class="builder-header">
+                    <h2 class="builder-title">Can't Find What You're Looking For?</h2>
+                    <p class="builder-subtitle">Build your own custom query with our intelligent assistant</p>
+                </div>
+                
+                <div class="builder-input-container">
+                    <div class="builder-input-wrapper">
+                        <input type="text" 
+                               id="custom-query-input" 
+                               class="builder-input" 
+                               placeholder="Type your business question here..."
+                               autocomplete="off">
+                        <button class="builder-submit" id="submit-custom-query">
+                            <span>Analyze Query</span>
+                            <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- Suggestion Pills -->
+                    <div class="suggestion-pills" id="suggestion-pills">
+                        <span class="suggestion-label">Try:</span>
+                        <button class="suggestion-pill" data-query="What's my customer acquisition cost by channel?">CAC by Channel</button>
+                        <button class="suggestion-pill" data-query="Which products have the highest profit margin?">Profit Margins</button>
+                        <button class="suggestion-pill" data-query="Predict next month's revenue based on current trends">Revenue Forecast</button>
+                        <button class="suggestion-pill" data-query="What factors are driving customer churn?">Churn Analysis</button>
+                    </div>
+                </div>
+                
+                <!-- AI Assistant Preview -->
+                <div class="ai-preview" id="ai-preview" style="display: none;">
+                    <div class="ai-preview-header">
+                        <span class="ai-icon">🤖</span>
+                        <span class="ai-label">DataSense AI Understanding</span>
+                    </div>
+                    <div class="ai-preview-content" id="ai-preview-content">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Saved Queries Section -->
+    <section class="saved-queries-section">
+        <div class="container">
+            <div class="saved-queries-header">
+                <h2 class="section-title">Your Saved Queries</h2>
+                <button class="btn btn-small" id="manage-saved">Manage</button>
+            </div>
+            <div class="saved-queries-list" id="saved-queries-list">
+                <div class="empty-state">
+                    <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                    </svg>
+                    <p class="empty-text">No saved queries yet. Click the bookmark icon on any query to save it for later.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="query-cta">
+        <div class="container">
+            <div class="cta-card gradient-bg">
+                <div class="cta-content">
+                    <h2 class="cta-title">Ready to Get Answers?</h2>
+                    <p class="cta-subtitle">
+                        Connect your data and start asking questions that matter. 
+                        No credit card required, setup in 10 minutes.
+                    </p>
+                    <div class="cta-actions">
+                        <a href="#beta-signup" class="btn btn-white btn-large">
+                            Start Free Analysis
+                            <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                        </a>
+                        <button class="btn btn-ghost btn-large" onclick="window.location.href='index.html#demo-video'">
+                            Watch Demo
+                        </button>
+                    </div>
+                </div>
+                <div class="cta-visual">
+                    <div class="floating-queries">
+                        <div class="floating-query" style="--delay: 0s">What's my ROI?</div>
+                        <div class="floating-query" style="--delay: 1s">Why are sales down?</div>
+                        <div class="floating-query" style="--delay: 2s">Who are my best customers?</div>
+                        <div class="floating-query" style="--delay: 3s">Where should I invest?</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span>© 2024 DataSense. All rights reserved.</span>
+                </div>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Query Detail Modal -->
+    <div class="modal" id="query-modal" style="display: none;">
+        <div class="modal-overlay" onclick="closeQueryModal()"></div>
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeQueryModal()">×</button>
+            <div id="modal-body">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <script src="query-library-data.js"></script>
+    <script src="query-library.js"></script>
+</body>
+</html>
