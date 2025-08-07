@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataSense - Turn Data Into Competitive Advantage</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="white" opacity="0.1"><polygon points="0,0 1000,0 1000,50 500,100 0,50"/></svg>');
+            background-size: cover;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header .tagline {
+            font-size: 1.4rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            padding: 50px 40px;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .problem-solution {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .problem {
+            background: #ff6b6b;
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .solution {
+            background: #4ecdc4;
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .problem h3, .solution h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .benefit-card {
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .benefit-card h4 {
+            color: #2a5298;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .benefit-card p {
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .team-benefits {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .team-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .team-card h4 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+
+        .team-card ul {
+            list-style: none;
+            text-align: left;
+        }
+
+        .team-card li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .team-card li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #4ecdc4;
+            font-weight: bold;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .cta-section h3 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #ff6b6b;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            margin: 40px 0;
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+        }
+
+        .stat {
+            flex: 1;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2a5298;
+            display: block;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .icon {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header .tagline {
+                font-size: 1.1rem;
+            }
+            
+            .problem-solution {
+                grid-template-columns: 1fr;
+            }
+            
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .main-content {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>DataSense</h1>
+            <p class="tagline">Transform Your Business from Data-Paralyzed to Data-Powered in Hours, Not Months</p>
+        </header>
+
+        <main class="main-content">
+            <section class="hero-section">
+                <div class="stats">
+                    <div class="stat">
+                        <span class="stat-number">30sec</span>
+                        <div class="stat-label">Get business answers</div>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">20-40%</span>
+                        <div class="stat-label">Better marketing ROI</div>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">Hours</span>
+                        <div class="stat-label">Setup time</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="problem-solution">
+                <div class="problem">
+                    <h3><span class="icon">⚠️</span>The Problem</h3>
+                    <p><strong>Your business is drowning in data but starving for insights.</strong></p>
+                    <p>• Wait weeks for simple business answers</p>
+                    <p>• Miss opportunities while competitors act</p>
+                    <p>• Make decisions based on gut feeling, not facts</p>
+                    <p>• Only technical staff can access your data</p>
+                    <p>• Expensive BI projects that take months to deploy</p>
+                </div>
+                <div class="solution">
+                    <h3><span class="icon">✨</span>The Solution</h3>
+                    <p><strong>AI-powered business intelligence that works like magic.</strong></p>
+                    <p>• Get instant answers to any business question</p>
+                    <p>• Make decisions at the speed of thought</p>
+                    <p>• Every team member becomes a data analyst</p>
+                    <p>• Discover hidden patterns automatically</p>
+                    <p>• Up and running in hours, not months</p>
+                </div>
+            </section>
+
+            <section class="benefits-grid">
+                <div class="benefit-card">
+                    <h4><span class="icon">💰</span>Make More Money</h4>
+                    <p>Marketing teams optimize ad spend in real-time, sales teams focus on hot leads instantly, and leadership catches opportunities before competitors even notice them.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <h4><span class="icon">⚡</span>Lightning Speed</h4>
+                    <p>Transform from "Let me check and get back to you next week" to "Based on yesterday's data, here's exactly what we should do right now."</p>
+                </div>
+
+                <div class="benefit-card">
+                    <h4><span class="icon">🚫</span>Eliminate Bottlenecks</h4>
+                    <p>No more waiting for IT, no more translation errors, no more gatekeepers. Everyone gets direct access to the insights they need.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <h4><span class="icon">🔍</span>Discover Hidden Value</h4>
+                    <p>Uncover patterns you never knew existed. Find out that Tuesday customers are worth 23% more, or which deals are 89% likely to close.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <h4><span class="icon">🏆</span>Competitive Advantage</h4>
+                    <p>While competitors wait for quarterly reports, you're making strategic moves based on real-time intelligence. Speed kills - you win.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <h4><span class="icon">🚀</span>Immediate Value</h4>
+                    <p>See results in days, not months. No lengthy implementations, no expensive consultants, no broken promises.</p>
+                </div>
+            </section>
+
+            <section class="team-benefits">
+                <div class="team-card">
+                    <h4>🎯 Sales Teams</h4>
+                    <ul>
+                        <li>Instant quota tracking</li>
+                        <li>Real-time pipeline health</li>
+                        <li>Smart lead prioritization</li>
+                        <li>Spot hot prospects immediately</li>
+                    </ul>
+                </div>
+
+                <div class="team-card">
+                    <h4>📈 Marketing Teams</h4>
+                    <ul>
+                        <li>Real-time ROI on ad spend</li>
+                        <li>Complete customer journey view</li>
+                        <li>Kill losing campaigns by lunch</li>
+                        <li>Double down on winners instantly</li>
+                    </ul>
+                </div>
+
+                <div class="team-card">
+                    <h4>👔 Leadership Teams</h4>
+                    <ul>
+                        <li>Real-time business pulse</li>
+                        <li>Instant strategic answers</li>
+                        <li>Cross-department insights</li>
+                        <li>Proactive problem detection</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="cta-section">
+                <h3>Stop Drowning in Data. Start Dominating Your Market.</h3>
+                <p>Join hundreds of founders who transformed their businesses from reactive to proactive</p>
+                <a href="#" class="cta-button">Get DataSense Now →</a>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

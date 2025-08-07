@@ -1,0 +1,15 @@
+{
+  "name": "datasense-beta-invite",
+  "version": "1.0.0",
+  "description": "A conversion-optimized landing page designed specifically for small business owners to sign up for the DataSense beta program. Built with a focus on relatability, accessibility, and mobile-first design.",
+  "main": "analyze-steep.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "playwright": "^1.54.2"
+  }
+}
