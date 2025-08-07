@@ -702,6 +702,120 @@ body {
   font-size: 16px;
 }
 
+/* Case Studies Preview Section */
+.case-studies-preview {
+  padding: 80px 0;
+  background: var(--secondary-background);
+}
+
+.case-studies-preview .section-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.case-studies-preview .section-header h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.case-studies-preview .section-header p {
+  font-size: 1.25rem;
+  color: var(--secondary-text);
+}
+
+.case-studies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 32px;
+  margin-bottom: 48px;
+}
+
+.case-study-card {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-color);
+}
+
+.case-study-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.case-study-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.industry-badge {
+  background: var(--light-gray);
+  color: var(--secondary-text);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.roi-badge {
+  background: linear-gradient(135deg, #10B981, #059669);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.case-study-card h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--primary-text);
+}
+
+.case-study-metric {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #667eea;
+  margin-bottom: 16px;
+}
+
+.case-study-summary {
+  color: var(--secondary-text);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.case-study-link {
+  color: #667eea;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.case-study-link:hover {
+  color: #5a67d8;
+}
+
+.case-studies-cta {
+  text-align: center;
+}
+
+.case-studies-cta .cta-note {
+  margin-top: 16px;
+  color: var(--secondary-text);
+  font-size: 0.875rem;
+}
+
 /* Footer */
 .footer {
   padding: 60px 0 40px;

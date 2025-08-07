@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Real success stories from businesses using DataSense. See measurable ROI, implementation timelines, and transformation results.">
+    <title>DataSense Case Studies - Real Business Transformation Stories</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="case-studies-styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html" class="nav-logo-link">
+                    <svg class="nav-logo" viewBox="0 0 32 32" fill="none">
+                        <rect width="32" height="32" rx="8" fill="url(#gradient)"/>
+                        <path d="M8 12h16v8H8z" fill="white" opacity="0.9"/>
+                        <path d="M12 8v16M20 8v16" stroke="white" stroke-width="2" opacity="0.7"/>
+                        <defs>
+                            <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
+                                <stop stop-color="#667eea"/>
+                                <stop offset="1" stop-color="#764ba2"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="nav-brand-text">DataSense</span>
+                </a>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="#" class="nav-link active">Case Studies</a>
+                <a href="index.html#features" class="nav-link">Features</a>
+                <a href="index.html#pricing" class="nav-link">Pricing</a>
+            </div>
+            <div class="nav-actions">
+                <a href="index.html#beta-signup" class="nav-cta">Join Beta</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="case-studies-hero">
+        <div class="container">
+            <!-- Referral Banner (shown when coming from referral) -->
+            <div id="referral-banner" class="referral-banner" style="display: none;">
+                <div class="referral-content">
+                    <span class="referral-icon">🎯</span>
+                    <span id="referral-message">Your referrer achieved similar results</span>
+                </div>
+            </div>
+
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Real Businesses. Real Results.
+                    <span class="highlight">Verified ROI Stories.</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Discover how businesses like yours are achieving 100-1,450% ROI with DataSense. 
+                    Filter by industry, company size, or results achieved.
+                </p>
+                
+                <!-- Key Metrics Bar -->
+                <div class="metrics-bar">
+                    <div class="metric">
+                        <div class="metric-value">580%</div>
+                        <div class="metric-label">Average ROI</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">30 days</div>
+                        <div class="metric-label">To First Results</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">2 hours</div>
+                        <div class="metric-label">Setup Time</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">500+</div>
+                        <div class="metric-label">Happy Businesses</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Company Matcher Tool -->
+    <section class="company-matcher">
+        <div class="container">
+            <div class="matcher-card">
+                <h2 class="matcher-title">Find Companies Like Yours</h2>
+                <p class="matcher-subtitle">Answer 3 quick questions to see relevant case studies</p>
+                
+                <div class="matcher-form">
+                    <div class="matcher-field">
+                        <label>Your Industry</label>
+                        <select id="matcher-industry">
+                            <option value="">Select industry...</option>
+                            <option value="E-commerce">E-commerce / Retail</option>
+                            <option value="B2B SaaS">B2B SaaS</option>
+                            <option value="Professional Services">Professional Services</option>
+                            <option value="Restaurant Chain">Restaurant / Hospitality</option>
+                            <option value="Healthcare Practice">Healthcare</option>
+                        </select>
+                    </div>
+                    
+                    <div class="matcher-field">
+                        <label>Company Size</label>
+                        <select id="matcher-size">
+                            <option value="">Select size...</option>
+                            <option value="1-10">1-10 employees</option>
+                            <option value="11-50">11-50 employees</option>
+                            <option value="51-200">51-200 employees</option>
+                            <option value="200+">200+ employees</option>
+                        </select>
+                    </div>
+                    
+                    <div class="matcher-field">
+                        <label>Primary Goal</label>
+                        <select id="matcher-goal">
+                            <option value="">Select goal...</option>
+                            <option value="revenue">Increase Revenue</option>
+                            <option value="costs">Reduce Costs</option>
+                            <option value="efficiency">Improve Efficiency</option>
+                            <option value="retention">Improve Retention</option>
+                        </select>
+                    </div>
+                    
+                    <button id="matcher-submit" class="btn btn-primary">
+                        Show Matching Stories
+                    </button>
+                </div>
+                
+                <div id="matcher-results" class="matcher-results" style="display: none;">
+                    <h3>Perfect Matches for You:</h3>
+                    <div id="matcher-recommendations"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters Section -->
+    <section class="filters-section">
+        <div class="container">
+            <div class="filters-header">
+                <h2>Browse All Case Studies</h2>
+                <div class="results-count">
+                    Showing <span id="results-count">5</span> success stories
+                </div>
+            </div>
+            
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="all">
+                        All Stories
+                    </button>
+                    <button class="filter-btn" data-filter="E-commerce">
+                        E-commerce
+                    </button>
+                    <button class="filter-btn" data-filter="B2B SaaS">
+                        B2B SaaS
+                    </button>
+                    <button class="filter-btn" data-filter="Professional Services">
+                        Services
+                    </button>
+                    <button class="filter-btn" data-filter="Restaurant Chain">
+                        Restaurant
+                    </button>
+                    <button class="filter-btn" data-filter="Healthcare Practice">
+                        Healthcare
+                    </button>
+                </div>
+                
+                <div class="filter-dropdowns">
+                    <select id="size-filter" class="filter-select">
+                        <option value="">Company Size</option>
+                        <option value="small">1-50 employees</option>
+                        <option value="medium">51-200 employees</option>
+                        <option value="large">200+ employees</option>
+                    </select>
+                    
+                    <select id="roi-filter" class="filter-select">
+                        <option value="">ROI Achieved</option>
+                        <option value="100-500">100-500% ROI</option>
+                        <option value="500-1000">500-1000% ROI</option>
+                        <option value="1000+">1000%+ ROI</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Case Studies Grid -->
+    <section class="case-studies-grid">
+        <div class="container">
+            <div id="studies-grid" class="studies-grid">
+                <!-- Case study cards will be dynamically inserted here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Table -->
+    <section class="comparison-section">
+        <div class="container">
+            <h2 class="section-title">Companies Like Yours Are Seeing These Results</h2>
+            
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>Industry</th>
+                            <th>Size</th>
+                            <th>Time to ROI</th>
+                            <th>ROI Achieved</th>
+                            <th>Key Metric</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="comparison-tbody">
+                        <!-- Table rows will be dynamically inserted -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="case-studies-cta">
+        <div class="container">
+            <div class="cta-card">
+                <h2>Ready to Write Your Success Story?</h2>
+                <p>Join 500+ businesses already transforming with DataSense</p>
+                
+                <div class="cta-features">
+                    <div class="cta-feature">
+                        <span class="feature-icon">✓</span>
+                        <span>Free 30-day trial</span>
+                    </div>
+                    <div class="cta-feature">
+                        <span class="feature-icon">✓</span>
+                        <span>Setup in 2 hours</span>
+                    </div>
+                    <div class="cta-feature">
+                        <span class="feature-icon">✓</span>
+                        <span>ROI in 30 days</span>
+                    </div>
+                </div>
+                
+                <div class="cta-actions">
+                    <a href="index.html#beta-signup" class="btn btn-primary btn-large">
+                        Start Your Free Trial
+                    </a>
+                    <button id="schedule-similar-customer" class="btn btn-secondary btn-large">
+                        Talk to a Similar Customer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">DataSense</div>
+                    <p>Enterprise insights for small business</p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <a href="index.html#features">Features</a>
+                        <a href="index.html#pricing">Pricing</a>
+                        <a href="#">Case Studies</a>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <a href="#">About</a>
+                        <a href="#">Blog</a>
+                        <a href="#">Contact</a>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <a href="#">Privacy</a>
+                        <a href="#">Terms</a>
+                        <a href="#">Security</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 DataSense. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="case-studies-hub.js"></script>
+</body>
+</html>
