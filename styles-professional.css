@@ -1033,7 +1033,7 @@ body {
 .roi-banner {
   padding: 40px 0;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  color: #1a1a2e;
 }
 
 .roi-stats {
@@ -1053,17 +1053,20 @@ body {
   font-size: 36px;
   font-weight: 700;
   margin-bottom: 4px;
+  color: #1a1a2e;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
 }
 
 .roi-label {
   font-size: 14px;
-  opacity: 0.9;
+  color: #2d3748;
+  font-weight: 500;
 }
 
 .roi-divider {
   width: 1px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(26, 26, 46, 0.2);
 }
 
 /* Customer Logos */
