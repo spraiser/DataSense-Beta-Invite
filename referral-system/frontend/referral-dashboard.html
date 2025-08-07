@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataSense Referral Dashboard</title>
+    <link rel="stylesheet" href="referral-styles.css">
+</head>
+<body>
+    <div class="referral-dashboard">
+        <header class="dashboard-header">
+            <h1>Your Referral Dashboard</h1>
+            <div class="user-status">
+                <span class="champion-badge" id="championStatus" style="display: none;">
+                    🏆 DataSense Champion
+                </span>
+            </div>
+        </header>
+
+        <section class="referral-stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalReferrals">0</div>
+                <div class="stat-label">Total Referrals</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="successfulReferrals">0</div>
+                <div class="stat-label">Successful Conversions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">$<span id="totalRewards">0</span></div>
+                <div class="stat-label">Rewards Earned</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="conversionRate">0%</div>
+                <div class="stat-label">Conversion Rate</div>
+            </div>
+        </section>
+
+        <section class="referral-code-section">
+            <h2>Your Referral Code</h2>
+            <div class="referral-code-container">
+                <div class="referral-code" id="referralCode">LOADING...</div>
+                <button class="copy-button" onclick="copyReferralCode()">Copy Code</button>
+            </div>
+            <div class="referral-links">
+                <h3>Share Your Unique Links</h3>
+                <div class="link-grid">
+                    <button class="share-button email" onclick="shareViaEmail()">
+                        📧 Email
+                    </button>
+                    <button class="share-button linkedin" onclick="shareOnLinkedIn()">
+                        💼 LinkedIn
+                    </button>
+                    <button class="share-button twitter" onclick="shareOnTwitter()">
+                        🐦 Twitter
+                    </button>
+                    <button class="share-button whatsapp" onclick="shareOnWhatsApp()">
+                        📱 WhatsApp
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="rewards-section">
+            <h2>Your Rewards</h2>
+            <div class="rewards-summary">
+                <div class="reward-item available">
+                    <span class="reward-amount">$<span id="availableCredits">0</span></span>
+                    <span class="reward-label">Available Credits</span>
+                </div>
+                <div class="reward-item earned">
+                    <span class="reward-amount" id="freeMonths">0</span>
+                    <span class="reward-label">Free Months</span>
+                </div>
+            </div>
+            <div class="milestones">
+                <h3>Unlock Milestones</h3>
+                <div class="milestone-track">
+                    <div class="milestone" data-threshold="1">
+                        <div class="milestone-icon">🎯</div>
+                        <div class="milestone-text">First Referral</div>
+                        <div class="milestone-reward">$500 Credit</div>
+                    </div>
+                    <div class="milestone" data-threshold="3">
+                        <div class="milestone-icon">📅</div>
+                        <div class="milestone-text">3 Referrals</div>
+                        <div class="milestone-reward">1 Month Free</div>
+                    </div>
+                    <div class="milestone" data-threshold="5">
+                        <div class="milestone-icon">🏆</div>
+                        <div class="milestone-text">5 Referrals</div>
+                        <div class="milestone-reward">Champion Status</div>
+                    </div>
+                    <div class="milestone" data-threshold="10">
+                        <div class="milestone-icon">🎪</div>
+                        <div class="milestone-text">10 Referrals</div>
+                        <div class="milestone-reward">Conference Ticket</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="referral-list">
+            <h2>Your Referrals</h2>
+            <div class="referral-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="pending">Pending</button>
+                <button class="filter-btn" data-filter="converted">Converted</button>
+            </div>
+            <div class="referral-table-container">
+                <table class="referral-table">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Date Referred</th>
+                            <th>Status</th>
+                            <th>Reward</th>
+                        </tr>
+                    </thead>
+                    <tbody id="referralTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="batch-invite">
+            <h2>Invite Multiple Friends</h2>
+            <div class="batch-invite-form">
+                <textarea id="batchEmails" placeholder="Enter email addresses (one per line or comma-separated)"></textarea>
+                <textarea id="personalMessage" placeholder="Add a personal message (optional)"></textarea>
+                <button class="btn-primary" onclick="sendBatchInvites()">Send Invitations</button>
+            </div>
+        </section>
+
+        <section class="leaderboard">
+            <h2>Referral Leaderboard</h2>
+            <div class="leaderboard-toggle">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="leaderboardOptIn" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+                <span>Show me on leaderboard</span>
+            </div>
+            <div class="leaderboard-period">
+                <button class="period-btn active" data-period="all">All Time</button>
+                <button class="period-btn" data-period="month">This Month</button>
+                <button class="period-btn" data-period="week">This Week</button>
+            </div>
+            <div class="leaderboard-list" id="leaderboardList">
+            </div>
+        </section>
+
+        <section class="analytics">
+            <h2>Performance Analytics</h2>
+            <div class="analytics-grid">
+                <div class="chart-container">
+                    <h3>Conversion Funnel</h3>
+                    <canvas id="funnelChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Referral Sources</h3>
+                    <canvas id="sourcesChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>30-Day Timeline</h3>
+                    <canvas id="timelineChart"></canvas>
+                </div>
+                <div class="viral-metric">
+                    <h3>Viral Coefficient</h3>
+                    <div class="viral-score" id="viralScore">0.0</div>
+                    <div class="viral-label">Secondary referrals per direct referral</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="badges">
+            <h2>Your Badges</h2>
+            <div class="badge-grid" id="badgeGrid">
+            </div>
+        </section>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="referral-dashboard.js"></script>
+</body>
+</html>
