@@ -285,13 +285,37 @@
         }
     }
 
-    // Countdown Timer
+    // Countdown Timer with Cookie Persistence
     function initCountdownTimer() {
         const timerElement = document.querySelector('#countdown-timer strong');
         if (!timerElement) return;
 
-        // Set end time to 72 hours from now
-        const endTime = new Date().getTime() + (72 * 60 * 60 * 1000);
+        // Get or set countdown end time in cookies
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        function setCookie(name, value, hours) {
+            const date = new Date();
+            date.setTime(date.getTime() + (hours * 60 * 60 * 1000));
+            document.cookie = `${name}=${value};expires=${date.toUTCString()};path=/`;
+        }
+
+        // Check for existing timer or create new one
+        let endTime = getCookie('datasense_countdown');
+        if (!endTime || endTime < new Date().getTime()) {
+            // Set end time to end of week (Friday 11:59 PM)
+            const now = new Date();
+            const friday = new Date();
+            friday.setDate(now.getDate() + (5 - now.getDay() + 7) % 7);
+            friday.setHours(23, 59, 59, 999);
+            endTime = friday.getTime();
+            setCookie('datasense_countdown', endTime, 168); // Store for a week
+        } else {
+            endTime = parseInt(endTime);
+        }
         
         function updateTimer() {
             const now = new Date().getTime();
@@ -306,7 +330,13 @@
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
             
-            timerElement.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            // Format as "2d 14h 32m" for better urgency
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            if (days > 0) {
+                timerElement.textContent = `${days}d ${hours}h ${minutes}m`;
+            } else {
+                timerElement.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
         }
         
         updateTimer();
@@ -342,13 +372,13 @@
         }, 45000);
     }
 
-    // Exit Intent Popup
+    // Enhanced Exit Intent Popup
     function initExitIntent() {
         const overlay = document.getElementById('exit-popup-overlay');
         const closeBtn = document.getElementById('exit-popup-close');
-        let exitIntentShown = false;
+        let exitIntentShown = sessionStorage.getItem('exitIntentShown');
         
-        if (!overlay) return;
+        if (!overlay || exitIntentShown) return;
         
         // Close popup functionality
         closeBtn.addEventListener('click', () => {
@@ -361,14 +391,49 @@
             }
         });
         
-        // Exit intent detection
+        // Desktop exit intent - mouse leave
         document.addEventListener('mouseleave', (e) => {
             if (e.clientY <= 0 && !exitIntentShown) {
-                exitIntentShown = true;
-                overlay.style.display = 'block';
-                window.DataSenseTracking.trackEvent('exit_intent_shown');
+                showExitPopup();
             }
         });
+        
+        // Mobile exit intent - detect back button or scroll up fast
+        let lastScrollY = window.scrollY;
+        let scrollVelocity = 0;
+        
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            scrollVelocity = lastScrollY - currentScrollY;
+            
+            // Show popup if scrolling up fast near top of page
+            if (scrollVelocity > 50 && currentScrollY < 200 && !exitIntentShown && window.innerWidth <= 768) {
+                showExitPopup();
+            }
+            
+            lastScrollY = currentScrollY;
+        }, { passive: true });
+        
+        // Mobile back button detection
+        window.addEventListener('popstate', () => {
+            if (!exitIntentShown && window.innerWidth <= 768) {
+                showExitPopup();
+                // Push state back to prevent actual navigation
+                history.pushState(null, null, window.location.href);
+            }
+        });
+        
+        function showExitPopup() {
+            exitIntentShown = true;
+            sessionStorage.setItem('exitIntentShown', 'true');
+            overlay.style.display = 'block';
+            overlay.style.animation = 'fadeIn 0.3s ease-out';
+            const popup = document.getElementById('exit-popup');
+            if (popup) {
+                popup.style.animation = 'slideUp 0.4s ease-out';
+            }
+            window.DataSenseTracking.trackEvent('exit_intent_shown');
+        }
         
         // ROI Calculator
         const revenueInput = document.getElementById('revenue-input');
@@ -402,52 +467,150 @@
         }
     }
 
-    // Mobile Sticky CTA
+    // Enhanced Mobile Sticky CTA with Smart Scroll Trigger
     function initMobileStickyButton() {
         const stickyBtn = document.getElementById('mobile-sticky-cta');
         const heroSection = document.querySelector('.hero');
+        const signupSection = document.getElementById('beta-signup');
         
         if (!stickyBtn || !heroSection) return;
         
-        const observer = new IntersectionObserver((entries) => {
+        let isVisible = false;
+        let lastScrollY = window.scrollY;
+        
+        // Hide initially
+        stickyBtn.style.transform = 'translateY(100%)';
+        stickyBtn.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+        
+        // Use Intersection Observer for hero visibility
+        const heroObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (!entry.isIntersecting && window.innerWidth <= 768) {
-                    stickyBtn.style.transform = 'translateY(0)';
-                } else {
-                    stickyBtn.style.transform = 'translateY(100%)';
+                const heroOut = !entry.isIntersecting;
+                updateStickyButton(heroOut);
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '-100px 0px 0px 0px'
+        });
+        
+        // Hide when signup form is in view
+        const signupObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    hideStickyButton();
                 }
             });
         }, {
-            threshold: 0.1
+            threshold: 0.3
         });
         
-        observer.observe(heroSection);
+        function updateStickyButton(shouldShow) {
+            if (window.innerWidth > 768) {
+                hideStickyButton();
+                return;
+            }
+            
+            if (shouldShow && !isVisible) {
+                showStickyButton();
+            } else if (!shouldShow && isVisible) {
+                hideStickyButton();
+            }
+        }
         
-        // Add initial transform
-        stickyBtn.style.transform = 'translateY(100%)';
-        stickyBtn.style.transition = 'transform 0.3s ease-out';
+        function showStickyButton() {
+            isVisible = true;
+            stickyBtn.style.transform = 'translateY(0)';
+            stickyBtn.style.opacity = '1';
+            
+            // Add entrance animation
+            const button = stickyBtn.querySelector('.btn');
+            if (button) {
+                button.style.animation = 'slideUp 0.5s ease-out';
+            }
+        }
+        
+        function hideStickyButton() {
+            isVisible = false;
+            stickyBtn.style.transform = 'translateY(100%)';
+            stickyBtn.style.opacity = '0';
+        }
+        
+        // Smart scroll detection - hide on scroll down, show on scroll up
+        let scrollTimeout;
+        window.addEventListener('scroll', () => {
+            if (scrollTimeout) clearTimeout(scrollTimeout);
+            
+            scrollTimeout = setTimeout(() => {
+                const currentScrollY = window.scrollY;
+                const scrollingUp = currentScrollY < lastScrollY;
+                const scrollingDown = currentScrollY > lastScrollY;
+                
+                // Only apply smart scroll if not in hero or signup sections
+                const heroRect = heroSection.getBoundingClientRect();
+                const signupRect = signupSection ? signupSection.getBoundingClientRect() : null;
+                const heroVisible = heroRect.bottom > 0;
+                const signupVisible = signupRect && signupRect.top < window.innerHeight;
+                
+                if (!heroVisible && !signupVisible && window.innerWidth <= 768) {
+                    if (scrollingUp && currentScrollY > 500) {
+                        showStickyButton();
+                    } else if (scrollingDown) {
+                        hideStickyButton();
+                    }
+                }
+                
+                lastScrollY = currentScrollY;
+            }, 50);
+        }, { passive: true });
+        
+        // Start observing
+        heroObserver.observe(heroSection);
+        if (signupSection) {
+            signupObserver.observe(signupSection);
+        }
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                hideStickyButton();
+            }
+        });
     }
 
-    // Counting Animation
+    // Enhanced Counting Animation
     function initCountingAnimation() {
-        const statNumbers = document.querySelectorAll('.stat-number');
+        const statNumbers = document.querySelectorAll('.stat-number, .roi-number');
         const observerOptions = {
             threshold: 0.5,
             rootMargin: '0px'
         };
         
-        const countUp = (element, target, suffix = '') => {
+        const countUp = (element, target, suffix = '', prefix = '', decimals = 0) => {
             let current = 0;
-            const increment = target / 30;
+            const duration = 2000; // 2 seconds
+            const increment = target / (duration / 50);
+            const startTime = Date.now();
+            
             const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Easing function for smooth animation
+                const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+                current = target * easeOutQuart;
+                
+                if (progress >= 1) {
                     current = target;
                     clearInterval(timer);
                 }
-                element.textContent = Math.round(current) + suffix;
-                element.classList.add('counting');
-                setTimeout(() => element.classList.remove('counting'), 300);
+                
+                const displayValue = decimals > 0 ? current.toFixed(decimals) : Math.round(current);
+                element.textContent = prefix + displayValue + suffix;
+                element.style.transform = 'scale(1.05)';
+                element.style.transition = 'transform 0.3s ease';
+                setTimeout(() => {
+                    element.style.transform = 'scale(1)';
+                }, 100);
             }, 50);
         };
         
@@ -463,6 +626,12 @@
                         countUp(entry.target, 40, '%');
                     } else if (text === '2hrs') {
                         countUp(entry.target, 2, 'hrs');
+                    } else if (text === '3.2x') {
+                        countUp(entry.target, 3.2, 'x', '', 1);
+                    } else if (text === '47%') {
+                        countUp(entry.target, 47, '%');
+                    } else if (text === '$52k') {
+                        countUp(entry.target, 52, 'k', '$');
                     }
                 }
             });
@@ -471,21 +640,57 @@
         statNumbers.forEach(stat => observer.observe(stat));
     }
 
-    // Parallax Effect
+    // Enhanced Parallax Effect
     function initParallaxEffect() {
         const heroVisual = document.querySelector('.hero-visual');
+        const mockup = document.querySelector('.dashboard-mockup');
+        const heroStats = document.querySelector('.hero-stats');
+        const heroBadge = document.querySelector('.hero-badge');
+        
         if (!heroVisual) return;
         
         let ticking = false;
         
         function updateParallax() {
             const scrolled = window.pageYOffset;
-            const speed = 0.5;
-            const yPos = -(scrolled * speed);
+            const windowHeight = window.innerHeight;
+            const heroHeight = document.querySelector('.hero').offsetHeight;
             
-            heroVisual.style.transform = `translateY(${yPos}px)`;
+            // Only apply parallax when hero is in view
+            if (scrolled < heroHeight) {
+                // Different speeds for different elements
+                const visualSpeed = 0.5;
+                const mockupSpeed = 0.3;
+                const statsSpeed = 0.2;
+                const badgeSpeed = 0.1;
+                
+                // Apply transforms
+                if (heroVisual) {
+                    const yPos = -(scrolled * visualSpeed);
+                    heroVisual.style.transform = `translateY(${yPos}px)`;
+                }
+                
+                if (mockup) {
+                    const rotation = scrolled * 0.02;
+                    const scale = 1 - (scrolled * 0.0002);
+                    mockup.style.transform = `translateY(${-(scrolled * mockupSpeed)}px) rotateX(${rotation}deg) scale(${scale})`;
+                }
+                
+                if (heroStats) {
+                    heroStats.style.transform = `translateY(${-(scrolled * statsSpeed)}px)`;
+                    heroStats.style.opacity = 1 - (scrolled / heroHeight);
+                }
+                
+                if (heroBadge) {
+                    heroBadge.style.transform = `translateY(${-(scrolled * badgeSpeed)}px)`;
+                }
+            }
+            
             ticking = false;
         }
+        
+        // Initial call
+        updateParallax();
         
         window.addEventListener('scroll', () => {
             if (!ticking) {
@@ -495,25 +700,108 @@
         }, { passive: true });
     }
 
-    // Enhanced Form Submission with Progress
+    // Enhanced Form Submission with Progress Bar Animation
     function enhanceFormSubmission() {
         const form = document.getElementById('beta-form');
         if (!form) return;
         
-        const originalHandler = form.onsubmit;
-        
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Show progress indicator
-            const progressDiv = document.getElementById('form-progress');
-            if (progressDiv) {
-                progressDiv.style.display = 'block';
+            const email = form.querySelector('input[name="email"]').value;
+            
+            // Validate email
+            if (!window.DataSenseTracking.validateEmail(email)) {
+                showFormError('Please enter a valid email address');
+                return;
             }
             
-            // Call original handler
-            window.DataSenseTracking.handleFormSubmission(form);
+            // Show progress indicator with animation
+            const progressDiv = document.getElementById('form-progress');
+            const progressBar = progressDiv?.querySelector('.progress-bar');
+            const progressText = progressDiv?.querySelector('.progress-text');
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            if (progressDiv) {
+                progressDiv.style.display = 'block';
+                progressDiv.style.opacity = '0';
+                progressDiv.style.animation = 'fadeIn 0.3s ease-out forwards';
+                
+                // Animate progress bar
+                if (progressBar) {
+                    progressBar.style.width = '0%';
+                    progressBar.style.transition = 'width 1.5s ease-out';
+                    setTimeout(() => {
+                        progressBar.style.width = '100%';
+                    }, 100);
+                }
+                
+                // Update progress text
+                const messages = [
+                    'Validating email...',
+                    'Creating your account...',
+                    'Setting up dashboard...',
+                    'Almost ready...'
+                ];
+                
+                let messageIndex = 0;
+                const messageInterval = setInterval(() => {
+                    if (messageIndex < messages.length && progressText) {
+                        progressText.textContent = messages[messageIndex];
+                        messageIndex++;
+                    } else {
+                        clearInterval(messageInterval);
+                    }
+                }, 400);
+            }
+            
+            // Disable submit button
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<span>Processing...</span>';
+            }
+            
+            // Simulate API call
+            setTimeout(() => {
+                showSuccessMessage(form);
+                window.DataSenseTracking.trackEvent('conversion', {
+                    conversion_type: 'beta_signup',
+                    email: email
+                });
+            }, 2000);
         });
+    }
+    
+    function showFormError(message) {
+        const existingError = document.querySelector('.form-error');
+        if (existingError) existingError.remove();
+        
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'form-error';
+        errorDiv.textContent = message;
+        errorDiv.style.animation = 'shake 0.5s ease-out';
+        
+        const form = document.getElementById('beta-form');
+        form.appendChild(errorDiv);
+        
+        setTimeout(() => errorDiv.remove(), 5000);
+    }
+    
+    function showSuccessMessage(form) {
+        form.style.animation = 'fadeOut 0.3s ease-out';
+        setTimeout(() => {
+            form.innerHTML = `
+                <div class="form-success" style="text-align: center; padding: 40px 20px; animation: fadeIn 0.5s ease-out;">
+                    <div style="font-size: 48px; margin-bottom: 16px; animation: bounce 0.5s ease-out;">🎉</div>
+                    <h3 style="font-size: 24px; font-weight: 600; margin-bottom: 12px; color: white;">
+                        Welcome to DataSense Beta!
+                    </h3>
+                    <p style="font-size: 16px; color: rgba(255, 255, 255, 0.8); margin: 0;">
+                        Check your email for next steps. We'll be in touch within 24 hours.
+                    </p>
+                </div>
+            `;
+        }, 300);
     }
 
     // Initialize everything when DOM is ready
