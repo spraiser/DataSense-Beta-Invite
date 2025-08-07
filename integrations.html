@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DataSense Integration Showcase - Check compatibility with your existing tech stack and explore 100+ integrations">
+    <title>DataSense Integrations - Connect Your Entire Tech Stack</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="integrations-styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <svg class="nav-logo" viewBox="0 0 32 32" fill="none">
+                    <rect width="32" height="32" rx="8" fill="url(#gradient)"/>
+                    <path d="M8 12h16v8H8z" fill="white" opacity="0.9"/>
+                    <path d="M12 8v16M20 8v16" stroke="white" stroke-width="2" opacity="0.7"/>
+                    <defs>
+                        <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
+                            <stop stop-color="#667eea"/>
+                            <stop offset="1" stop-color="#764ba2"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="nav-brand-text">DataSense</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index-professional.html" class="nav-link">Home</a>
+                <a href="#compatibility-checker" class="nav-link">Check Compatibility</a>
+                <a href="#integration-map" class="nav-link">All Integrations</a>
+                <a href="#api-docs" class="nav-link">API</a>
+            </div>
+            <div class="nav-actions">
+                <a href="#demo" class="nav-cta">Get Demo</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="integration-hero">
+        <div class="container">
+            <div class="hero-badge">
+                <span class="badge-icon">🔌</span>
+                <span class="badge-text">100+ Integrations and Growing</span>
+            </div>
+            
+            <h1 class="hero-title">
+                Connect Everything.
+                <span class="hero-highlight">Automate Everything.</span>
+            </h1>
+            
+            <p class="hero-subtitle">
+                DataSense seamlessly integrates with your existing tech stack. No migration headaches, no data silos.
+            </p>
+
+            <div class="hero-actions">
+                <button class="btn-primary" onclick="scrollToSection('compatibility-checker')">
+                    Check Your Stack Compatibility
+                </button>
+                <button class="btn-secondary" onclick="scrollToSection('integration-map')">
+                    Explore All Integrations
+                </button>
+            </div>
+
+            <div class="integration-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-value">5 min</div>
+                    <div class="stat-label">Average Setup Time</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔄</div>
+                    <div class="stat-value">Real-time</div>
+                    <div class="stat-label">Data Sync</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value">99.9%</div>
+                    <div class="stat-label">Uptime SLA</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🛡️</div>
+                    <div class="stat-value">SOC2</div>
+                    <div class="stat-label">Certified</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stack Compatibility Checker -->
+    <section id="compatibility-checker" class="compatibility-section">
+        <div class="container">
+            <h2 class="section-title">Stack Compatibility Checker</h2>
+            <p class="section-subtitle">Find out how DataSense works with your existing tools in seconds</p>
+            
+            <div class="checker-container">
+                <div class="input-methods">
+                    <div class="method-tabs">
+                        <button class="tab-btn active" data-tab="quick-survey">Quick Survey</button>
+                        <button class="tab-btn" data-tab="csv-upload">Upload CSV</button>
+                        <button class="tab-btn" data-tab="linkedin-scan">LinkedIn Scan</button>
+                        <button class="tab-btn" data-tab="manual-entry">Manual Entry</button>
+                    </div>
+
+                    <div class="tab-content active" id="quick-survey">
+                        <h3>Which tools do you currently use?</h3>
+                        <div class="tool-categories">
+                            <div class="category">
+                                <h4>CRM & Sales</h4>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="salesforce">
+                                    <span>Salesforce</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="hubspot">
+                                    <span>HubSpot</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="pipedrive">
+                                    <span>Pipedrive</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="zoho">
+                                    <span>Zoho CRM</span>
+                                </label>
+                            </div>
+                            
+                            <div class="category">
+                                <h4>Payment & Finance</h4>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="stripe">
+                                    <span>Stripe</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="square">
+                                    <span>Square</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="quickbooks">
+                                    <span>QuickBooks</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="paypal">
+                                    <span>PayPal</span>
+                                </label>
+                            </div>
+
+                            <div class="category">
+                                <h4>Marketing</h4>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="mailchimp">
+                                    <span>Mailchimp</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="klaviyo">
+                                    <span>Klaviyo</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="google-ads">
+                                    <span>Google Ads</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="facebook-ads">
+                                    <span>Facebook Ads</span>
+                                </label>
+                            </div>
+
+                            <div class="category">
+                                <h4>E-commerce</h4>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="shopify">
+                                    <span>Shopify</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="woocommerce">
+                                    <span>WooCommerce</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="amazon">
+                                    <span>Amazon Seller</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="etsy">
+                                    <span>Etsy</span>
+                                </label>
+                            </div>
+                        </div>
+                        <button class="btn-primary check-btn" onclick="checkCompatibility()">
+                            Check Compatibility
+                        </button>
+                    </div>
+
+                    <div class="tab-content" id="csv-upload">
+                        <div class="upload-area">
+                            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                            </svg>
+                            <h3>Upload your tech stack CSV</h3>
+                            <p>Drag and drop or click to browse</p>
+                            <input type="file" id="csv-file" accept=".csv" hidden>
+                            <button class="btn-secondary" onclick="document.getElementById('csv-file').click()">
+                                Choose File
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="linkedin-scan">
+                        <div class="linkedin-connect">
+                            <svg class="linkedin-logo" viewBox="0 0 24 24" fill="#0077B5">
+                                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                            </svg>
+                            <h3>Connect LinkedIn to scan your company's tech stack</h3>
+                            <p>We'll automatically detect the tools your company uses</p>
+                            <button class="btn-linkedin">
+                                Connect LinkedIn
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="manual-entry">
+                        <div class="manual-entry-form">
+                            <h3>Enter your tools manually</h3>
+                            <div class="tool-input-container">
+                                <input type="text" id="tool-search" placeholder="Start typing to search tools..." class="tool-search-input">
+                                <div class="suggestions-dropdown" id="suggestions"></div>
+                            </div>
+                            <div class="selected-tools" id="selected-tools"></div>
+                            <button class="btn-primary check-btn" onclick="checkCompatibility()">
+                                Check Compatibility
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Compatibility Report -->
+                <div class="compatibility-report" id="compatibility-report" style="display: none;">
+                    <h3>Your Compatibility Report</h3>
+                    
+                    <div class="report-summary">
+                        <div class="summary-stat">
+                            <div class="stat-number">85%</div>
+                            <div class="stat-label">Overall Compatibility</div>
+                        </div>
+                        <div class="summary-actions">
+                            <button class="btn-download" onclick="downloadReport()">
+                                <svg viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/>
+                                </svg>
+                                Download Report
+                            </button>
+                            <button class="btn-share" onclick="shareReport()">
+                                <svg viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"/>
+                                </svg>
+                                Share with Team
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="compatibility-categories">
+                        <div class="category-card">
+                            <div class="category-header success">
+                                <span class="status-icon">✅</span>
+                                <h4>Fully Compatible (Direct Integration)</h4>
+                                <span class="count">8 tools</span>
+                            </div>
+                            <div class="tool-list">
+                                <div class="tool-item">
+                                    <img src="https://via.placeholder.com/24" alt="Salesforce">
+                                    <span>Salesforce</span>
+                                    <span class="setup-time">5 min setup</span>
+                                </div>
+                                <div class="tool-item">
+                                    <img src="https://via.placeholder.com/24" alt="Stripe">
+                                    <span>Stripe</span>
+                                    <span class="setup-time">3 min setup</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="category-card">
+                            <div class="category-header warning">
+                                <span class="status-icon">🔄</span>
+                                <h4>Compatible via Zapier/API</h4>
+                                <span class="count">3 tools</span>
+                            </div>
+                            <div class="tool-list">
+                                <div class="tool-item">
+                                    <img src="https://via.placeholder.com/24" alt="Custom CRM">
+                                    <span>Custom CRM</span>
+                                    <span class="setup-time">30 min setup</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="category-card">
+                            <div class="category-header info">
+                                <span class="status-icon">⚠️</span>
+                                <h4>Requires Data Export/Import</h4>
+                                <span class="count">2 tools</span>
+                            </div>
+                            <div class="tool-list">
+                                <div class="tool-item">
+                                    <img src="https://via.placeholder.com/24" alt="Legacy System">
+                                    <span>Legacy System</span>
+                                    <span class="setup-time">Manual process</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="category-card">
+                            <div class="category-header error">
+                                <span class="status-icon">❌</span>
+                                <h4>Not Currently Supported</h4>
+                                <span class="count">1 tool</span>
+                            </div>
+                            <div class="tool-list">
+                                <div class="tool-item">
+                                    <img src="https://via.placeholder.com/24" alt="Niche Tool">
+                                    <span>Niche Tool</span>
+                                    <button class="btn-request">Request Integration</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="migration-summary">
+                        <h4>Migration Effort Estimate</h4>
+                        <div class="effort-timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-marker">1</div>
+                                <div class="timeline-content">
+                                    <h5>Initial Setup</h5>
+                                    <p>2-4 hours</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-marker">2</div>
+                                <div class="timeline-content">
+                                    <h5>Data Migration</h5>
+                                    <p>1-2 days</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-marker">3</div>
+                                <div class="timeline-content">
+                                    <h5>Testing & Validation</h5>
+                                    <p>1 day</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-primary">Schedule Migration Consultation</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Integration Map -->
+    <section id="integration-map" class="integration-map-section">
+        <div class="container">
+            <h2 class="section-title">Interactive Integration Map</h2>
+            <p class="section-subtitle">Explore all 100+ integrations organized by category</p>
+            
+            <div class="map-filters">
+                <button class="filter-btn active" data-filter="all">All Integrations</button>
+                <button class="filter-btn" data-filter="crm">CRM & Sales</button>
+                <button class="filter-btn" data-filter="payment">Payment</button>
+                <button class="filter-btn" data-filter="marketing">Marketing</button>
+                <button class="filter-btn" data-filter="analytics">Analytics</button>
+                <button class="filter-btn" data-filter="ecommerce">E-commerce</button>
+                <button class="filter-btn" data-filter="productivity">Productivity</button>
+                <button class="filter-btn" data-filter="coming-soon">Coming Soon</button>
+            </div>
+
+            <div class="integration-grid" id="integration-grid">
+                <!-- CRM Integrations -->
+                <div class="integration-card" data-category="crm" data-integration="salesforce">
+                    <div class="card-status live"></div>
+                    <div class="card-icon">
+                        <img src="https://via.placeholder.com/48" alt="Salesforce">
+                    </div>
+                    <h4>Salesforce</h4>
+                    <p>Bi-directional sync with all objects</p>
+                    <div class="card-stats">
+                        <span>⚡ 5 min setup</span>
+                        <span>🔄 Real-time</span>
+                    </div>
+                    <button class="btn-explore" onclick="showIntegrationDetail('salesforce')">
+                        Explore →
+                    </button>
+                </div>
+
+                <div class="integration-card" data-category="crm" data-integration="hubspot">
+                    <div class="card-status live"></div>
+                    <div class="card-icon">
+                        <img src="https://via.placeholder.com/48" alt="HubSpot">
+                    </div>
+                    <h4>HubSpot</h4>
+                    <p>Complete CRM & Marketing Hub sync</p>
+                    <div class="card-stats">
+                        <span>⚡ 3 min setup</span>
+                        <span>🔄 Real-time</span>
+                    </div>
+                    <button class="btn-explore" onclick="showIntegrationDetail('hubspot')">
+                        Explore →
+                    </button>
+                </div>
+
+                <!-- Payment Integrations -->
+                <div class="integration-card" data-category="payment" data-integration="stripe">
+                    <div class="card-status live"></div>
+                    <div class="card-icon">
+                        <img src="https://via.placeholder.com/48" alt="Stripe">
+                    </div>
+                    <h4>Stripe</h4>
+                    <p>Full payment & subscription data</p>
+                    <div class="card-stats">
+                        <span>⚡ 2 min setup</span>
+                        <span>🔄 Real-time</span>
+                    </div>
+                    <button class="btn-explore" onclick="showIntegrationDetail('stripe')">
+                        Explore →
+                    </button>
+                </div>
+
+                <!-- Marketing Integrations -->
+                <div class="integration-card" data-category="marketing" data-integration="mailchimp">
+                    <div class="card-status live"></div>
+                    <div class="card-icon">
+                        <img src="https://via.placeholder.com/48" alt="Mailchimp">
+                    </div>
+                    <h4>Mailchimp</h4>
+                    <p>Campaign & audience analytics</p>
+                    <div class="card-stats">
+                        <span>⚡ 5 min setup</span>
+                        <span>🔄 Hourly sync</span>
+                    </div>
+                    <button class="btn-explore" onclick="showIntegrationDetail('mailchimp')">
+                        Explore →
+                    </button>
+                </div>
+
+                <!-- E-commerce Integrations -->
+                <div class="integration-card" data-category="ecommerce" data-integration="shopify">
+                    <div class="card-status live"></div>
+                    <div class="card-icon">
+                        <img src="https://via.placeholder.com/48" alt="Shopify">
+                    </div>
+                    <h4>Shopify</h4>
+                    <p>Orders, products, customers sync</p>
+                    <div class="card-stats">
+                        <span>⚡ 3 min setup</span>
+                        <span>🔄 Real-time</span>
+                    </div>
+                    <button class="btn-explore" onclick="showIntegrationDetail('shopify')">
+                        Explore →
+                    </button>
+                </div>
+
+                <!-- Coming Soon -->
+                <div class="integration-card coming-soon" data-category="coming-soon">
+                    <div class="card-status coming"></div>
+                    <div class="card-icon">
+                        <img src="https://via.placeholder.com/48" alt="NetSuite">
+                    </div>
+                    <h4>NetSuite</h4>
+                    <p>Full ERP integration</p>
+                    <div class="card-stats">
+                        <span>📅 Q2 2025</span>
+                        <span>👥 52 requests</span>
+                    </div>
+                    <button class="btn-vote" onclick="voteForIntegration('netsuite')">
+                        Vote +1
+                    </button>
+                </div>
+            </div>
+
+            <div class="view-more">
+                <button class="btn-secondary" onclick="loadMoreIntegrations()">
+                    View All 100+ Integrations
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Integration Deep Dive Modal -->
+    <div class="modal" id="integration-detail-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            
+            <div class="integration-detail">
+                <div class="detail-header">
+                    <img src="https://via.placeholder.com/64" alt="" id="detail-logo">
+                    <div>
+                        <h3 id="detail-name">Salesforce</h3>
+                        <p id="detail-description">Enterprise CRM Integration</p>
+                    </div>
+                    <div class="detail-status">
+                        <span class="status-badge live">Live</span>
+                    </div>
+                </div>
+
+                <div class="detail-tabs">
+                    <button class="tab-btn active" data-tab="overview">Overview</button>
+                    <button class="tab-btn" data-tab="setup">Setup Guide</button>
+                    <button class="tab-btn" data-tab="features">Features</button>
+                    <button class="tab-btn" data-tab="use-cases">Use Cases</button>
+                    <button class="tab-btn" data-tab="faq">FAQ</button>
+                </div>
+
+                <div class="tab-content active" id="overview">
+                    <h4>Integration Overview</h4>
+                    <div class="overview-grid">
+                        <div class="overview-item">
+                            <h5>Setup Time</h5>
+                            <p>5 minutes average</p>
+                        </div>
+                        <div class="overview-item">
+                            <h5>Sync Frequency</h5>
+                            <p>Real-time / Configurable</p>
+                        </div>
+                        <div class="overview-item">
+                            <h5>Data Types</h5>
+                            <p>All standard & custom objects</p>
+                        </div>
+                        <div class="overview-item">
+                            <h5>API Calls</h5>
+                            <p>Optimized batching</p>
+                        </div>
+                    </div>
+
+                    <h4>Supported Features</h4>
+                    <ul class="feature-list">
+                        <li>✅ Bi-directional data sync</li>
+                        <li>✅ Custom field mapping</li>
+                        <li>✅ Webhook support</li>
+                        <li>✅ Bulk data operations</li>
+                        <li>✅ Historical data import</li>
+                        <li>✅ Real-time updates</li>
+                    </ul>
+
+                    <button class="btn-primary">Start Integration</button>
+                </div>
+
+                <div class="tab-content" id="setup">
+                    <h4>Quick Setup Guide</h4>
+                    <div class="setup-steps">
+                        <div class="setup-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h5>Connect Your Account</h5>
+                                <p>Click "Connect" and authenticate with your Salesforce credentials</p>
+                                <img src="https://via.placeholder.com/600x300" alt="Setup Step 1">
+                            </div>
+                        </div>
+                        <div class="setup-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h5>Select Data to Sync</h5>
+                                <p>Choose which objects and fields you want to sync</p>
+                                <img src="https://via.placeholder.com/600x300" alt="Setup Step 2">
+                            </div>
+                        </div>
+                        <div class="setup-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h5>Configure Sync Settings</h5>
+                                <p>Set sync frequency and conflict resolution rules</p>
+                                <img src="https://via.placeholder.com/600x300" alt="Setup Step 3">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-tutorial">
+                        <h5>Video Walkthrough</h5>
+                        <div class="video-placeholder">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                            <p>3-minute setup tutorial</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tech Stack Optimizer -->
+    <section class="optimizer-section">
+        <div class="container">
+            <h2 class="section-title">Tech Stack Optimizer</h2>
+            <p class="section-subtitle">Discover how DataSense can consolidate your tools and save costs</p>
+            
+            <div class="optimizer-container">
+                <div class="consolidation-analysis">
+                    <h3>Your Current Stack Analysis</h3>
+                    <div class="stack-comparison">
+                        <div class="current-stack">
+                            <h4>Current: 8 Separate Tools</h4>
+                            <div class="tool-list-visual">
+                                <div class="tool-item">📊 Analytics Tool - $299/mo</div>
+                                <div class="tool-item">📈 Reporting Tool - $199/mo</div>
+                                <div class="tool-item">🔄 ETL Tool - $499/mo</div>
+                                <div class="tool-item">📱 Dashboard Tool - $149/mo</div>
+                                <div class="tool-item">🤖 Automation Tool - $299/mo</div>
+                            </div>
+                            <div class="total-cost">
+                                Total: $1,445/month
+                            </div>
+                        </div>
+                        
+                        <div class="arrow-indicator">→</div>
+                        
+                        <div class="optimized-stack">
+                            <h4>With DataSense: 1 Platform</h4>
+                            <div class="datasense-features">
+                                <div class="feature">✅ Advanced Analytics</div>
+                                <div class="feature">✅ Custom Reporting</div>
+                                <div class="feature">✅ Data Pipeline</div>
+                                <div class="feature">✅ Interactive Dashboards</div>
+                                <div class="feature">✅ Workflow Automation</div>
+                            </div>
+                            <div class="total-cost savings">
+                                Total: $299/month
+                                <span class="savings-amount">Save $1,146/mo</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="roi-calculator">
+                        <h4>Your Potential Savings</h4>
+                        <div class="savings-breakdown">
+                            <div class="saving-item">
+                                <span>Monthly Savings</span>
+                                <span class="amount">$1,146</span>
+                            </div>
+                            <div class="saving-item">
+                                <span>Annual Savings</span>
+                                <span class="amount">$13,752</span>
+                            </div>
+                            <div class="saving-item">
+                                <span>Time Saved (Monthly)</span>
+                                <span class="amount">40 hours</span>
+                            </div>
+                            <div class="saving-item">
+                                <span>ROI</span>
+                                <span class="amount">383%</span>
+                            </div>
+                        </div>
+                        <button class="btn-primary">Get Detailed ROI Report</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Migration Calculator -->
+    <section class="migration-section">
+        <div class="container">
+            <h2 class="section-title">Migration Calculator</h2>
+            <p class="section-subtitle">Get a personalized migration plan for your business</p>
+            
+            <div class="migration-calculator">
+                <div class="calculator-inputs">
+                    <h3>Tell us about your data</h3>
+                    <div class="input-group">
+                        <label>Number of data sources</label>
+                        <input type="number" id="data-sources" value="5" min="1" max="50">
+                    </div>
+                    <div class="input-group">
+                        <label>Total data volume (GB)</label>
+                        <input type="number" id="data-volume" value="100" min="1" max="10000">
+                    </div>
+                    <div class="input-group">
+                        <label>Number of users</label>
+                        <input type="number" id="num-users" value="25" min="1" max="1000">
+                    </div>
+                    <div class="input-group">
+                        <label>Historical data (years)</label>
+                        <input type="number" id="historical-years" value="3" min="1" max="10">
+                    </div>
+                    <button class="btn-calculate" onclick="calculateMigration()">
+                        Calculate Migration Plan
+                    </button>
+                </div>
+                
+                <div class="migration-results" id="migration-results">
+                    <h3>Your Personalized Migration Plan</h3>
+                    
+                    <div class="timeline">
+                        <div class="timeline-header">
+                            <h4>Total Timeline: 5-7 Days</h4>
+                        </div>
+                        
+                        <div class="timeline-phase">
+                            <div class="phase-marker">Phase 1</div>
+                            <div class="phase-content">
+                                <h5>Discovery & Planning (Day 1)</h5>
+                                <ul>
+                                    <li>Audit current data sources</li>
+                                    <li>Map data relationships</li>
+                                    <li>Define migration priorities</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-phase">
+                            <div class="phase-marker">Phase 2</div>
+                            <div class="phase-content">
+                                <h5>Setup & Configuration (Day 2-3)</h5>
+                                <ul>
+                                    <li>Connect data sources</li>
+                                    <li>Configure field mappings</li>
+                                    <li>Set up automation rules</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-phase">
+                            <div class="phase-marker">Phase 3</div>
+                            <div class="phase-content">
+                                <h5>Data Migration (Day 4-5)</h5>
+                                <ul>
+                                    <li>Historical data import</li>
+                                    <li>Real-time sync activation</li>
+                                    <li>Data validation checks</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-phase">
+                            <div class="phase-marker">Phase 4</div>
+                            <div class="phase-content">
+                                <h5>Testing & Go-Live (Day 6-7)</h5>
+                                <ul>
+                                    <li>User acceptance testing</li>
+                                    <li>Performance optimization</li>
+                                    <li>Team training</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="migration-support">
+                        <h4>Support Options</h4>
+                        <div class="support-cards">
+                            <div class="support-card">
+                                <h5>Self-Service</h5>
+                                <p>Complete documentation and video guides</p>
+                                <span class="price">Free</span>
+                            </div>
+                            <div class="support-card recommended">
+                                <span class="badge">Recommended</span>
+                                <h5>Guided Migration</h5>
+                                <p>Dedicated success manager</p>
+                                <span class="price">$500</span>
+                            </div>
+                            <div class="support-card">
+                                <h5>White Glove</h5>
+                                <p>Full service migration</p>
+                                <span class="price">$2,500</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn-primary">Schedule Migration Consultation</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- API Documentation Preview -->
+    <section id="api-docs" class="api-section">
+        <div class="container">
+            <h2 class="section-title">API Documentation</h2>
+            <p class="section-subtitle">Build custom integrations with our powerful REST API</p>
+            
+            <div class="api-container">
+                <div class="api-sidebar">
+                    <h3>Endpoints</h3>
+                    <ul class="endpoint-list">
+                        <li class="endpoint-item active" data-endpoint="auth">
+                            <span class="method post">POST</span>
+                            <span>Authentication</span>
+                        </li>
+                        <li class="endpoint-item" data-endpoint="data">
+                            <span class="method get">GET</span>
+                            <span>Query Data</span>
+                        </li>
+                        <li class="endpoint-item" data-endpoint="push">
+                            <span class="method post">POST</span>
+                            <span>Push Data</span>
+                        </li>
+                        <li class="endpoint-item" data-endpoint="webhook">
+                            <span class="method post">POST</span>
+                            <span>Webhooks</span>
+                        </li>
+                        <li class="endpoint-item" data-endpoint="batch">
+                            <span class="method post">POST</span>
+                            <span>Batch Operations</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="api-content">
+                    <div class="endpoint-detail active" id="auth-endpoint">
+                        <h3>Authentication</h3>
+                        <p>Authenticate and receive an access token</p>
+                        
+                        <div class="code-section">
+                            <div class="code-header">
+                                <span>Request</span>
+                                <div class="language-tabs">
+                                    <button class="lang-tab active">cURL</button>
+                                    <button class="lang-tab">Python</button>
+                                    <button class="lang-tab">JavaScript</button>
+                                </div>
+                            </div>
+                            <pre><code>curl -X POST https://api.datasense.io/v1/auth \
+  -H "Content-Type: application/json" \
+  -d '{
+    "client_id": "your_client_id",
+    "client_secret": "your_client_secret"
+  }'</code></pre>
+                        </div>
+                        
+                        <div class="code-section">
+                            <div class="code-header">
+                                <span>Response</span>
+                            </div>
+                            <pre><code>{
+  "access_token": "eyJhbGciOiJIUzI1NiIs...",
+  "token_type": "Bearer",
+  "expires_in": 3600,
+  "refresh_token": "def50200..."
+}</code></pre>
+                        </div>
+                        
+                        <div class="api-details">
+                            <h4>Rate Limits</h4>
+                            <ul>
+                                <li>1000 requests per hour</li>
+                                <li>100 concurrent connections</li>
+                                <li>10MB max payload size</li>
+                            </ul>
+                            
+                            <h4>Error Codes</h4>
+                            <table class="error-table">
+                                <tr>
+                                    <td>401</td>
+                                    <td>Invalid credentials</td>
+                                </tr>
+                                <tr>
+                                    <td>429</td>
+                                    <td>Rate limit exceeded</td>
+                                </tr>
+                                <tr>
+                                    <td>500</td>
+                                    <td>Internal server error</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="api-explorer">
+                    <h3>Try it out</h3>
+                    <div class="explorer-form">
+                        <input type="text" placeholder="Enter your API key" class="api-key-input">
+                        <select class="endpoint-select">
+                            <option>Select endpoint</option>
+                            <option>/v1/auth</option>
+                            <option>/v1/data/query</option>
+                            <option>/v1/data/push</option>
+                        </select>
+                        <textarea placeholder="Request body (JSON)" class="request-body"></textarea>
+                        <button class="btn-primary">Send Request</button>
+                    </div>
+                    <div class="explorer-response">
+                        <h4>Response</h4>
+                        <pre><code>// Response will appear here</code></pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="api-cta">
+                <h3>Ready to build?</h3>
+                <p>Get your API credentials and start integrating in minutes</p>
+                <button class="btn-primary">Get API Access</button>
+                <button class="btn-secondary">View Full Documentation</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Custom Integration Request -->
+    <section class="request-section">
+        <div class="container">
+            <h2 class="section-title">Don't See Your Tool?</h2>
+            <p class="section-subtitle">Request a new integration and vote on community requests</p>
+            
+            <div class="request-container">
+                <div class="request-form">
+                    <h3>Request New Integration</h3>
+                    <form id="integration-request-form">
+                        <div class="form-group">
+                            <label>Tool Name</label>
+                            <input type="text" id="tool-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tool Category</label>
+                            <select id="tool-category">
+                                <option>CRM</option>
+                                <option>Payment</option>
+                                <option>Marketing</option>
+                                <option>Analytics</option>
+                                <option>E-commerce</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Use Case</label>
+                            <textarea id="use-case" placeholder="How would you use this integration?"></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Submit Request</button>
+                    </form>
+                </div>
+                
+                <div class="community-requests">
+                    <h3>Top Community Requests</h3>
+                    <div class="request-list">
+                        <div class="request-item">
+                            <div class="request-info">
+                                <h4>NetSuite</h4>
+                                <p>Full ERP integration</p>
+                                <span class="category">ERP</span>
+                            </div>
+                            <div class="request-stats">
+                                <div class="votes">
+                                    <span class="vote-count">127</span>
+                                    <button class="btn-vote">+1</button>
+                                </div>
+                                <span class="status">In Development</span>
+                            </div>
+                        </div>
+                        
+                        <div class="request-item">
+                            <div class="request-info">
+                                <h4>Monday.com</h4>
+                                <p>Project management sync</p>
+                                <span class="category">Productivity</span>
+                            </div>
+                            <div class="request-stats">
+                                <div class="votes">
+                                    <span class="vote-count">89</span>
+                                    <button class="btn-vote">+1</button>
+                                </div>
+                                <span class="status">Under Review</span>
+                            </div>
+                        </div>
+                        
+                        <div class="request-item">
+                            <div class="request-info">
+                                <h4>Tableau</h4>
+                                <p>BI visualization integration</p>
+                                <span class="category">Analytics</span>
+                            </div>
+                            <div class="request-stats">
+                                <div class="votes">
+                                    <span class="vote-count">76</span>
+                                    <button class="btn-vote">+1</button>
+                                </div>
+                                <span class="status">Planned Q2</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn-secondary">View All Requests</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Integration Health Dashboard -->
+    <section class="health-dashboard">
+        <div class="container">
+            <h2 class="section-title">Integration Health Dashboard</h2>
+            <p class="section-subtitle">Real-time status and performance metrics</p>
+            
+            <div class="health-overview">
+                <div class="status-card operational">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+                    </svg>
+                    <h3>All Systems Operational</h3>
+                    <p>99.99% uptime last 30 days</p>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <h4>API Response Time</h4>
+                        <div class="metric-value">45ms</div>
+                        <div class="metric-chart">
+                            <svg viewBox="0 0 100 40">
+                                <polyline points="0,30 20,25 40,28 60,20 80,22 100,18" stroke="#10b981" fill="none" stroke-width="2"/>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <h4>Sync Success Rate</h4>
+                        <div class="metric-value">99.8%</div>
+                        <div class="metric-chart">
+                            <svg viewBox="0 0 100 40">
+                                <polyline points="0,10 20,12 40,8 60,10 80,9 100,10" stroke="#10b981" fill="none" stroke-width="2"/>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <h4>Active Integrations</h4>
+                        <div class="metric-value">8,234</div>
+                        <div class="metric-chart">
+                            <svg viewBox="0 0 100 40">
+                                <polyline points="0,35 20,30 40,25 60,20 80,15 100,10" stroke="#10b981" fill="none" stroke-width="2"/>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <h4>Data Processed</h4>
+                        <div class="metric-value">2.4TB</div>
+                        <div class="metric-chart">
+                            <svg viewBox="0 0 100 40">
+                                <polyline points="0,25 20,22 40,20 60,18 80,15 100,12" stroke="#10b981" fill="none" stroke-width="2"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="integration-status-list">
+                <h3>Integration Status</h3>
+                <div class="status-table">
+                    <div class="status-row">
+                        <div class="integration-name">
+                            <span class="status-indicator green"></span>
+                            Salesforce API
+                        </div>
+                        <div class="status-metrics">
+                            <span>Response: 42ms</span>
+                            <span>Success: 100%</span>
+                            <span>Last sync: 2 min ago</span>
+                        </div>
+                    </div>
+                    
+                    <div class="status-row">
+                        <div class="integration-name">
+                            <span class="status-indicator green"></span>
+                            Stripe Webhooks
+                        </div>
+                        <div class="status-metrics">
+                            <span>Response: 38ms</span>
+                            <span>Success: 99.9%</span>
+                            <span>Last sync: 30s ago</span>
+                        </div>
+                    </div>
+                    
+                    <div class="status-row">
+                        <div class="integration-name">
+                            <span class="status-indicator yellow"></span>
+                            QuickBooks Sync
+                        </div>
+                        <div class="status-metrics">
+                            <span>Response: 250ms</span>
+                            <span>Success: 98%</span>
+                            <span>Last sync: 5 min ago</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="maintenance-notice">
+                    <h4>Scheduled Maintenance</h4>
+                    <p>QuickBooks integration upgrade - Dec 15, 2:00 AM EST (5 minutes)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Warm Referral Features -->
+    <section class="referral-section">
+        <div class="container">
+            <div class="referral-banner">
+                <div class="referral-content">
+                    <h2>Special Access for Warm Referrals</h2>
+                    <p>You were referred by a trusted partner. Enjoy these exclusive benefits:</p>
+                    
+                    <div class="referral-benefits">
+                        <div class="benefit">
+                            <span class="benefit-icon">⚡</span>
+                            <h4>Priority Integration Fast-Track</h4>
+                            <p>Get any integration request completed in 48 hours</p>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-icon">👥</span>
+                            <h4>Direct Technical Specialist</h4>
+                            <p>Skip the queue - chat directly with our integration experts</p>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-icon">🎯</span>
+                            <h4>Similar Success Stories</h4>
+                            <p>See how businesses like yours achieved success</p>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-icon">🚀</span>
+                            <h4>White-Glove Setup</h4>
+                            <p>Free premium migration service ($2,500 value)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="referral-cta">
+                        <button class="btn-primary btn-large">
+                            Claim Your Referral Benefits
+                        </button>
+                        <p class="referral-note">Your referrer's integrations are already highlighted above</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>DataSense</h3>
+                    <p>Enterprise data insights for small business</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#" class="footer-link">API Docs</a>
+                    <a href="#" class="footer-link">Status Page</a>
+                    <a href="#" class="footer-link">Support</a>
+                    <a href="#" class="footer-link">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 DataSense. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="integrations-script.js"></script>
+</body>
+</html>
