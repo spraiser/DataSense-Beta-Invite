@@ -285,6 +285,237 @@
         }
     }
 
+    // Countdown Timer
+    function initCountdownTimer() {
+        const timerElement = document.querySelector('#countdown-timer strong');
+        if (!timerElement) return;
+
+        // Set end time to 72 hours from now
+        const endTime = new Date().getTime() + (72 * 60 * 60 * 1000);
+        
+        function updateTimer() {
+            const now = new Date().getTime();
+            const distance = endTime - now;
+            
+            if (distance < 0) {
+                timerElement.textContent = 'EXPIRED';
+                return;
+            }
+            
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            timerElement.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+        
+        updateTimer();
+        setInterval(updateTimer, 1000);
+    }
+
+    // Dynamic Spots Remaining
+    function initSpotsRemaining() {
+        const spotsElement = document.getElementById('spots-remaining');
+        if (!spotsElement) return;
+        
+        // Start with 12 spots and decrease randomly
+        let spots = 12;
+        
+        function updateSpots() {
+            if (spots > 3) {
+                spots--;
+                spotsElement.textContent = spots;
+                spotsElement.style.animation = 'countPulse 0.3s ease-out';
+                
+                // Remove animation after it completes
+                setTimeout(() => {
+                    spotsElement.style.animation = '';
+                }, 300);
+            }
+        }
+        
+        // Update spots randomly every 30-90 seconds
+        setInterval(() => {
+            if (Math.random() > 0.5) {
+                updateSpots();
+            }
+        }, 45000);
+    }
+
+    // Exit Intent Popup
+    function initExitIntent() {
+        const overlay = document.getElementById('exit-popup-overlay');
+        const closeBtn = document.getElementById('exit-popup-close');
+        let exitIntentShown = false;
+        
+        if (!overlay) return;
+        
+        // Close popup functionality
+        closeBtn.addEventListener('click', () => {
+            overlay.style.display = 'none';
+        });
+        
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                overlay.style.display = 'none';
+            }
+        });
+        
+        // Exit intent detection
+        document.addEventListener('mouseleave', (e) => {
+            if (e.clientY <= 0 && !exitIntentShown) {
+                exitIntentShown = true;
+                overlay.style.display = 'block';
+                window.DataSenseTracking.trackEvent('exit_intent_shown');
+            }
+        });
+        
+        // ROI Calculator
+        const revenueInput = document.getElementById('revenue-input');
+        const hoursInput = document.getElementById('hours-input');
+        const savingsValue = document.getElementById('savings-value');
+        const timeValue = document.getElementById('time-value');
+        const roiValue = document.getElementById('roi-value');
+        
+        function calculateROI() {
+            const revenue = parseFloat(revenueInput.value) || 50000;
+            const hours = parseFloat(hoursInput.value) || 40;
+            
+            // Calculate savings (2% of revenue improvement + hourly rate savings)
+            const revenueSavings = revenue * 0.02;
+            const timeSavings = hours * 0.875; // Save 87.5% of time
+            const hourlySavings = timeSavings * 75; // $75/hour average
+            const totalSavings = revenueSavings + hourlySavings;
+            
+            // Calculate ROI (assuming $299/month cost)
+            const monthlyROI = ((totalSavings - 299) / 299) * 100;
+            
+            savingsValue.textContent = `$${Math.round(totalSavings).toLocaleString()}`;
+            timeValue.textContent = `${Math.round(timeSavings)} hours`;
+            roiValue.textContent = `${Math.round(monthlyROI)}%`;
+        }
+        
+        if (revenueInput && hoursInput) {
+            revenueInput.addEventListener('input', calculateROI);
+            hoursInput.addEventListener('input', calculateROI);
+            calculateROI(); // Initial calculation
+        }
+    }
+
+    // Mobile Sticky CTA
+    function initMobileStickyButton() {
+        const stickyBtn = document.getElementById('mobile-sticky-cta');
+        const heroSection = document.querySelector('.hero');
+        
+        if (!stickyBtn || !heroSection) return;
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting && window.innerWidth <= 768) {
+                    stickyBtn.style.transform = 'translateY(0)';
+                } else {
+                    stickyBtn.style.transform = 'translateY(100%)';
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+        
+        observer.observe(heroSection);
+        
+        // Add initial transform
+        stickyBtn.style.transform = 'translateY(100%)';
+        stickyBtn.style.transition = 'transform 0.3s ease-out';
+    }
+
+    // Counting Animation
+    function initCountingAnimation() {
+        const statNumbers = document.querySelectorAll('.stat-number');
+        const observerOptions = {
+            threshold: 0.5,
+            rootMargin: '0px'
+        };
+        
+        const countUp = (element, target, suffix = '') => {
+            let current = 0;
+            const increment = target / 30;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.round(current) + suffix;
+                element.classList.add('counting');
+                setTimeout(() => element.classList.remove('counting'), 300);
+            }, 50);
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.dataset.counted) {
+                    entry.target.dataset.counted = 'true';
+                    const text = entry.target.textContent;
+                    
+                    if (text === '30s') {
+                        countUp(entry.target, 30, 's');
+                    } else if (text === '40%') {
+                        countUp(entry.target, 40, '%');
+                    } else if (text === '2hrs') {
+                        countUp(entry.target, 2, 'hrs');
+                    }
+                }
+            });
+        }, observerOptions);
+        
+        statNumbers.forEach(stat => observer.observe(stat));
+    }
+
+    // Parallax Effect
+    function initParallaxEffect() {
+        const heroVisual = document.querySelector('.hero-visual');
+        if (!heroVisual) return;
+        
+        let ticking = false;
+        
+        function updateParallax() {
+            const scrolled = window.pageYOffset;
+            const speed = 0.5;
+            const yPos = -(scrolled * speed);
+            
+            heroVisual.style.transform = `translateY(${yPos}px)`;
+            ticking = false;
+        }
+        
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(updateParallax);
+                ticking = true;
+            }
+        }, { passive: true });
+    }
+
+    // Enhanced Form Submission with Progress
+    function enhanceFormSubmission() {
+        const form = document.getElementById('beta-form');
+        if (!form) return;
+        
+        const originalHandler = form.onsubmit;
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show progress indicator
+            const progressDiv = document.getElementById('form-progress');
+            if (progressDiv) {
+                progressDiv.style.display = 'block';
+            }
+            
+            // Call original handler
+            window.DataSenseTracking.handleFormSubmission(form);
+        });
+    }
+
     // Initialize everything when DOM is ready
     function init() {
         window.DataSenseTracking.init();
@@ -292,8 +523,17 @@
         initAnimations();
         initNavigationEffects();
         enhanceFormExperience();
+        enhanceFormSubmission();
         initMobileMenu();
         monitorPerformance();
+        
+        // New features
+        initCountdownTimer();
+        initSpotsRemaining();
+        initExitIntent();
+        initMobileStickyButton();
+        initCountingAnimation();
+        initParallaxEffect();
     }
 
     // Start when DOM is ready

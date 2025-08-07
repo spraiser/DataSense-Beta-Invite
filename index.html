@@ -58,6 +58,13 @@
                     <span class="badge-text">Join 500+ businesses in beta</span>
                 </div>
                 
+                <!-- Urgency Banner -->
+                <div class="urgency-banner" id="urgency-banner">
+                    <span class="urgency-icon">⚡</span>
+                    <span class="urgency-text">Limited beta access: Only <strong id="spots-remaining">12</strong> spots remaining this week</span>
+                    <span class="urgency-timer" id="countdown-timer">Offer ends in: <strong>--:--:--</strong></span>
+                </div>
+                
                 <h1 class="hero-title">
                     See what's really driving your business growth
                     <span class="hero-title-highlight">with AI that speaks your language</span>
@@ -83,7 +90,7 @@
                 </div>
                 
                 <div class="hero-cta">
-                    <a href="#beta-signup" class="btn btn-primary btn-large">
+                    <a href="#beta-signup" class="btn btn-primary btn-large pulse-animation">
                         <span>Start Free Analysis</span>
                         <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
@@ -486,6 +493,12 @@
                 </div>
                 
                 <div class="signup-form-wrapper">
+                    <!-- Form Helper Text -->
+                    <div class="form-helper">
+                        <span class="helper-icon">⏱️</span>
+                        <span class="helper-text">Takes only 30 seconds</span>
+                    </div>
+                    
                     <form class="signup-form" id="beta-form">
                         <div class="form-group">
                             <input 
@@ -502,6 +515,35 @@
                                 </svg>
                             </button>
                         </div>
+                        
+                        <!-- Trust Indicators -->
+                        <div class="form-trust">
+                            <span class="trust-item">
+                                <svg class="trust-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                    <path d="M13.485 1.431a1.473 1.473 0 0 1 2.104 2.062l-7.84 9.801a1.473 1.473 0 0 1-2.12.04L.431 8.138a1.473 1.473 0 0 1 2.084-2.083l4.111 4.112 6.82-8.69a.486.486 0 0 1 .04-.045z"/>
+                                </svg>
+                                No credit card required
+                            </span>
+                            <span class="trust-item">
+                                <svg class="trust-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                    <path d="M13.485 1.431a1.473 1.473 0 0 1 2.104 2.062l-7.84 9.801a1.473 1.473 0 0 1-2.12.04L.431 8.138a1.473 1.473 0 0 1 2.084-2.083l4.111 4.112 6.82-8.69a.486.486 0 0 1 .04-.045z"/>
+                                </svg>
+                                Instant access
+                            </span>
+                            <span class="trust-item">
+                                <svg class="trust-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                    <path d="M13.485 1.431a1.473 1.473 0 0 1 2.104 2.062l-7.84 9.801a1.473 1.473 0 0 1-2.12.04L.431 8.138a1.473 1.473 0 0 1 2.084-2.083l4.111 4.112 6.82-8.69a.486.486 0 0 1 .04-.045z"/>
+                                </svg>
+                                Cancel anytime
+                            </span>
+                        </div>
+                        
+                        <!-- Progress Indicator (hidden initially) -->
+                        <div class="form-progress" id="form-progress" style="display: none;">
+                            <div class="progress-bar"></div>
+                            <span class="progress-text">Setting up your account...</span>
+                        </div>
+                        
                         <p class="form-note">We'll email you within 24 hours to set up your beta access. No spam, unsubscribe anytime.</p>
                     </form>
                     
@@ -563,6 +605,59 @@
             </div>
         </div>
     </footer>
+
+    <!-- Exit Intent Popup -->
+    <div class="exit-popup-overlay" id="exit-popup-overlay">
+        <div class="exit-popup" id="exit-popup">
+            <button class="exit-popup-close" id="exit-popup-close">&times;</button>
+            
+            <div class="exit-popup-content">
+                <h3 class="exit-popup-title">Wait! Calculate Your ROI First</h3>
+                <p class="exit-popup-subtitle">See exactly how much DataSense could save your business</p>
+                
+                <div class="roi-calculator">
+                    <div class="calc-input-group">
+                        <label>Monthly revenue ($)</label>
+                        <input type="number" id="revenue-input" placeholder="50,000" value="50000">
+                    </div>
+                    
+                    <div class="calc-input-group">
+                        <label>Hours spent on reports/month</label>
+                        <input type="number" id="hours-input" placeholder="40" value="40">
+                    </div>
+                    
+                    <div class="roi-results" id="roi-results">
+                        <div class="roi-metric">
+                            <span class="roi-label">Potential Monthly Savings</span>
+                            <span class="roi-value" id="savings-value">$8,000</span>
+                        </div>
+                        <div class="roi-metric">
+                            <span class="roi-label">Time Saved Per Month</span>
+                            <span class="roi-value" id="time-value">35 hours</span>
+                        </div>
+                        <div class="roi-metric highlight">
+                            <span class="roi-label">Annual ROI</span>
+                            <span class="roi-value" id="roi-value">412%</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary btn-large" onclick="document.getElementById('exit-popup-overlay').style.display='none'; document.getElementById('beta-signup').scrollIntoView({behavior: 'smooth'});">
+                        Claim Your ROI Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Sticky CTA -->
+    <div class="mobile-sticky-cta" id="mobile-sticky-cta">
+        <a href="#beta-signup" class="btn btn-primary btn-mobile">
+            <span>Get Early Access</span>
+            <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+            </svg>
+        </a>
+    </div>
 
     <!-- Scripts -->
     <script src="script-professional.js"></script>
