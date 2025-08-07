@@ -885,3 +885,375 @@ body {
 .hero-content > *:nth-child(3) { animation-delay: 0.3s; }
 .hero-content > *:nth-child(4) { animation-delay: 0.4s; }
 .hero-content > *:nth-child(5) { animation-delay: 0.5s; }
+
+/* Secondary Button */
+.btn-secondary {
+  background: transparent;
+  color: var(--primary-text);
+  border: 2px solid var(--border-color);
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: var(--light-gray);
+  border-color: var(--primary-text);
+}
+
+.hero-cta {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* ROI Banner */
+.roi-banner {
+  padding: 40px 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.roi-stats {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
+  flex-wrap: wrap;
+}
+
+.roi-stat {
+  text-align: center;
+}
+
+.roi-number {
+  display: block;
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.roi-label {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.roi-divider {
+  width: 1px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Customer Logos */
+.customer-logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin: 32px 0;
+}
+
+.logo-item {
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.logo-item:hover {
+  opacity: 1;
+}
+
+/* Trust Badges */
+.trust-badges {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+
+.trust-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--secondary-text);
+  padding: 8px 16px;
+  background: var(--light-gray);
+  border-radius: 20px;
+}
+
+.badge-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--success-green);
+}
+
+/* Demo Video Section */
+.demo-section {
+  padding: 100px 0;
+  background: white;
+}
+
+.demo-video-wrapper {
+  max-width: 900px;
+  margin: 48px auto 0;
+}
+
+.video-placeholder {
+  position: relative;
+  padding-bottom: 56.25%;
+  background: linear-gradient(135deg, #f0f4ff 0%, #e6edff 100%);
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.video-placeholder:hover {
+  transform: scale(1.02);
+}
+
+.play-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  z-index: 2;
+}
+
+.video-preview-text {
+  position: absolute;
+  bottom: 32px;
+  left: 32px;
+  z-index: 2;
+}
+
+.video-preview-text h3 {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--primary-text);
+  margin-bottom: 4px;
+}
+
+.video-preview-text p {
+  font-size: 16px;
+  color: var(--secondary-text);
+}
+
+/* Comparison Table */
+.comparison-table-section {
+  padding: 100px 0;
+  background: var(--secondary-background);
+}
+
+.comparison-table {
+  max-width: 900px;
+  margin: 48px auto 0;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.comparison-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.comparison-table thead {
+  background: var(--light-gray);
+}
+
+.comparison-table th {
+  padding: 24px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.datasense-col {
+  background: rgba(37, 99, 235, 0.03);
+  position: relative;
+}
+
+.table-header {
+  text-align: center;
+}
+
+.badge-recommended {
+  display: inline-block;
+  background: var(--primary-blue);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.table-header h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.comparison-table td {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.comparison-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.check-icon {
+  color: var(--success-green);
+  font-weight: 700;
+  margin-right: 8px;
+}
+
+.x-icon {
+  color: #EF4444;
+  font-weight: 700;
+  margin-right: 8px;
+}
+
+/* Use Cases */
+.use-cases {
+  padding: 100px 0;
+  background: white;
+}
+
+.use-cases-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+  margin-top: 48px;
+}
+
+.use-case-card {
+  background: var(--secondary-background);
+  border-radius: 16px;
+  padding: 32px;
+  transition: transform 0.2s ease;
+}
+
+.use-case-card:hover {
+  transform: translateY(-4px);
+}
+
+.use-case-icon {
+  font-size: 40px;
+  margin-bottom: 16px;
+}
+
+.use-case-card h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--primary-text);
+}
+
+.use-case-list {
+  list-style: none;
+  padding: 0;
+}
+
+.use-case-list li {
+  font-size: 14px;
+  color: var(--secondary-text);
+  padding-left: 20px;
+  position: relative;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.use-case-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--primary-blue);
+}
+
+/* FAQ Section */
+.faq-section {
+  padding: 100px 0;
+  background: var(--secondary-background);
+}
+
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 32px;
+  margin-top: 48px;
+}
+
+.faq-item {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid var(--border-color);
+}
+
+.faq-item h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--primary-text);
+}
+
+.faq-item p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--secondary-text);
+  margin: 0;
+}
+
+/* Mobile responsive updates */
+@media (max-width: 768px) {
+  .roi-stats {
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  .roi-divider {
+    display: none;
+  }
+  
+  .customer-logos {
+    gap: 24px;
+  }
+  
+  .comparison-table {
+    overflow-x: auto;
+  }
+  
+  .faq-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .use-cases-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .hero-cta {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+}

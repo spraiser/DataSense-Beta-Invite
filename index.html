@@ -59,12 +59,12 @@
                 </div>
                 
                 <h1 class="hero-title">
-                    Get enterprise-level data insights
-                    <span class="hero-title-highlight">without the enterprise complexity</span>
+                    See what's really driving your business growth
+                    <span class="hero-title-highlight">with AI that speaks your language</span>
                 </h1>
                 
                 <p class="hero-subtitle">
-                    Stop waiting weeks for simple business answers. DataSense gives you instant insights that drive real growth—no technical skills required.
+                    Connect your data. Ask questions in plain English. Get answers that grow revenue. No credit card required • Setup in 10 minutes.
                 </p>
                 
                 <div class="hero-stats">
@@ -84,12 +84,18 @@
                 
                 <div class="hero-cta">
                     <a href="#beta-signup" class="btn btn-primary btn-large">
-                        <span>Get Early Access</span>
+                        <span>Start Free Analysis</span>
                         <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
                         </svg>
                     </a>
-                    <p class="hero-cta-note">Free beta • No credit card required</p>
+                    <button type="button" class="btn btn-secondary btn-large" onclick="document.getElementById('demo-video').scrollIntoView({behavior: 'smooth'})">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                        <span>Watch 2-Min Demo</span>
+                    </button>
+                    <p class="hero-cta-note">No credit card required • Setup in 10 minutes</p>
                 </div>
             </div>
             
@@ -122,10 +128,81 @@
         </div>
     </section>
 
+    <!-- ROI Banner -->
+    <section class="roi-banner">
+        <div class="container">
+            <div class="roi-stats">
+                <div class="roi-stat">
+                    <span class="roi-number">3.2x</span>
+                    <span class="roi-label">Average ROI in 90 days</span>
+                </div>
+                <div class="roi-divider"></div>
+                <div class="roi-stat">
+                    <span class="roi-number">47%</span>
+                    <span class="roi-label">Revenue increase for beta users</span>
+                </div>
+                <div class="roi-divider"></div>
+                <div class="roi-stat">
+                    <span class="roi-number">$52k</span>
+                    <span class="roi-label">Avg. annual savings from insights</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Social Proof -->
     <section class="social-proof">
         <div class="container">
-            <p class="social-proof-text">Trusted by forward-thinking business owners</p>
+            <p class="social-proof-text">Join 500+ growing businesses using DataSense</p>
+            <div class="customer-logos">
+                <div class="logo-item">
+                    <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
+                        <text x="10" y="25" font-family="Inter" font-size="16" font-weight="600">TechFlow</text>
+                    </svg>
+                </div>
+                <div class="logo-item">
+                    <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
+                        <text x="10" y="25" font-family="Inter" font-size="16" font-weight="600">MarketPro</text>
+                    </svg>
+                </div>
+                <div class="logo-item">
+                    <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
+                        <text x="10" y="25" font-family="Inter" font-size="16" font-weight="600">GrowthCo</text>
+                    </svg>
+                </div>
+                <div class="logo-item">
+                    <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
+                        <text x="10" y="25" font-family="Inter" font-size="16" font-weight="600">DataDrive</text>
+                    </svg>
+                </div>
+                <div class="logo-item">
+                    <svg viewBox="0 0 120 40" fill="currentColor" opacity="0.6">
+                        <text x="10" y="25" font-family="Inter" font-size="16" font-weight="600">SmartBiz</text>
+                    </svg>
+                </div>
+            </div>
+            <div class="trust-badges">
+                <div class="trust-badge">
+                    <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    <span>SOC 2 Compliant</span>
+                </div>
+                <div class="trust-badge">
+                    <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"/>
+                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                    </svg>
+                    <span>GDPR Ready</span>
+                </div>
+                <div class="trust-badge">
+                    <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                    <span>99.9% Uptime</span>
+                </div>
+            </div>
             <div class="testimonial-preview">
                 <div class="testimonial-card">
                     <div class="testimonial-content">
@@ -195,11 +272,13 @@
                 <div class="feature-card">
                     <div class="feature-icon">
                         <svg viewBox="0 0 24 24" fill="none">
-                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </div>
-                    <h3>Instant Insights</h3>
-                    <p>Ask questions in plain English and get answers in 30 seconds. No SQL, no waiting, no complexity.</p>
+                    <h3>AI-Powered Insights</h3>
+                    <p>Our AI analyzes your data 24/7, finding patterns and opportunities you'd never spot manually. Ask questions in plain English, get answers in seconds.</p>
                 </div>
                 
                 <div class="feature-card">
@@ -220,8 +299,178 @@
                             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </div>
-                    <h3>Hidden Discoveries</h3>
-                    <p>Uncover patterns you never knew existed. Find your most profitable customers, best marketing channels, and growth opportunities.</p>
+                    <h3>Predictive Intelligence</h3>
+                    <p>AI-driven predictions help you anticipate trends, prevent churn, and identify your next big opportunity before competitors even see it coming.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Video Section -->
+    <section class="demo-section" id="demo-video">
+        <div class="container">
+            <div class="section-header">
+                <h2>See DataSense in action</h2>
+                <p>Watch how businesses transform their decision-making in just 2 minutes</p>
+            </div>
+            <div class="demo-video-wrapper">
+                <div class="video-placeholder">
+                    <svg class="play-icon" viewBox="0 0 80 80" fill="none">
+                        <circle cx="40" cy="40" r="40" fill="rgba(37, 99, 235, 0.1)"/>
+                        <circle cx="40" cy="40" r="30" fill="white"/>
+                        <path d="M33 28v24l18-12z" fill="#2563EB"/>
+                    </svg>
+                    <div class="video-preview-text">
+                        <h3>2-Minute Demo</h3>
+                        <p>See how easy it is to get insights that matter</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Table -->
+    <section class="comparison-table-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why businesses choose DataSense</h2>
+                <p>See how we stack up against traditional BI tools</p>
+            </div>
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="datasense-col">
+                                <div class="table-header">
+                                    <span class="badge-recommended">Recommended</span>
+                                    <h3>DataSense</h3>
+                                </div>
+                            </th>
+                            <th>Traditional BI Tools</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Setup Time</td>
+                            <td class="datasense-col"><span class="check-icon">✓</span> 2 hours</td>
+                            <td><span class="x-icon">✗</span> 3-6 months</td>
+                        </tr>
+                        <tr>
+                            <td>Time to First Insight</td>
+                            <td class="datasense-col"><span class="check-icon">✓</span> 30 seconds</td>
+                            <td><span class="x-icon">✗</span> Days to weeks</td>
+                        </tr>
+                        <tr>
+                            <td>Technical Skills Required</td>
+                            <td class="datasense-col"><span class="check-icon">✓</span> None</td>
+                            <td><span class="x-icon">✗</span> SQL, data modeling</td>
+                        </tr>
+                        <tr>
+                            <td>AI-Powered Analysis</td>
+                            <td class="datasense-col"><span class="check-icon">✓</span> Built-in</td>
+                            <td><span class="x-icon">✗</span> Limited or none</td>
+                        </tr>
+                        <tr>
+                            <td>Natural Language Queries</td>
+                            <td class="datasense-col"><span class="check-icon">✓</span> Yes</td>
+                            <td><span class="x-icon">✗</span> No</td>
+                        </tr>
+                        <tr>
+                            <td>Cost for Small Business</td>
+                            <td class="datasense-col"><span class="check-icon">✓</span> $299/month</td>
+                            <td><span class="x-icon">✗</span> $2,000+/month</td>
+                        </tr>
+                        <tr>
+                            <td>Dedicated Support</td>
+                            <td class="datasense-col"><span class="check-icon">✓</span> Included</td>
+                            <td><span class="x-icon">✗</span> Extra cost</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases -->
+    <section class="use-cases">
+        <div class="container">
+            <div class="section-header">
+                <h2>Built for every business</h2>
+                <p>See how different industries use DataSense to drive growth</p>
+            </div>
+            <div class="use-cases-grid">
+                <div class="use-case-card">
+                    <div class="use-case-icon">🛍️</div>
+                    <h3>E-commerce</h3>
+                    <ul class="use-case-list">
+                        <li>Identify best-selling product combinations</li>
+                        <li>Predict customer lifetime value</li>
+                        <li>Optimize pricing strategies with AI</li>
+                    </ul>
+                </div>
+                <div class="use-case-card">
+                    <div class="use-case-icon">🏢</div>
+                    <h3>B2B Services</h3>
+                    <ul class="use-case-list">
+                        <li>Track client profitability by project</li>
+                        <li>Forecast revenue and cash flow</li>
+                        <li>Identify upsell opportunities</li>
+                    </ul>
+                </div>
+                <div class="use-case-card">
+                    <div class="use-case-icon">🍔</div>
+                    <h3>Restaurants</h3>
+                    <ul class="use-case-list">
+                        <li>Optimize menu based on profit margins</li>
+                        <li>Predict busy periods for staffing</li>
+                        <li>Track customer preferences and trends</li>
+                    </ul>
+                </div>
+                <div class="use-case-card">
+                    <div class="use-case-icon">🏥</div>
+                    <h3>Healthcare</h3>
+                    <ul class="use-case-list">
+                        <li>Reduce patient no-shows with predictions</li>
+                        <li>Optimize appointment scheduling</li>
+                        <li>Track treatment effectiveness</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Frequently asked questions</h2>
+                <p>Everything you need to know about DataSense</p>
+            </div>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3>How quickly can I get started?</h3>
+                    <p>Most businesses are up and running in under 2 hours. We'll help you connect your data sources, and you can start asking questions immediately. No technical setup required.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>What data sources can I connect?</h3>
+                    <p>DataSense connects to 100+ popular business tools including Shopify, Stripe, QuickBooks, Google Analytics, Salesforce, and more. We can also connect to custom databases and APIs.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Do I need technical skills?</h3>
+                    <p>Not at all! DataSense is designed for business owners, not data scientists. Just ask questions in plain English like "Which products have the highest profit margin?" and get instant answers.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>How does the AI work?</h3>
+                    <p>Our AI continuously analyzes your data to find patterns, anomalies, and opportunities. It learns your business over time and can predict trends, identify risks, and suggest optimizations automatically.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Is my data secure?</h3>
+                    <p>Absolutely. We're SOC 2 compliant, use bank-level encryption, and never share your data. Your information is isolated and protected with enterprise-grade security measures.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>What if I need help?</h3>
+                    <p>Every DataSense account includes dedicated support. Our team will help you set up, train your team, and ensure you're getting maximum value from your data. We're here whenever you need us.</p>
                 </div>
             </div>
         </div>
