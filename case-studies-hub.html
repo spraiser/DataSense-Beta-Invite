@@ -3,305 +3,1149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Real success stories from businesses using DataSense. See measurable ROI, implementation timelines, and transformation results.">
-    <title>DataSense Case Studies - Real Business Transformation Stories</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="case-studies-styles.css">
+    <title>Case Studies Hub - Real Results from Real Businesses | Vibe Analytics</title>
+    <meta name="description" content="Discover how businesses achieve 500%+ ROI with Vibe Analytics. Real case studies, proven results, industry-specific success stories.">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .case-studies-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 80px 20px;
+            text-align: center;
+            color: white;
+        }
+        
+        .hero-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .hero-subtitle {
+            font-size: 20px;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+        
+        .metrics-bar {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .metric-item {
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+        }
+        
+        .metric-label {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
+        .case-study-filters {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin: -40px auto 60px;
+            max-width: 900px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .filter-select {
+            padding: 12px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            min-width: 200px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-select:hover {
+            border-color: #667eea;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .case-studies-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .case-study-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            margin-bottom: 60px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .case-study-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+        }
+        
+        .case-study-header {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            padding: 40px;
+            position: relative;
+        }
+        
+        .company-badge {
+            display: inline-block;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .company-name {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+        
+        .company-challenge {
+            font-size: 18px;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+        
+        .roi-highlight {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            background: #10b981;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 30px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .case-study-content {
+            padding: 40px;
+        }
+        
+        .timeline-section {
+            margin-bottom: 40px;
+        }
+        
+        .timeline-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-weeks {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        .timeline-week {
+            min-width: 200px;
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .week-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+        
+        .week-activity {
+            font-size: 14px;
+            color: #4b5563;
+        }
+        
+        .metrics-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .metric-before, .metric-after {
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .metric-before {
+            background: #fee2e2;
+            border: 2px solid #fca5a5;
+        }
+        
+        .metric-after {
+            background: #d1fae5;
+            border: 2px solid #6ee7b7;
+        }
+        
+        .metric-period {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            opacity: 0.7;
+        }
+        
+        .metric-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .metric-description {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .customer-quote {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 16px;
+            margin: 40px 0;
+            position: relative;
+        }
+        
+        .quote-text {
+            font-size: 20px;
+            font-style: italic;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .quote-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .author-info {
+            flex: 1;
+        }
+        
+        .author-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .author-title {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .discovery-insights {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        
+        .insight-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 15px;
+        }
+        
+        .insight-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .insight-item {
+            display: flex;
+            align-items: start;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .insight-icon {
+            width: 24px;
+            height: 24px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .case-study-actions {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .roi-calculator {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+        
+        .calculator-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+        
+        .calculator-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .calc-input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .calc-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+        
+        .calc-input {
+            padding: 10px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .calc-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .calculator-result {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .result-label {
+            font-size: 14px;
+            color: #065f46;
+            margin-bottom: 10px;
+        }
+        
+        .result-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #065f46;
+        }
+        
+        .similar-results {
+            background: #fef3c7;
+            border: 2px solid #fcd34d;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        
+        .similar-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 15px;
+        }
+        
+        .similar-companies {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .similar-company {
+            background: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #92400e;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 60px 20px;
+            text-align: center;
+            margin-top: 80px;
+            border-radius: 20px;
+        }
+        
+        .cta-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .cta-subtitle {
+            font-size: 18px;
+            color: white;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-btn {
+            padding: 16px 32px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-btn-white {
+            background: white;
+            color: #667eea;
+        }
+        
+        .cta-btn-white:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 32px;
+            }
+            
+            .metrics-bar {
+                gap: 30px;
+            }
+            
+            .case-study-filters {
+                flex-direction: column;
+            }
+            
+            .filter-select {
+                width: 100%;
+            }
+            
+            .metrics-comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            .calculator-inputs {
+                grid-template-columns: 1fr;
+            }
+            
+            .roi-highlight {
+                position: static;
+                display: inline-block;
+                margin-top: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="nav">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <a href="index.html" class="nav-logo-link">
-                    <svg class="nav-logo" viewBox="0 0 32 32" fill="none">
-                        <rect width="32" height="32" rx="8" fill="url(#gradient)"/>
-                        <path d="M8 12h16v8H8z" fill="white" opacity="0.9"/>
-                        <path d="M12 8v16M20 8v16" stroke="white" stroke-width="2" opacity="0.7"/>
-                        <defs>
-                            <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
-                                <stop stop-color="#667eea"/>
-                                <stop offset="1" stop-color="#764ba2"/>
-                            </linearGradient>
-                        </defs>
-                    </svg>
-                    <span class="nav-brand-text">DataSense</span>
-                </a>
-            </div>
-            <div class="nav-menu">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="#" class="nav-link active">Case Studies</a>
-                <a href="index.html#features" class="nav-link">Features</a>
-                <a href="index.html#pricing" class="nav-link">Pricing</a>
-            </div>
-            <div class="nav-actions">
-                <a href="index.html#beta-signup" class="nav-cta">Join Beta</a>
-            </div>
-        </div>
-    </nav>
-
     <!-- Hero Section -->
     <section class="case-studies-hero">
         <div class="container">
-            <!-- Referral Banner (shown when coming from referral) -->
-            <div id="referral-banner" class="referral-banner" style="display: none;">
-                <div class="referral-content">
-                    <span class="referral-icon">🎯</span>
-                    <span id="referral-message">Your referrer achieved similar results</span>
-                </div>
-            </div>
-
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    Real Businesses. Real Results.
-                    <span class="highlight">Verified ROI Stories.</span>
-                </h1>
-                <p class="hero-subtitle">
-                    Discover how businesses like yours are achieving 100-1,450% ROI with DataSense. 
-                    Filter by industry, company size, or results achieved.
-                </p>
-                
-                <!-- Key Metrics Bar -->
-                <div class="metrics-bar">
-                    <div class="metric">
-                        <div class="metric-value">580%</div>
-                        <div class="metric-label">Average ROI</div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-value">30 days</div>
-                        <div class="metric-label">To First Results</div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-value">2 hours</div>
-                        <div class="metric-label">Setup Time</div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-value">500+</div>
-                        <div class="metric-label">Happy Businesses</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Company Matcher Tool -->
-    <section class="company-matcher">
-        <div class="container">
-            <div class="matcher-card">
-                <h2 class="matcher-title">Find Companies Like Yours</h2>
-                <p class="matcher-subtitle">Answer 3 quick questions to see relevant case studies</p>
-                
-                <div class="matcher-form">
-                    <div class="matcher-field">
-                        <label>Your Industry</label>
-                        <select id="matcher-industry">
-                            <option value="">Select industry...</option>
-                            <option value="E-commerce">E-commerce / Retail</option>
-                            <option value="B2B SaaS">B2B SaaS</option>
-                            <option value="Professional Services">Professional Services</option>
-                            <option value="Restaurant Chain">Restaurant / Hospitality</option>
-                            <option value="Healthcare Practice">Healthcare</option>
-                        </select>
-                    </div>
-                    
-                    <div class="matcher-field">
-                        <label>Company Size</label>
-                        <select id="matcher-size">
-                            <option value="">Select size...</option>
-                            <option value="1-10">1-10 employees</option>
-                            <option value="11-50">11-50 employees</option>
-                            <option value="51-200">51-200 employees</option>
-                            <option value="200+">200+ employees</option>
-                        </select>
-                    </div>
-                    
-                    <div class="matcher-field">
-                        <label>Primary Goal</label>
-                        <select id="matcher-goal">
-                            <option value="">Select goal...</option>
-                            <option value="revenue">Increase Revenue</option>
-                            <option value="costs">Reduce Costs</option>
-                            <option value="efficiency">Improve Efficiency</option>
-                            <option value="retention">Improve Retention</option>
-                        </select>
-                    </div>
-                    
-                    <button id="matcher-submit" class="btn btn-primary">
-                        Show Matching Stories
-                    </button>
-                </div>
-                
-                <div id="matcher-results" class="matcher-results" style="display: none;">
-                    <h3>Perfect Matches for You:</h3>
-                    <div id="matcher-recommendations"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Filters Section -->
-    <section class="filters-section">
-        <div class="container">
-            <div class="filters-header">
-                <h2>Browse All Case Studies</h2>
-                <div class="results-count">
-                    Showing <span id="results-count">5</span> success stories
-                </div>
-            </div>
+            <h1 class="hero-title">Real Results from Real Businesses</h1>
+            <p class="hero-subtitle">Discover how companies like yours achieve transformative growth with data-driven insights</p>
             
-            <div class="filters-bar">
-                <div class="filter-group">
-                    <button class="filter-btn active" data-filter="all">
-                        All Stories
-                    </button>
-                    <button class="filter-btn" data-filter="E-commerce">
-                        E-commerce
-                    </button>
-                    <button class="filter-btn" data-filter="B2B SaaS">
-                        B2B SaaS
-                    </button>
-                    <button class="filter-btn" data-filter="Professional Services">
-                        Services
-                    </button>
-                    <button class="filter-btn" data-filter="Restaurant Chain">
-                        Restaurant
-                    </button>
-                    <button class="filter-btn" data-filter="Healthcare Practice">
-                        Healthcare
-                    </button>
+            <div class="metrics-bar">
+                <div class="metric-item">
+                    <span class="metric-value" id="totalBusinesses">127</span>
+                    <div class="metric-label">Businesses Analyzed</div>
                 </div>
-                
-                <div class="filter-dropdowns">
-                    <select id="size-filter" class="filter-select">
-                        <option value="">Company Size</option>
-                        <option value="small">1-50 employees</option>
-                        <option value="medium">51-200 employees</option>
-                        <option value="large">200+ employees</option>
-                    </select>
-                    
-                    <select id="roi-filter" class="filter-select">
-                        <option value="">ROI Achieved</option>
-                        <option value="100-500">100-500% ROI</option>
-                        <option value="500-1000">500-1000% ROI</option>
-                        <option value="1000+">1000%+ ROI</option>
-                    </select>
+                <div class="metric-item">
+                    <span class="metric-value">847%</span>
+                    <div class="metric-label">Average ROI Achieved</div>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-value">4.2</span>
+                    <div class="metric-label">Weeks to First Results</div>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-value">98%</span>
+                    <div class="metric-label">Customer Satisfaction</div>
                 </div>
             </div>
         </div>
     </section>
-
+    
+    <!-- Filter System -->
+    <div class="case-study-filters">
+        <select name="industry" class="filter-select" id="industryFilter">
+            <option value="all">All Industries</option>
+            <option value="ecommerce">E-commerce</option>
+            <option value="saas">B2B SaaS</option>
+            <option value="restaurant">Restaurant</option>
+            <option value="services">Professional Services</option>
+        </select>
+        
+        <select name="company-size" class="filter-select" id="sizeFilter">
+            <option value="all">All Sizes</option>
+            <option value="small">1-50 employees</option>
+            <option value="medium">51-200 employees</option>
+            <option value="large">200+ employees</option>
+        </select>
+        
+        <select name="roi" class="filter-select" id="roiFilter">
+            <option value="all">All ROI</option>
+            <option value="high">500%+ ROI</option>
+            <option value="medium">200-500% ROI</option>
+        </select>
+    </div>
+    
     <!-- Case Studies Grid -->
-    <section class="case-studies-grid">
-        <div class="container">
-            <div id="studies-grid" class="studies-grid">
-                <!-- Case study cards will be dynamically inserted here -->
+    <div class="case-studies-grid">
+        
+        <!-- Case Study 1: Bella Rose Boutique -->
+        <div class="case-study-card" data-industry="ecommerce" data-size="small" data-roi="high">
+            <div class="case-study-header">
+                <span class="company-badge">E-COMMERCE</span>
+                <h2 class="company-name">Bella Rose Boutique</h2>
+                <p class="company-challenge">Challenge: Inventory management and marketing efficiency</p>
+                <div class="roi-highlight">580% ROI</div>
             </div>
-        </div>
-    </section>
-
-    <!-- Comparison Table -->
-    <section class="comparison-section">
-        <div class="container">
-            <h2 class="section-title">Companies Like Yours Are Seeing These Results</h2>
             
-            <div class="comparison-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Company</th>
-                            <th>Industry</th>
-                            <th>Size</th>
-                            <th>Time to ROI</th>
-                            <th>ROI Achieved</th>
-                            <th>Key Metric</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="comparison-tbody">
-                        <!-- Table rows will be dynamically inserted -->
-                    </tbody>
-                </table>
+            <div class="case-study-content">
+                <!-- Timeline Section -->
+                <div class="timeline-section">
+                    <h3 class="timeline-title">Implementation Timeline</h3>
+                    <div class="timeline-weeks">
+                        <div class="timeline-week">
+                            <div class="week-label">WEEK 1</div>
+                            <div class="week-activity">Data integration & initial analysis setup</div>
+                        </div>
+                        <div class="timeline-week">
+                            <div class="week-label">WEEK 2</div>
+                            <div class="week-activity">Product profitability analysis & insights discovery</div>
+                        </div>
+                        <div class="timeline-week">
+                            <div class="week-label">WEEK 3</div>
+                            <div class="week-activity">Marketing optimization & inventory adjustments</div>
+                        </div>
+                        <div class="timeline-week">
+                            <div class="week-label">WEEK 4</div>
+                            <div class="week-activity">Full deployment & team training</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Discovery Insights -->
+                <div class="discovery-insights">
+                    <h3 class="insight-title">Key Discoveries</h3>
+                    <ul class="insight-list">
+                        <li class="insight-item">
+                            <span class="insight-icon">✓</span>
+                            <span>23% of products generated 81% of total profit</span>
+                        </li>
+                        <li class="insight-item">
+                            <span class="insight-icon">✓</span>
+                            <span>Instagram ads had 3.2x higher ROI than Facebook ads for target demographic</span>
+                        </li>
+                        <li class="insight-item">
+                            <span class="insight-icon">✓</span>
+                            <span>Tuesday evening emails had 47% higher conversion than weekend sends</span>
+                        </li>
+                        <li class="insight-item">
+                            <span class="insight-icon">✓</span>
+                            <span>Bundle recommendations increased average order value by 34%</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Metrics Comparison -->
+                <div class="metrics-comparison">
+                    <div class="metric-before">
+                        <div class="metric-period">BEFORE</div>
+                        <div class="metric-number">$47K</div>
+                        <div class="metric-description">Monthly Revenue</div>
+                    </div>
+                    <div class="metric-after">
+                        <div class="metric-period">AFTER</div>
+                        <div class="metric-number">$60K</div>
+                        <div class="metric-description">Monthly Revenue</div>
+                    </div>
+                </div>
+                
+                <!-- Customer Quote -->
+                <div class="customer-quote">
+                    <div class="quote-text">
+                        "Vibe Analytics transformed how we understand our business. We discovered that our bestsellers weren't our most profitable items. After adjusting our inventory and marketing focus, we saw a 28% revenue increase in just 6 weeks."
+                    </div>
+                    <div class="quote-author">
+                        <div class="author-avatar">SR</div>
+                        <div class="author-info">
+                            <div class="author-name">Sarah Rodriguez</div>
+                            <div class="author-title">Founder & CEO, Bella Rose Boutique</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ROI Calculator -->
+                <div class="roi-calculator">
+                    <h3 class="calculator-title">Calculate Your Potential ROI</h3>
+                    <div class="calculator-inputs">
+                        <div class="calc-input-group">
+                            <label class="calc-label">Your Monthly Revenue</label>
+                            <input type="number" class="calc-input" id="revenue1" placeholder="$50,000">
+                        </div>
+                        <div class="calc-input-group">
+                            <label class="calc-label">Number of Products</label>
+                            <input type="number" class="calc-input" id="products1" placeholder="500">
+                        </div>
+                    </div>
+                    <button class="action-btn btn-primary" onclick="calculateROI(1)">Calculate ROI</button>
+                    <div class="calculator-result" id="result1" style="display: none;">
+                        <div class="result-label">Your Potential Annual ROI</div>
+                        <div class="result-value" id="roiValue1">580%</div>
+                    </div>
+                </div>
+                
+                <!-- Similar Results -->
+                <div class="similar-results">
+                    <h3 class="similar-title">Companies like this also achieved:</h3>
+                    <div class="similar-companies">
+                        <span class="similar-company">Fashion Forward Co. - 620% ROI</span>
+                        <span class="similar-company">Urban Style Shop - 490% ROI</span>
+                        <span class="similar-company">Trendy Threads - 710% ROI</span>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="case-study-actions">
+                    <a href="signup.html?ref=casestudy-bella" class="action-btn btn-primary">Get Results Like This</a>
+                    <button class="action-btn btn-secondary" onclick="shareCase('bella')">Share Case Study</button>
+                    <button class="action-btn btn-secondary" onclick="downloadPDF('bella')">Download PDF</button>
+                </div>
             </div>
         </div>
-    </section>
-
+        
+        <!-- Case Study 2: TechFlow Solutions -->
+        <div class="case-study-card" data-industry="saas" data-size="medium" data-roi="high">
+            <div class="case-study-header">
+                <span class="company-badge">B2B SAAS</span>
+                <h2 class="company-name">TechFlow Solutions</h2>
+                <p class="company-challenge">Challenge: High customer churn and retention issues</p>
+                <div class="roi-highlight">1,240% ROI</div>
+            </div>
+            
+            <div class="case-study-content">
+                <!-- Timeline Section -->
+                <div class="timeline-section">
+                    <h3 class="timeline-title">Implementation Timeline</h3>
+                    <div class="timeline-weeks">
+                        <div class="timeline-week">
+                            <div class="week-label">WEEK 1-2</div>
+                            <div class="week-activity">Customer data integration & behavior tracking setup</div>
+                        </div>
+                        <div class="timeline-week">
+                            <div class="week-label">WEEK 3-4</div>
+                            <div class="week-activity">Churn pattern analysis & predictive model development</div>
+                        </div>
+                        <div class="timeline-week">
+                            <div class="week-label">WEEK 5</div>
+                            <div class="week-activity">Early warning system deployment</div>
+                        </div>
+                        <div class="timeline-week">
+                            <div class="week-label">WEEK 6</div>
+                            <div class="week-activity">Customer success team training & process optimization</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Discovery Insights -->
+                <div class="discovery-insights">
+                    <h3 class="insight-title">Key Discoveries</h3>
+                    <ul class="insight-list">
+                        <li class="insight-item">
+                            <span class="insight-icon">✓</span>
+                            <span>Customers who didn't use 3 key features in first 30 days had 78% churn rate</span>
+                        </li>
+                        <li class="insight-item">
+                            <span class="insight-icon">✓</span>
+                            <span>Support ticket resolution time directly correlated with retention (r=0.84)</span>
+                        </li>
+                        <li class="insight-item">
+                            <span class="insight-icon">✓</span>
+                            <span>Enterprise customers needed different onboarding than SMBs</span>
+                        </li>
+                        <li class="insight-item">
+                            <span class="insight-icon">✓</span>
+                            <span>Predictive model identified at-risk customers 45 days before churn</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Metrics Comparison -->
+                <div class="metrics-comparison">
+                    <div class="metric-before">
+                        <div class="metric-period">BEFORE</div>
+                        <div class="metric-number">22%</div>
+                        <div class="metric-description">Annual Churn Rate</div>
+                    </div>
+                    <div class="metric-after">
+                        <div class="metric-period">AFTER</div>
+                        <div class="metric-number">12.5%</div>
+                        <div class="metric-description">Annual Churn Rate</div>
+                    </div>
+                </div>
+                
+                <!-- Customer Quote -->
+                <div class="customer-quote">
+                    <div class="quote-text">
+                        "The predictive churn model was a game-changer. We can now proactively reach out to at-risk customers 45 days before they would typically cancel. This single insight saved us $1.8M in annual recurring revenue."
+                    </div>
+                    <div class="quote-author">
+                        <div class="author-avatar">MC</div>
+                        <div class="author-info">
+                            <div class="author-name">Michael Chen</div>
+                            <div class="author-title">VP of Customer Success, TechFlow Solutions</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ROI Calculator -->
+                <div class="roi-calculator">
+                    <h3 class="calculator-title">Calculate Your Potential Savings</h3>
+                    <div class="calculator-inputs">
+                        <div class="calc-input-group">
+                            <label class="calc-label">Your Annual Revenue</label>
+                            <input type="number" class="calc-input" id="revenue2" placeholder="$5,000,000">
+                        </div>
+                        <div class="calc-input-group">
+                            <label class="calc-label">Current Churn Rate (%)</label>
+                            <input type="number" class="calc-input" id="churn2" placeholder="20">
+                        </div>
+                    </div>
+                    <button class="action-btn btn-primary" onclick="calculateROI(2)">Calculate Savings</button>
+                    <div class="calculator-result" id="result2" style="display: none;">
+                        <div class="result-label">Potential Annual Savings</div>
+                        <div class="result-value" id="roiValue2">$1.8M</div>
+                    </div>
+                </div>
+                
+                <!-- Similar Results -->
+                <div class="similar-results">
+                    <h3 class="similar-title">Companies like this also achieved:</h3>
+                    <div class="similar-companies">
+                        <span class="similar-company">CloudSync Pro - 1,100% ROI</span>
+                        <span class="similar-company">DataStream Inc - 980% ROI</span>
+                        <span class="similar-company">WorkflowHub - 1,450% ROI</span>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="case-study-actions">
+                    <a href="signup.html?ref=casestudy-techflow" class="action-btn btn-primary">Reduce Your Churn</a>
+                    <button class="action-btn btn-secondary" onclick="shareCase('techflow')">Share Case Study</button>
+                    <button class="action-btn btn-secondary" onclick="downloadPDF('techflow')">Download PDF</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Case Study 3: Harvest Table -->
+        <div class="case-study-card" data-industry="restaurant" data-size="small" data-roi="high">
+            <div class="case-study-header">
+                <span class="company-badge">RESTAURANT</span>
+                <h2 class="company-name">Harvest Table</h2>
+                <p class="company-challenge">Challenge: Food costs and menu optimization</p>
+                <div class="roi-highlight">920% ROI</div>
+            </div>
+            
+            <div class="case-study-content">
+                <!-- Timeline Section -->
+                <div class="timeline-section">
+                    <h3 class="timeline-title">Implementation Timeline</h3>
+                    <div class="timeline-weeks">
+                        <div class="timeline-week">
+                            <div class="week-label">WEEK 1</div>
+                            <div class="week-activity">POS integration & sales data analysis</div>
+                        </div>
+                        <div class="timeline-week">
+                            <div class="week-label">WEEK 2</div>
+                            <div class="week-activity">Menu item profitability analysis</div>
+                        </div>
+                        <div class="timeline-week">
+                            <div class="week-label">WEEK 3</div>
+                            <div class="week-activity">Menu redesign & pricing optimization</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Discovery Insights -->
+                <div class="discovery-insights">
+                    <h3 class="insight-title">Key Discoveries</h3>
+                    <ul class="insight-list">
+                        <li class="insight-item">
+                            <span class="insight-icon">✓</span>
+                            <span>Popular appetizers had 40% lower profit margins than assumed</span>
+                        </li>
+                        <li class="insight-item">
+                            <span class="insight-icon">✓</span>
+                            <span>Menu engineering identified 8 items to promote for 65% higher margins</span>
+                        </li>
+                        <li class="insight-item">
+                            <span class="insight-icon">✓</span>
+                            <span>Weekend specials were cannibalizing higher-margin regular items</span>
+                        </li>
+                        <li class="insight-item">
+                            <span class="insight-icon">✓</span>
+                            <span>Strategic menu placement increased high-margin item sales by 52%</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Metrics Comparison -->
+                <div class="metrics-comparison">
+                    <div class="metric-before">
+                        <div class="metric-period">BEFORE</div>
+                        <div class="metric-number">18%</div>
+                        <div class="metric-description">Profit Margin</div>
+                    </div>
+                    <div class="metric-after">
+                        <div class="metric-period">AFTER</div>
+                        <div class="metric-number">23.6%</div>
+                        <div class="metric-description">Profit Margin</div>
+                    </div>
+                </div>
+                
+                <!-- Customer Quote -->
+                <div class="customer-quote">
+                    <div class="quote-text">
+                        "We thought our bestsellers were our money-makers, but the data showed otherwise. After redesigning our menu based on actual profitability data, our profits increased by 31% without raising most prices."
+                    </div>
+                    <div class="quote-author">
+                        <div class="author-avatar">JM</div>
+                        <div class="author-info">
+                            <div class="author-name">James Mitchell</div>
+                            <div class="author-title">Owner, Harvest Table</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ROI Calculator -->
+                <div class="roi-calculator">
+                    <h3 class="calculator-title">Calculate Your Menu Optimization Potential</h3>
+                    <div class="calculator-inputs">
+                        <div class="calc-input-group">
+                            <label class="calc-label">Monthly Revenue</label>
+                            <input type="number" class="calc-input" id="revenue3" placeholder="$150,000">
+                        </div>
+                        <div class="calc-input-group">
+                            <label class="calc-label">Current Profit Margin (%)</label>
+                            <input type="number" class="calc-input" id="margin3" placeholder="15">
+                        </div>
+                    </div>
+                    <button class="action-btn btn-primary" onclick="calculateROI(3)">Calculate Impact</button>
+                    <div class="calculator-result" id="result3" style="display: none;">
+                        <div class="result-label">Potential Monthly Profit Increase</div>
+                        <div class="result-value" id="roiValue3">$11,250</div>
+                    </div>
+                </div>
+                
+                <!-- Similar Results -->
+                <div class="similar-results">
+                    <h3 class="similar-title">Companies like this also achieved:</h3>
+                    <div class="similar-companies">
+                        <span class="similar-company">City Bistro - 850% ROI</span>
+                        <span class="similar-company">The Grove Restaurant - 1,020% ROI</span>
+                        <span class="similar-company">Sunset Grill - 780% ROI</span>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="case-study-actions">
+                    <a href="signup.html?ref=casestudy-harvest" class="action-btn btn-primary">Optimize Your Menu</a>
+                    <button class="action-btn btn-secondary" onclick="shareCase('harvest')">Share Case Study</button>
+                    <button class="action-btn btn-secondary" onclick="downloadPDF('harvest')">Download PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- CTA Section -->
-    <section class="case-studies-cta">
-        <div class="container">
-            <div class="cta-card">
-                <h2>Ready to Write Your Success Story?</h2>
-                <p>Join 500+ businesses already transforming with DataSense</p>
-                
-                <div class="cta-features">
-                    <div class="cta-feature">
-                        <span class="feature-icon">✓</span>
-                        <span>Free 30-day trial</span>
-                    </div>
-                    <div class="cta-feature">
-                        <span class="feature-icon">✓</span>
-                        <span>Setup in 2 hours</span>
-                    </div>
-                    <div class="cta-feature">
-                        <span class="feature-icon">✓</span>
-                        <span>ROI in 30 days</span>
-                    </div>
-                </div>
-                
-                <div class="cta-actions">
-                    <a href="index.html#beta-signup" class="btn btn-primary btn-large">
-                        Start Your Free Trial
-                    </a>
-                    <button id="schedule-similar-customer" class="btn btn-secondary btn-large">
-                        Talk to a Similar Customer
-                    </button>
-                </div>
-            </div>
+    <section class="cta-section">
+        <h2 class="cta-title">Ready to Write Your Success Story?</h2>
+        <p class="cta-subtitle">Join 127+ businesses achieving transformative results with Vibe Analytics</p>
+        <div class="cta-buttons">
+            <a href="signup.html?ref=casestudies-cta" class="cta-btn cta-btn-white">Start Your Free Trial</a>
+            <a href="demo.html?ref=casestudies" class="cta-btn cta-btn-white">Book a Demo</a>
         </div>
     </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <div class="footer-logo">DataSense</div>
-                    <p>Enterprise insights for small business</p>
-                </div>
-                
-                <div class="footer-links">
-                    <div class="footer-column">
-                        <h4>Product</h4>
-                        <a href="index.html#features">Features</a>
-                        <a href="index.html#pricing">Pricing</a>
-                        <a href="#">Case Studies</a>
-                    </div>
-                    
-                    <div class="footer-column">
-                        <h4>Company</h4>
-                        <a href="#">About</a>
-                        <a href="#">Blog</a>
-                        <a href="#">Contact</a>
-                    </div>
-                    
-                    <div class="footer-column">
-                        <h4>Legal</h4>
-                        <a href="#">Privacy</a>
-                        <a href="#">Terms</a>
-                        <a href="#">Security</a>
-                    </div>
-                </div>
-            </div>
+    
+    <script>
+        // Get URL parameters
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+        
+        // Set filters based on URL parameters
+        window.addEventListener('DOMContentLoaded', function() {
+            const industryParam = getUrlParameter('industry');
+            const roiParam = getUrlParameter('roi');
+            const refParam = getUrlParameter('ref');
             
-            <div class="footer-bottom">
-                <p>&copy; 2024 DataSense. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script type="module" src="case-studies-hub.js"></script>
+            if (industryParam) {
+                document.getElementById('industryFilter').value = industryParam;
+            }
+            if (roiParam) {
+                document.getElementById('roiFilter').value = roiParam;
+            }
+            
+            // Track referral source
+            if (refParam) {
+                console.log('Referral source:', refParam);
+                // Track this in analytics
+            }
+            
+            // Apply initial filter
+            filterCaseStudies();
+            
+            // Animate counter
+            animateCounter();
+        });
+        
+        // Filter functionality
+        document.getElementById('industryFilter').addEventListener('change', filterCaseStudies);
+        document.getElementById('sizeFilter').addEventListener('change', filterCaseStudies);
+        document.getElementById('roiFilter').addEventListener('change', filterCaseStudies);
+        
+        function filterCaseStudies() {
+            const industry = document.getElementById('industryFilter').value;
+            const size = document.getElementById('sizeFilter').value;
+            const roi = document.getElementById('roiFilter').value;
+            
+            const cards = document.querySelectorAll('.case-study-card');
+            let visibleCount = 0;
+            
+            cards.forEach(card => {
+                let show = true;
+                
+                if (industry !== 'all' && card.dataset.industry !== industry) {
+                    show = false;
+                }
+                if (size !== 'all' && card.dataset.size !== size) {
+                    show = false;
+                }
+                if (roi !== 'all' && card.dataset.roi !== roi) {
+                    show = false;
+                }
+                
+                if (show) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+            
+            // Update URL without reload
+            const params = new URLSearchParams();
+            if (industry !== 'all') params.set('industry', industry);
+            if (size !== 'all') params.set('size', size);
+            if (roi !== 'all') params.set('roi', roi);
+            
+            const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
+            history.pushState(null, '', newUrl);
+        }
+        
+        // ROI Calculator functions
+        function calculateROI(caseNum) {
+            const resultDiv = document.getElementById(`result${caseNum}`);
+            const roiValueDiv = document.getElementById(`roiValue${caseNum}`);
+            
+            if (caseNum === 1) {
+                const revenue = parseFloat(document.getElementById('revenue1').value) || 50000;
+                const products = parseFloat(document.getElementById('products1').value) || 500;
+                const potentialIncrease = revenue * 0.28; // 28% increase like Bella Rose
+                const annualROI = (potentialIncrease * 12 / 2500) * 100; // Assuming $2500 investment
+                roiValueDiv.textContent = Math.round(annualROI) + '%';
+            } else if (caseNum === 2) {
+                const revenue = parseFloat(document.getElementById('revenue2').value) || 5000000;
+                const churn = parseFloat(document.getElementById('churn2').value) || 20;
+                const reducedChurn = churn * 0.43; // 43% reduction like TechFlow
+                const savedRevenue = revenue * (reducedChurn / 100);
+                roiValueDiv.textContent = '$' + (savedRevenue / 1000000).toFixed(1) + 'M';
+            } else if (caseNum === 3) {
+                const revenue = parseFloat(document.getElementById('revenue3').value) || 150000;
+                const margin = parseFloat(document.getElementById('margin3').value) || 15;
+                const newMargin = margin * 1.31; // 31% increase like Harvest Table
+                const additionalProfit = revenue * ((newMargin - margin) / 100);
+                roiValueDiv.textContent = '$' + Math.round(additionalProfit).toLocaleString();
+            }
+            
+            resultDiv.style.display = 'block';
+            
+            // Track calculator usage
+            console.log(`ROI calculated for case ${caseNum}`);
+        }
+        
+        // Share functionality
+        function shareCase(caseName) {
+            const url = window.location.href;
+            const text = `Check out this amazing case study from Vibe Analytics: ${caseName}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Vibe Analytics Case Study',
+                    text: text,
+                    url: url
+                });
+            } else {
+                // Fallback to copying link
+                navigator.clipboard.writeText(url);
+                alert('Link copied to clipboard!');
+            }
+        }
+        
+        // PDF download functionality
+        function downloadPDF(caseName) {
+            // In production, this would generate/download actual PDF
+            console.log(`Downloading PDF for ${caseName}`);
+            alert(`PDF download for ${caseName} case study initiated. Check your downloads folder.`);
+            
+            // Track download
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'download', {
+                    'event_category': 'case_study',
+                    'event_label': caseName
+                });
+            }
+        }
+        
+        // Animate counter on load
+        function animateCounter() {
+            const counter = document.getElementById('totalBusinesses');
+            const target = 127;
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                counter.textContent = Math.round(current);
+            }, 30);
+        }
+        
+        // Track scroll depth
+        let maxScroll = 0;
+        window.addEventListener('scroll', function() {
+            const scrollPercentage = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            if (scrollPercentage > maxScroll) {
+                maxScroll = scrollPercentage;
+                if (maxScroll > 25 && maxScroll < 26) {
+                    console.log('User scrolled 25% of page');
+                } else if (maxScroll > 50 && maxScroll < 51) {
+                    console.log('User scrolled 50% of page');
+                } else if (maxScroll > 75 && maxScroll < 76) {
+                    console.log('User scrolled 75% of page');
+                }
+            }
+        });
+        
+        // Track time on page
+        const startTime = Date.now();
+        window.addEventListener('beforeunload', function() {
+            const timeOnPage = Math.round((Date.now() - startTime) / 1000);
+            console.log(`Time on page: ${timeOnPage} seconds`);
+        });
+    </script>
 </body>
 </html>
