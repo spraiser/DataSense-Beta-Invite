@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataSense - Personalized Onboarding Experience</title>
+    <meta name="description" content="Get started with DataSense in minutes. Personalized onboarding path based on your specific business needs.">
+    
+    <link rel="stylesheet" href="onboarding-styles.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="onboarding-header">
+        <div class="header-container">
+            <div class="logo">
+                <img src="logo.svg" alt="DataSense" width="150">
+            </div>
+            <div class="header-progress">
+                <span id="progress-text">Getting Started</span>
+                <div class="progress-indicator">
+                    <div class="progress-fill" id="header-progress-fill"></div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="help-btn" onclick="openHelp()">
+                    <span>Need Help?</span>
+                </button>
+                <button class="save-btn" onclick="saveProgress()">
+                    <span>Save & Exit</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="onboarding-main">
+        <div class="onboarding-container">
+            <div id="welcome-section" class="onboarding-section active">
+                <div class="welcome-content">
+                    <h1 class="welcome-title">Welcome to DataSense! 🎯</h1>
+                    <p class="welcome-subtitle">Let's create your personalized path to data-driven success</p>
+                    
+                    <div class="value-props">
+                        <div class="value-prop">
+                            <span class="value-icon">⏱️</span>
+                            <h3>30-Minute Value</h3>
+                            <p>See your first insight in 30 minutes or we'll help you personally</p>
+                        </div>
+                        <div class="value-prop">
+                            <span class="value-icon">🎯</span>
+                            <h3>Personalized Path</h3>
+                            <p>Custom onboarding based on your industry and goals</p>
+                        </div>
+                        <div class="value-prop">
+                            <span class="value-icon">🤝</span>
+                            <h3>Expert Support</h3>
+                            <p>Dedicated specialist to ensure your success</p>
+                        </div>
+                    </div>
+                    
+                    <div class="onboarding-options">
+                        <h2>How would you like to get started?</h2>
+                        <div class="options-grid">
+                            <div class="option-card" onclick="startQuiz()">
+                                <span class="option-icon">📋</span>
+                                <h3>Take the Quiz</h3>
+                                <p>2-minute personalized assessment</p>
+                                <span class="option-time">Recommended</span>
+                            </div>
+                            <div class="option-card" onclick="quickStart()">
+                                <span class="option-icon">🚀</span>
+                                <h3>Quick Start</h3>
+                                <p>Jump right in with defaults</p>
+                                <span class="option-time">Fastest</span>
+                            </div>
+                            <div class="option-card" onclick="scheduleDemo()">
+                                <span class="option-icon">👨‍💼</span>
+                                <h3>Guided Demo</h3>
+                                <p>Personal walkthrough with expert</p>
+                                <span class="option-time">Most thorough</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="onboarding-quiz" class="onboarding-section"></div>
+
+            <div id="onboarding-path" class="onboarding-section"></div>
+
+            <div id="recommendations" class="onboarding-section"></div>
+
+            <div id="quick-wins" class="onboarding-section">
+                <h2>🏆 Quick Wins - See Value Immediately</h2>
+                <div class="quick-wins-grid">
+                    <div class="quick-win-card">
+                        <h3>Connect Your Data</h3>
+                        <p>Link your most important data source</p>
+                        <button onclick="connectData()">Connect Now</button>
+                        <span class="time-estimate">~5 minutes</span>
+                    </div>
+                    <div class="quick-win-card">
+                        <h3>Run First Query</h3>
+                        <p>Get your first actionable insight</p>
+                        <button onclick="runFirstQuery()">Try It</button>
+                        <span class="time-estimate">~2 minutes</span>
+                    </div>
+                    <div class="quick-win-card">
+                        <h3>Create Dashboard</h3>
+                        <p>Build your first visual report</p>
+                        <button onclick="createDashboard()">Start Building</button>
+                        <span class="time-estimate">~10 minutes</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="success-stories" class="onboarding-section">
+                <h2>💪 Success Stories from Companies Like Yours</h2>
+                <div class="stories-carousel">
+                    <div class="story-card">
+                        <div class="story-header">
+                            <img src="avatar-sarah.jpg" alt="Sarah" class="story-avatar">
+                            <div class="story-meta">
+                                <h4>Sarah Johnson</h4>
+                                <p>E-commerce Store Owner</p>
+                            </div>
+                        </div>
+                        <blockquote>
+                            "Found $50K in hidden revenue opportunities in my first week. The automated reports alone save me 10 hours weekly."
+                        </blockquote>
+                        <div class="story-metrics">
+                            <span>3x ROI</span>
+                            <span>10 hrs/week saved</span>
+                            <span>45% growth</span>
+                        </div>
+                    </div>
+                    <div class="story-card">
+                        <div class="story-header">
+                            <img src="avatar-mike.jpg" alt="Mike" class="story-avatar">
+                            <div class="story-meta">
+                                <h4>Mike Chen</h4>
+                                <p>SaaS Founder</p>
+                            </div>
+                        </div>
+                        <blockquote>
+                            "Reduced churn by 40% using the predictive insights. DataSense paid for itself in the first month."
+                        </blockquote>
+                        <div class="story-metrics">
+                            <span>40% less churn</span>
+                            <span>2x LTV</span>
+                            <span>$100K saved</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <aside class="onboarding-sidebar">
+            <div class="sidebar-section">
+                <h3>Your Progress</h3>
+                <div class="progress-checklist">
+                    <div class="checklist-item" id="check-welcome">
+                        <span class="check-icon">○</span>
+                        <span>Welcome & Setup</span>
+                    </div>
+                    <div class="checklist-item" id="check-quiz">
+                        <span class="check-icon">○</span>
+                        <span>Personalization Quiz</span>
+                    </div>
+                    <div class="checklist-item" id="check-path">
+                        <span class="check-icon">○</span>
+                        <span>Choose Your Path</span>
+                    </div>
+                    <div class="checklist-item" id="check-connect">
+                        <span class="check-icon">○</span>
+                        <span>Connect Data</span>
+                    </div>
+                    <div class="checklist-item" id="check-insight">
+                        <span class="check-icon">○</span>
+                        <span>First Insight</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>⏱️ Time to Value</h3>
+                <div class="time-tracker">
+                    <div class="time-display">
+                        <span id="time-elapsed">0</span>
+                        <span class="time-unit">minutes</span>
+                    </div>
+                    <p class="time-goal">Goal: First insight in 30 min</p>
+                    <div class="time-progress">
+                        <div class="time-progress-fill" id="time-progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>🎯 Achievements</h3>
+                <div class="achievements-grid">
+                    <div class="achievement locked" title="Complete onboarding">
+                        <span class="achievement-icon">🎓</span>
+                    </div>
+                    <div class="achievement locked" title="Connect first data source">
+                        <span class="achievement-icon">🔗</span>
+                    </div>
+                    <div class="achievement locked" title="Run first query">
+                        <span class="achievement-icon">🔍</span>
+                    </div>
+                    <div class="achievement locked" title="Create first dashboard">
+                        <span class="achievement-icon">📊</span>
+                    </div>
+                    <div class="achievement locked" title="Invite team member">
+                        <span class="achievement-icon">👥</span>
+                    </div>
+                    <div class="achievement locked" title="Set up automation">
+                        <span class="achievement-icon">⚡</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>💬 Live Support</h3>
+                <div class="support-card">
+                    <p>Your success specialist is ready to help!</p>
+                    <button class="chat-btn" onclick="startChat()">
+                        Start Chat
+                    </button>
+                    <button class="call-btn" onclick="scheduleCall()">
+                        Schedule Call
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <div id="help-modal" class="modal">
+        <div class="modal-content">
+            <h2>How Can We Help?</h2>
+            <div class="help-options">
+                <button onclick="watchVideo()">📹 Watch Tutorial</button>
+                <button onclick="readDocs()">📚 Read Documentation</button>
+                <button onclick="startChat()">💬 Chat with Expert</button>
+                <button onclick="scheduleCall()">📞 Schedule Call</button>
+            </div>
+            <button class="modal-close" onclick="closeHelp()">Close</button>
+        </div>
+    </div>
+
+    <div id="notification-container"></div>
+
+    <script src="onboarding-quiz.js"></script>
+    <script src="onboarding-path.js"></script>
+    <script src="onboarding-recommendations.js"></script>
+    <script src="onboarding-referral.js"></script>
+    <script>
+        let startTime = Date.now();
+        let timeInterval;
+
+        function init() {
+            updateTimeTracker();
+            checkReferral();
+            loadSavedProgress();
+            
+            timeInterval = setInterval(updateTimeTracker, 60000);
+        }
+
+        function updateTimeTracker() {
+            const elapsed = Math.floor((Date.now() - startTime) / 60000);
+            document.getElementById('time-elapsed').textContent = elapsed;
+            
+            const progress = Math.min(100, (elapsed / 30) * 100);
+            document.getElementById('time-progress-fill').style.width = progress + '%';
+            
+            if (elapsed === 30 && !hasFirstInsight()) {
+                showValueGuarantee();
+            }
+        }
+
+        function hasFirstInsight() {
+            const progress = JSON.parse(localStorage.getItem('datasense_onboarding_progress') || '{}');
+            return progress.firstInsightTime !== undefined;
+        }
+
+        function showValueGuarantee() {
+            showNotification('🎯 30-Minute Guarantee: Let us help you find your first insight!', 'guarantee');
+            setTimeout(() => startChat(), 3000);
+        }
+
+        function checkReferral() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('ref') || urlParams.get('referral')) {
+                window.DataSenseReferralOnboarding.init();
+            }
+        }
+
+        function loadSavedProgress() {
+            const savedProgress = localStorage.getItem('datasense_onboarding_progress');
+            if (savedProgress) {
+                const progress = JSON.parse(savedProgress);
+                updateChecklist(progress);
+                updateAchievements(progress);
+            }
+        }
+
+        function updateChecklist(progress) {
+            if (progress.welcomeCompleted) checkItem('check-welcome');
+            if (progress.quizCompleted) checkItem('check-quiz');
+            if (progress.pathChosen) checkItem('check-path');
+            if (progress.dataConnected) checkItem('check-connect');
+            if (progress.firstInsight) checkItem('check-insight');
+        }
+
+        function checkItem(itemId) {
+            const item = document.getElementById(itemId);
+            if (item) {
+                item.classList.add('completed');
+                item.querySelector('.check-icon').textContent = '✓';
+            }
+        }
+
+        function updateAchievements(progress) {
+            const achievements = document.querySelectorAll('.achievement');
+            if (progress.dataConnected) achievements[1]?.classList.remove('locked');
+            if (progress.firstQuery) achievements[2]?.classList.remove('locked');
+            if (progress.dashboardCreated) achievements[3]?.classList.remove('locked');
+            if (progress.teamInvited) achievements[4]?.classList.remove('locked');
+            if (progress.automationSetup) achievements[5]?.classList.remove('locked');
+        }
+
+        function startQuiz() {
+            document.getElementById('welcome-section').classList.remove('active');
+            document.getElementById('onboarding-quiz').classList.add('active');
+            window.DataSenseOnboardingQuiz.init();
+            checkItem('check-welcome');
+            updateProgress('welcomeCompleted', true);
+        }
+
+        function quickStart() {
+            const defaultProfile = {
+                role: 'owner',
+                industry: 'services',
+                urgency: 'week',
+                teamSize: 3,
+                recommendedTrack: 'guided'
+            };
+            
+            window.DataSenseOnboardingPath.generatePath(defaultProfile);
+            document.getElementById('welcome-section').classList.remove('active');
+            document.getElementById('onboarding-path').classList.add('active');
+            checkItem('check-welcome');
+            checkItem('check-quiz');
+            checkItem('check-path');
+            updateProgress('welcomeCompleted', true);
+            updateProgress('pathChosen', true);
+        }
+
+        function scheduleDemo() {
+            window.open('https://calendly.com/datasense/demo', '_blank');
+        }
+
+        function connectData() {
+            console.log('Opening data connection flow...');
+            window.location.href = '/app/integrations';
+        }
+
+        function runFirstQuery() {
+            console.log('Opening query builder...');
+            window.location.href = '/app/query';
+        }
+
+        function createDashboard() {
+            console.log('Opening dashboard builder...');
+            window.location.href = '/app/dashboards/new';
+        }
+
+        function startChat() {
+            if (window.Intercom) {
+                window.Intercom('show');
+            } else {
+                console.log('Opening chat...');
+            }
+        }
+
+        function scheduleCall() {
+            window.open('https://calendly.com/datasense/onboarding', '_blank');
+        }
+
+        function watchVideo() {
+            window.open('/tutorials/getting-started', '_blank');
+        }
+
+        function readDocs() {
+            window.open('/docs', '_blank');
+        }
+
+        function openHelp() {
+            document.getElementById('help-modal').classList.add('active');
+        }
+
+        function closeHelp() {
+            document.getElementById('help-modal').classList.remove('active');
+        }
+
+        function saveProgress() {
+            const progress = {
+                timestamp: Date.now(),
+                currentSection: document.querySelector('.onboarding-section.active')?.id,
+                quizResponses: window.DataSenseOnboardingQuiz?.responses,
+                path: window.DataSenseOnboardingPath?.currentPath
+            };
+            
+            localStorage.setItem('datasense_onboarding_saved', JSON.stringify(progress));
+            showNotification('Progress saved! You can continue anytime.', 'success');
+        }
+
+        function updateProgress(key, value) {
+            const progress = JSON.parse(localStorage.getItem('datasense_onboarding_progress') || '{}');
+            progress[key] = value;
+            localStorage.setItem('datasense_onboarding_progress', JSON.stringify(progress));
+        }
+
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            container.appendChild(notification);
+            
+            setTimeout(() => notification.remove(), 5000);
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+
+        window.addEventListener('beforeunload', (e) => {
+            const progress = JSON.parse(localStorage.getItem('datasense_onboarding_progress') || '{}');
+            if (!progress.completed && Object.keys(progress).length > 0) {
+                e.preventDefault();
+                e.returnValue = 'Your onboarding progress will be saved. You can continue anytime!';
+            }
+        });
+    </script>
+</body>
+</html>
