@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fallback Triggers - DataSense Analytics</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 300vh; /* Make page scrollable for scroll depth test */
+            color: white;
+            padding: 40px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .test-section h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+        
+        .test-section p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .status.pending {
+            background: #ffa500;
+            color: white;
+        }
+        
+        .status.triggered {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .form-test {
+            margin-top: 20px;
+        }
+        
+        .form-test input {
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            width: 300px;
+        }
+        
+        .form-test input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .scroll-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            z-index: 100;
+        }
+        
+        .timer-display {
+            margin-top: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        /* Exit Popup Styles */
+        #exit-popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        #exit-popup {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s ease-out;
+        }
+        
+        #exit-popup h2 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        
+        #exit-popup p {
+            color: #666;
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        #exit-popup .trigger-info {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        #exit-popup .trigger-info strong {
+            color: #764ba2;
+        }
+        
+        #exit-popup-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 30px;
+            color: #999;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+        }
+        
+        #exit-popup-close:hover {
+            color: #666;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translate(-50%, -40%);
+            }
+            to { 
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+        
+        .reset-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #dc2626;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        
+        .reset-btn:hover {
+            background: #b91c1c;
+        }
+        
+        .instructions {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .instructions h2 {
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+        
+        .instructions ol {
+            margin-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Exit Intent Fallback Triggers Test</h1>
+        
+        <div class="instructions">
+            <h2>📋 Testing Instructions</h2>
+            <ol>
+                <li><strong>Inactivity Trigger:</strong> Wait 30 seconds without moving mouse or typing</li>
+                <li><strong>Scroll Depth Trigger:</strong> Scroll down to 70% of the page</li>
+                <li><strong>Form Abandonment:</strong> Click in the email field, then click elsewhere without typing</li>
+                <li><strong>Mouse Leave:</strong> Move mouse to top of window (may not work on file://)</li>
+                <li><strong>Reset:</strong> Use the red button at bottom-right to reset and test again</li>
+            </ol>
+        </div>
+        
+        <div class="test-section">
+            <h2>⏱️ Test 1: Inactivity Trigger</h2>
+            <p>Don't move your mouse or type for 30 seconds to trigger the popup.</p>
+            <p>Status: <span class="status pending" id="inactivity-status">Waiting...</span></p>
+            <div class="timer-display" id="inactivity-timer">30s</div>
+        </div>
+        
+        <div class="test-section">
+            <h2>📜 Test 2: Scroll Depth Trigger</h2>
+            <p>Scroll down to 70% of the page to trigger the popup.</p>
+            <p>Current scroll depth: <span id="scroll-percent">0%</span></p>
+            <p>Status: <span class="status pending" id="scroll-status">Waiting for 70%...</span></p>
+        </div>
+        
+        <div class="test-section">
+            <h2>📝 Test 3: Form Abandonment Trigger</h2>
+            <p>Click in the email field below, then click elsewhere without typing anything.</p>
+            <p>The popup will trigger 3 seconds after you leave the field empty.</p>
+            <p>Status: <span class="status pending" id="form-status">Waiting...</span></p>
+            <div class="form-test">
+                <input type="email" placeholder="Enter your email..." id="test-email">
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🖱️ Test 4: Mouse Leave Trigger</h2>
+            <p>Move your mouse cursor to the very top of the browser window to leave the page.</p>
+            <p>Status: <span class="status pending" id="mouse-status">Waiting...</span></p>
+        </div>
+        
+        <!-- Spacer for scroll test -->
+        <div style="height: 200vh; padding-top: 100px;">
+            <div class="test-section">
+                <h2>⬇️ Keep Scrolling...</h2>
+                <p>You're getting closer to 70% scroll depth!</p>
+                <p style="font-size: 48px; margin-top: 20px;">👇</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator">
+        <strong>Scroll Depth:</strong>
+        <div id="scroll-indicator-percent" style="font-size: 24px; color: #ffd700; margin-top: 5px;">0%</div>
+    </div>
+    
+    <!-- Reset Button -->
+    <button class="reset-btn" onclick="resetTest()">🔄 Reset Test</button>
+    
+    <!-- Exit Intent Popup -->
+    <div id="exit-popup-overlay">
+        <div id="exit-popup">
+            <button id="exit-popup-close">&times;</button>
+            <h2>🎉 Exit Intent Triggered!</h2>
+            <div class="trigger-info">
+                <strong>Trigger Type:</strong> <span id="trigger-type">Unknown</span>
+            </div>
+            <p>The exit intent popup was successfully triggered using one of the fallback methods. This ensures your visitors will see important messages even if the primary trigger fails.</p>
+            <button class="btn" onclick="document.getElementById('exit-popup-overlay').style.display='none'">Got it!</button>
+        </div>
+    </div>
+    
+    <!-- Include the main script -->
+    <script src="script-professional.js"></script>
+    
+    <!-- Test monitoring script -->
+    <script>
+        // Monitor inactivity timer
+        let inactivityCountdown = 30;
+        let countdownInterval;
+        
+        function startInactivityCountdown() {
+            clearInterval(countdownInterval);
+            inactivityCountdown = 30;
+            document.getElementById('inactivity-timer').textContent = inactivityCountdown + 's';
+            
+            countdownInterval = setInterval(() => {
+                inactivityCountdown--;
+                if (inactivityCountdown >= 0) {
+                    document.getElementById('inactivity-timer').textContent = inactivityCountdown + 's';
+                } else {
+                    clearInterval(countdownInterval);
+                }
+            }, 1000);
+        }
+        
+        // Reset countdown on activity
+        ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(event => {
+            document.addEventListener(event, () => {
+                startInactivityCountdown();
+            }, true);
+        });
+        
+        startInactivityCountdown();
+        
+        // Monitor scroll depth
+        window.addEventListener('scroll', () => {
+            const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+            document.getElementById('scroll-percent').textContent = scrollPercent + '%';
+            document.getElementById('scroll-indicator-percent').textContent = scrollPercent + '%';
+            
+            if (scrollPercent >= 70) {
+                document.getElementById('scroll-status').textContent = 'Triggered at ' + scrollPercent + '%';
+                document.getElementById('scroll-status').className = 'status triggered';
+            }
+        });
+        
+        // Monitor form interaction
+        const emailField = document.getElementById('test-email');
+        let formFocused = false;
+        
+        emailField.addEventListener('focus', () => {
+            formFocused = true;
+            document.getElementById('form-status').textContent = 'Field focused...';
+        });
+        
+        emailField.addEventListener('blur', () => {
+            if (formFocused && !emailField.value) {
+                document.getElementById('form-status').textContent = 'Waiting 3s...';
+                setTimeout(() => {
+                    if (!emailField.value) {
+                        document.getElementById('form-status').textContent = 'Triggered!';
+                        document.getElementById('form-status').className = 'status triggered';
+                    }
+                }, 3000);
+            }
+        });
+        
+        // Monitor mouse leave
+        document.addEventListener('mouseleave', (e) => {
+            if (e.clientY <= 0) {
+                document.getElementById('mouse-status').textContent = 'Triggered!';
+                document.getElementById('mouse-status').className = 'status triggered';
+            }
+        });
+        
+        // Override showExitPopup to display trigger type
+        const originalShowExitPopup = window.showExitPopup;
+        if (typeof originalShowExitPopup === 'function') {
+            window.showExitPopup = function(triggerType) {
+                // Update trigger display
+                const triggerTypeElement = document.getElementById('trigger-type');
+                if (triggerTypeElement) {
+                    const triggerLabels = {
+                        'inactivity_30s': '⏱️ 30 Seconds of Inactivity',
+                        'scroll_depth_70': '📜 70% Scroll Depth',
+                        'form_abandonment': '📝 Form Abandonment',
+                        'mouse_leave': '🖱️ Mouse Leave',
+                        'mouse_out': '🖱️ Mouse Out',
+                        'mobile_scroll': '📱 Mobile Scroll',
+                        'mobile_back_button': '📱 Back Button',
+                        'touch_swipe': '👆 Touch Swipe',
+                        'escape_key': '⌨️ Escape Key',
+                        'tab_visibility': '👁️ Tab Visibility Change',
+                        'test_button': '🔴 Test Button'
+                    };
+                    triggerTypeElement.textContent = triggerLabels[triggerType] || triggerType || 'Unknown';
+                    
+                    // Update status indicators
+                    if (triggerType === 'inactivity_30s') {
+                        document.getElementById('inactivity-status').textContent = 'Triggered!';
+                        document.getElementById('inactivity-status').className = 'status triggered';
+                    } else if (triggerType === 'scroll_depth_70') {
+                        document.getElementById('scroll-status').textContent = 'Triggered!';
+                        document.getElementById('scroll-status').className = 'status triggered';
+                    } else if (triggerType === 'form_abandonment') {
+                        document.getElementById('form-status').textContent = 'Triggered!';
+                        document.getElementById('form-status').className = 'status triggered';
+                    } else if (triggerType === 'mouse_leave' || triggerType === 'mouse_out') {
+                        document.getElementById('mouse-status').textContent = 'Triggered!';
+                        document.getElementById('mouse-status').className = 'status triggered';
+                    }
+                }
+                
+                // Call original function
+                return originalShowExitPopup.call(this, triggerType);
+            };
+        }
+        
+        // Reset function
+        function resetTest() {
+            // Clear session storage
+            try {
+                sessionStorage.removeItem('exitIntentShown');
+            } catch(e) {}
+            
+            // Reset window variable
+            window.__exitIntentShown = false;
+            window.exitIntentShown = false;
+            
+            // Reset status indicators
+            document.querySelectorAll('.status').forEach(status => {
+                status.className = 'status pending';
+                if (status.id === 'inactivity-status') status.textContent = 'Waiting...';
+                else if (status.id === 'scroll-status') status.textContent = 'Waiting for 70%...';
+                else if (status.id === 'form-status') status.textContent = 'Waiting...';
+                else if (status.id === 'mouse-status') status.textContent = 'Waiting...';
+            });
+            
+            // Reset form
+            document.getElementById('test-email').value = '';
+            
+            // Reset scroll
+            window.scrollTo(0, 0);
+            
+            // Restart countdown
+            startInactivityCountdown();
+            
+            console.log('Test reset - you can now trigger the popup again');
+            alert('Test reset! You can now trigger the popup again.');
+        }
+        
+        // Log initialization
+        console.log('Fallback triggers test page loaded');
+        console.log('Available triggers: inactivity (30s), scroll depth (70%), form abandonment, mouse leave');
+    </script>
+</body>
+</html>

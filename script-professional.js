@@ -453,7 +453,7 @@
             
             if (e.clientY <= 0 && !wasShown) {
                 console.log('Triggering exit popup on mouse leave - conditions met');
-                showExitPopup();
+                showExitPopup('mouse_leave');
             } else if (e.clientY <= 0 && wasShown) {
                 console.log('Mouse left at top but exit intent already shown');
             } else if (e.clientY > 0) {
@@ -479,7 +479,7 @@
                 
                 if (effectiveY <= 10 && !wasShown) {
                     console.log('Triggering exit popup via mouseout - conditions met');
-                    showExitPopup();
+                    showExitPopup('mouse_out');
                 }
             }
         });
@@ -509,7 +509,7 @@
                         currentScrollY, 
                         windowWidth: window.innerWidth 
                     });
-                    showExitPopup();
+                    showExitPopup('mobile_scroll');
                 }
                 scrollVelocity = 0; // Reset velocity after check
             }, 100); // Small debounce to avoid false positives
@@ -528,7 +528,7 @@
             
             if (!wasShown && window.innerWidth <= 768) {
                 console.log('Mobile back button detected via popstate');
-                showExitPopup();
+                showExitPopup('mobile_back_button');
                 // Re-push state to prevent actual navigation
                 setTimeout(() => {
                     history.pushState({ page: 'exit-shown' }, '', window.location.href);
@@ -574,13 +574,13 @@
                         startY: touchStartY,
                         scrollY: window.scrollY
                     });
-                    showExitPopup();
+                    showExitPopup('touch_swipe');
                 }
             }
         }, { passive: true });
         
-        function showExitPopup() {
-            console.log('showExitPopup called');
+        function showExitPopup(triggerType = 'mouse_leave') {
+            console.log('showExitPopup called - trigger:', triggerType);
             exitIntentShown = true;
             
             // Try to use sessionStorage, fall back to window variable
@@ -592,13 +592,15 @@
             }
             
             overlay.style.display = 'block';
-            console.log('Exit popup displayed');
+            console.log('Exit popup displayed - trigger:', triggerType);
             overlay.style.animation = 'fadeIn 0.3s ease-out';
             const popup = document.getElementById('exit-popup');
             if (popup) {
                 popup.style.animation = 'slideUp 0.4s ease-out';
             }
-            window.DataSenseTracking.trackEvent('exit_intent_shown');
+            window.DataSenseTracking.trackEvent('exit_intent_shown', {
+                trigger_type: triggerType
+            });
         }
         
         // Add keyboard trigger for local testing (Escape key)
@@ -607,7 +609,7 @@
             
             if (e.key === 'Escape' && window.location.protocol === 'file:' && !wasShown) {
                 console.log('Escape key trigger for exit popup (file:// protocol)');
-                showExitPopup();
+                showExitPopup('escape_key');
             }
         });
         
@@ -640,9 +642,88 @@
                 
                 if (shouldShow && !wasShown) {
                     console.log('Tab visible again - showing exit popup');
-                    showExitPopup();
+                    showExitPopup('tab_visibility');
                 }
             }
+        });
+        
+        // FALLBACK TRIGGER 1: Time-based trigger (30 seconds of inactivity)
+        let inactivityTimer;
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            const wasShown = exitIntentShown === 'true' || exitIntentShown === true;
+            
+            if (!wasShown && document.visibilityState === 'visible') {
+                inactivityTimer = setTimeout(() => {
+                    const stillNotShown = exitIntentShown !== 'true' && exitIntentShown !== true;
+                    if (stillNotShown && document.visibilityState === 'visible') {
+                        console.log('Inactivity trigger: 30 seconds of inactivity detected');
+                        showExitPopup('inactivity_30s');
+                    }
+                }, 30000); // 30 seconds
+            }
+        }
+        
+        // Reset timer on user activity
+        ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(event => {
+            document.addEventListener(event, resetInactivityTimer, true);
+        });
+        
+        // Start the timer initially
+        resetInactivityTimer();
+        
+        // FALLBACK TRIGGER 2: Scroll depth trigger (70% of page)
+        let scrollDepthTriggered = false;
+        window.addEventListener('scroll', () => {
+            if (scrollDepthTriggered) return;
+            
+            const scrollPercent = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+            const wasShown = exitIntentShown === 'true' || exitIntentShown === true;
+            
+            if (scrollPercent > 70 && !wasShown) {
+                scrollDepthTriggered = true;
+                console.log('Scroll depth trigger: ' + scrollPercent.toFixed(1) + '% of page scrolled');
+                showExitPopup('scroll_depth_70');
+            }
+        }, { passive: true });
+        
+        // FALLBACK TRIGGER 3: Form abandonment trigger (email field focus then blur)
+        const emailInputs = document.querySelectorAll('input[type="email"]');
+        emailInputs.forEach(emailInput => {
+            let formInteracted = false;
+            let blurTimeout = null;
+            
+            emailInput.addEventListener('focus', () => {
+                formInteracted = true;
+                // Clear any pending blur timeout
+                if (blurTimeout) {
+                    clearTimeout(blurTimeout);
+                    blurTimeout = null;
+                }
+            });
+            
+            emailInput.addEventListener('blur', () => {
+                const wasShown = exitIntentShown === 'true' || exitIntentShown === true;
+                
+                if (formInteracted && !emailInput.value && !wasShown) {
+                    // Wait 3 seconds after blur to trigger
+                    blurTimeout = setTimeout(() => {
+                        const stillNotShown = exitIntentShown !== 'true' && exitIntentShown !== true;
+                        if (stillNotShown && !emailInput.value) {
+                            console.log('Form abandonment trigger: Email field abandoned');
+                            showExitPopup('form_abandonment');
+                        }
+                    }, 3000);
+                }
+            });
+            
+            // If user starts typing, cancel the abandonment trigger
+            emailInput.addEventListener('input', () => {
+                if (blurTimeout) {
+                    clearTimeout(blurTimeout);
+                    blurTimeout = null;
+                }
+            });
         });
         
         // Add debug test button for file:// protocol only
@@ -681,7 +762,7 @@
             testButton.addEventListener('click', () => {
                 console.log('Test button clicked - triggering exit popup');
                 exitIntentShown = false; // Reset flag to allow testing multiple times
-                showExitPopup();
+                showExitPopup('test_button');
             });
             
             document.body.appendChild(testButton);
