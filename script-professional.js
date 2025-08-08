@@ -376,24 +376,61 @@
     function initExitIntent() {
         const overlay = document.getElementById('exit-popup-overlay');
         const closeBtn = document.getElementById('exit-popup-close');
-        let exitIntentShown = sessionStorage.getItem('exitIntentShown');
+        let exitIntentShown = null;
         
-        if (!overlay || exitIntentShown) return;
+        // Try to access sessionStorage (may fail on file:// protocol in some browsers)
+        try {
+            exitIntentShown = sessionStorage.getItem('exitIntentShown');
+            console.log('SessionStorage access successful');
+        } catch (e) {
+            console.warn('SessionStorage not available:', e.message);
+            // Fall back to a variable that will reset on page reload
+            exitIntentShown = window.__exitIntentShown || null;
+        }
+        
+        // Debug logging
+        console.log('Exit intent init:', {
+            overlay: !!overlay,
+            closeBtn: !!closeBtn,
+            exitIntentShown: exitIntentShown,
+            protocol: window.location.protocol,
+            url: window.location.href,
+            overlayElement: overlay,
+            closeBtnElement: closeBtn
+        });
+        
+        if (!overlay) {
+            console.error('Exit popup overlay element not found');
+            return;
+        }
+        
+        if (exitIntentShown) {
+            console.log('Exit intent already shown in this session');
+            return;
+        }
         
         // Close popup functionality
-        closeBtn.addEventListener('click', () => {
-            overlay.style.display = 'none';
-        });
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                console.log('Exit popup close button clicked');
+                overlay.style.display = 'none';
+            });
+        } else {
+            console.warn('Exit popup close button not found');
+        }
         
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) {
+                console.log('Exit popup overlay clicked');
                 overlay.style.display = 'none';
             }
         });
         
         // Desktop exit intent - mouse leave
         document.addEventListener('mouseleave', (e) => {
+            console.log('Mouse leave detected:', { clientY: e.clientY, exitIntentShown });
             if (e.clientY <= 0 && !exitIntentShown) {
+                console.log('Triggering exit popup on mouse leave');
                 showExitPopup();
             }
         });
@@ -408,6 +445,7 @@
             
             // Show popup if scrolling up fast near top of page
             if (scrollVelocity > 50 && currentScrollY < 200 && !exitIntentShown && window.innerWidth <= 768) {
+                console.log('Triggering exit popup on mobile scroll:', { scrollVelocity, currentScrollY });
                 showExitPopup();
             }
             
@@ -424,9 +462,19 @@
         });
         
         function showExitPopup() {
+            console.log('showExitPopup called');
             exitIntentShown = true;
-            sessionStorage.setItem('exitIntentShown', 'true');
+            
+            // Try to use sessionStorage, fall back to window variable
+            try {
+                sessionStorage.setItem('exitIntentShown', 'true');
+            } catch (e) {
+                console.warn('Could not save to sessionStorage:', e.message);
+                window.__exitIntentShown = true;
+            }
+            
             overlay.style.display = 'block';
+            console.log('Exit popup displayed');
             overlay.style.animation = 'fadeIn 0.3s ease-out';
             const popup = document.getElementById('exit-popup');
             if (popup) {
@@ -917,6 +965,10 @@
     
     // Initialize everything when DOM is ready
     function init() {
+        console.log('Main init() function called');
+        console.log('Current protocol:', window.location.protocol);
+        console.log('Document readyState:', document.readyState);
+        
         window.DataSenseTracking.init();
         initSmoothScrolling();
         initAnimations();
@@ -929,6 +981,7 @@
         // New features
         initCountdownTimer();
         initSpotsRemaining();
+        console.log('About to call initExitIntent()');
         initExitIntent();
         initMobileStickyButton();
         initCountingAnimation();
