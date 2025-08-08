@@ -1466,3 +1466,25 @@ inal integration testing and validation
     window.DataSenseValidation = {
         runFinalValidation: runFinalValidation
     };
+
+// Live Product Demo Iframe Handler
+document.addEventListener('DOMContentLoaded', function() {
+    const iframe = document.getElementById('snapclass-demo-iframe');
+    const loadingDiv = document.querySelector('.iframe-loading');
+    
+    if (iframe) {
+        // Hide loading spinner when iframe loads
+        iframe.addEventListener('load', function() {
+            if (loadingDiv) {
+                loadingDiv.style.display = 'none';
+            }
+        });
+        
+        // Handle iframe error
+        iframe.addEventListener('error', function() {
+            if (loadingDiv) {
+                loadingDiv.innerHTML = '<p>Unable to load demo. Please try again later.</p>';
+            }
+        });
+    }
+});
