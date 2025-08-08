@@ -290,6 +290,39 @@ ORDER BY LTV_CAC_ratio DESC;`
                 });
             });
 
+            // Industry dropdown change event
+            const industrySelect = this.container.querySelector('#industry-select');
+            if (industrySelect) {
+                industrySelect.addEventListener('change', (e) => {
+                    const industry = e.target.value;
+                    
+                    // Reset exit intent for this new journey
+                    try {
+                        sessionStorage.removeItem('exitIntentShown');
+                        sessionStorage.setItem('currentIndustry', industry);
+                        sessionStorage.setItem('industryChangeCount', 
+                            (parseInt(sessionStorage.getItem('industryChangeCount') || 0) + 1).toString()
+                        );
+                        
+                        // Reset the in-memory flag too
+                        if (window.__exitIntentShown) {
+                            window.__exitIntentShown = false;
+                        }
+                        
+                        console.log('Exit intent reset for industry:', industry);
+                    } catch(e) {
+                        console.warn('Could not reset exit intent:', e);
+                    }
+                    
+                    // Track industry change
+                    if (window.DataSenseTracking) {
+                        window.DataSenseTracking.trackEvent('industry_dropdown_change', {
+                            industry: industry
+                        });
+                    }
+                });
+            }
+
             // SQL toggle
             const sqlToggle = this.container.querySelector('.sql-toggle');
             if (sqlToggle) {

@@ -342,6 +342,24 @@ ORDER BY correlation DESC;`,
         switchIndustry(industryKey) {
             this.currentIndustry = industryKey;
             
+            // Reset exit intent for this new journey
+            try {
+                sessionStorage.removeItem('exitIntentShown');
+                sessionStorage.setItem('currentIndustry', industryKey);
+                sessionStorage.setItem('industryChangeCount', 
+                    (parseInt(sessionStorage.getItem('industryChangeCount') || 0) + 1).toString()
+                );
+                
+                // Reset the in-memory flag too
+                if (window.__exitIntentShown) {
+                    window.__exitIntentShown = false;
+                }
+                
+                console.log('Exit intent reset for industry change:', industryKey);
+            } catch(e) {
+                console.warn('Could not reset exit intent:', e);
+            }
+            
             // Update active button
             document.querySelectorAll('.industry-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.industry === industryKey);

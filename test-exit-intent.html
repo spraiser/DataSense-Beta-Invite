@@ -3,400 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exit Intent Debug Test - Task 3</title>
+    <title>Exit Intent Reset Test</title>
     <style>
         body {
-            margin: 0;
-            padding: 20px;
             font-family: system-ui, -apple-system, sans-serif;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        
-        .container {
+            padding: 40px;
             max-width: 800px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 30px;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
         }
-        
-        h1 {
-            margin-top: 0;
-            text-align: center;
-        }
-        
-        .instructions {
-            background: rgba(0, 0, 0, 0.3);
+        .section {
+            margin: 30px 0;
             padding: 20px;
+            border: 1px solid #e5e7eb;
             border-radius: 8px;
-            margin: 20px 0;
         }
-        
-        .instructions h2 {
-            margin-top: 0;
-            color: #fbbf24;
-        }
-        
-        .instructions ol {
-            line-height: 1.8;
-        }
-        
-        .console-output {
-            background: #1a1a1a;
-            color: #00ff00;
-            padding: 15px;
-            border-radius: 5px;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            height: 300px;
-            overflow-y: auto;
-            margin-top: 20px;
-            border: 1px solid #333;
-        }
-        
-        .log-entry {
-            margin: 2px 0;
-            padding: 2px 5px;
-            border-left: 2px solid transparent;
-        }
-        
-        .log-entry.error {
-            color: #ff6b6b;
-            border-left-color: #ff6b6b;
-        }
-        
-        .log-entry.warn {
-            color: #ffd93d;
-            border-left-color: #ffd93d;
-        }
-        
-        .log-entry.info {
-            color: #6bcf7f;
-            border-left-color: #6bcf7f;
-        }
-        
-        .status-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-            font-size: 14px;
-        }
-        
-        .mouse-position {
-            background: #2563eb;
-            padding: 5px 10px;
-            border-radius: 4px;
-        }
-        
-        .browser-info {
-            background: #059669;
-            padding: 5px 10px;
-            border-radius: 4px;
-        }
-        
-        .controls {
-            margin: 20px 0;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        button {
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
             background: #3b82f6;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 14px;
-            transition: background 0.3s;
         }
-        
-        button:hover {
+        .btn:hover {
             background: #2563eb;
         }
-        
-        button.danger {
-            background: #ef4444;
+        .industry-btn {
+            background: #f3f4f6;
+            color: #374151;
         }
-        
-        button.danger:hover {
-            background: #dc2626;
+        .industry-btn.active {
+            background: #3b82f6;
+            color: white;
         }
-        
-        /* Exit popup styles (matching production) */
-        #exit-popup-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 99999;
-            animation: fadeIn 0.3s ease-out;
+        select {
+            padding: 8px 12px;
+            font-size: 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
         }
-        
-        #exit-popup {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            max-width: 500px;
-            width: 90%;
-            color: #333;
-            animation: slideUp 0.4s ease-out;
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 6px;
         }
-        
-        #exit-popup h2 {
-            margin-top: 0;
-            color: #ef4444;
-        }
-        
-        #exit-popup-close {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #666;
-            padding: 5px;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes slideUp {
-            from { 
-                opacity: 0;
-                transform: translate(-50%, -40%);
-            }
-            to { 
-                opacity: 1;
-                transform: translate(-50%, -50%);
-            }
+        .log {
+            font-family: monospace;
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="status-bar">
-        <div class="browser-info">
-            Browser: <span id="browser-name">detecting...</span> | 
-            Protocol: <span id="protocol">detecting...</span>
-        </div>
-        <div class="mouse-position">
-            Mouse Y: <span id="mouse-y">0</span> | 
-            Near Edge: <span id="near-edge">NO</span>
+    <h1>Exit Intent Reset Testing</h1>
+    
+    <div class="section">
+        <h2>Test Controls</h2>
+        <button class="btn" onclick="simulateExitIntent()">Simulate Exit Intent</button>
+        <button class="btn" onclick="clearExitIntent()">Clear Exit Intent</button>
+        <button class="btn" onclick="checkStatus()">Check Status</button>
+    </div>
+
+    <div class="section" id="industry-demo-section">
+        <h2>Industry Demo Switcher</h2>
+        <div class="industry-switcher">
+            <button class="industry-btn active" data-industry="ecommerce" onclick="switchIndustry('ecommerce')">
+                🛍️ E-commerce
+            </button>
+            <button class="industry-btn" data-industry="saas" onclick="switchIndustry('saas')">
+                💻 SaaS
+            </button>
+            <button class="industry-btn" data-industry="services" onclick="switchIndustry('services')">
+                🏢 Services
+            </button>
         </div>
     </div>
-    
-    <div class="container" style="margin-top: 60px;">
-        <h1>🐭 Exit Intent Debug Test - Task 3</h1>
-        
-        <div class="instructions">
-            <h2>📋 Test Instructions:</h2>
-            <ol>
-                <li>Open browser console (F12 or right-click → Inspect → Console)</li>
-                <li>Move mouse to the very top edge of the browser window</li>
-                <li>Move mouse completely out of the browser window at the top</li>
-                <li>Check console for "Mouse leave detected" messages</li>
-                <li>Verify clientY values (should be ≤ 0 when exiting at top)</li>
-                <li>Test on Chrome, Firefox, and Safari</li>
-            </ol>
-            
-            <h3>🎯 Expected Results:</h3>
-            <ul>
-                <li>Console logs mouse position when near top edge (Y ≤ 5px)</li>
-                <li>Console logs "Mouse leave detected" when mouse exits window</li>
-                <li>clientY shows negative or zero values when exiting at top</li>
-                <li>Exit popup triggers when conditions are met</li>
-                <li>Both mouseleave and mouseout events are captured as fallback</li>
-            </ul>
-        </div>
-        
-        <div class="controls">
-            <button onclick="clearConsole()">Clear Console</button>
-            <button onclick="resetSession()">Reset Session Storage</button>
-            <button onclick="testExitPopup()" class="danger">Test Exit Popup</button>
-            <button onclick="exportLogs()">Export Logs</button>
-        </div>
-        
-        <h3>📊 Live Console Output:</h3>
-        <div id="console" class="console-output">
-            <div class="log-entry info">Console initialized. Move mouse to top edge to begin testing...</div>
-        </div>
+
+    <div class="section">
+        <h2>Interactive Demo Selector</h2>
+        <label for="industry-select">Select Your Industry:</label>
+        <select id="industry-select" onchange="handleDropdownChange(this.value)">
+            <option value="general">General Business</option>
+            <option value="ecommerce">E-commerce</option>
+            <option value="saas">SaaS / Software</option>
+            <option value="services">Professional Services</option>
+            <option value="restaurant">Restaurant / Food</option>
+            <option value="healthcare">Healthcare</option>
+        </select>
     </div>
-    
-    <!-- Exit Popup -->
-    <div id="exit-popup-overlay">
-        <div id="exit-popup">
-            <button id="exit-popup-close">×</button>
-            <h2>🎯 Exit Intent Triggered!</h2>
-            <p>The exit intent popup was successfully triggered.</p>
-            <p><strong>Debug Info:</strong></p>
-            <ul id="popup-debug-info">
-                <li>Trigger method: <span id="trigger-method">unknown</span></li>
-                <li>Mouse Y position: <span id="trigger-y">unknown</span></li>
-                <li>Timestamp: <span id="trigger-time">unknown</span></li>
-            </ul>
-        </div>
+
+    <div class="status" id="status">
+        <h3>Current Status:</h3>
+        <div id="status-content"></div>
+        <div class="log" id="log"></div>
     </div>
-    
-    <!-- Include the main script -->
-    <script src="script-professional.js"></script>
-    
-    <!-- Additional debug script -->
+
+    <script src="industry-demos.js"></script>
+    <script src="interactive-demo.js"></script>
     <script>
-        // Custom console logger
-        const logContainer = document.getElementById('console');
-        const originalConsoleLog = console.log;
-        const originalConsoleError = console.error;
-        const originalConsoleWarn = console.warn;
-        
-        function addLogEntry(message, type = 'info') {
-            const entry = document.createElement('div');
-            entry.className = `log-entry ${type}`;
-            const timestamp = new Date().toLocaleTimeString();
-            
-            let messageText = message;
-            if (typeof message === 'object') {
-                messageText = JSON.stringify(message, null, 2);
-            }
-            
-            entry.textContent = `[${timestamp}] ${messageText}`;
-            logContainer.appendChild(entry);
-            logContainer.scrollTop = logContainer.scrollHeight;
+        // Test helper functions
+        function simulateExitIntent() {
+            sessionStorage.setItem('exitIntentShown', 'true');
+            window.__exitIntentShown = true;
+            log('Exit intent simulated');
+            checkStatus();
         }
-        
-        // Override console methods to capture logs
-        console.log = function(...args) {
-            originalConsoleLog.apply(console, args);
-            addLogEntry(args.join(' '), 'info');
-        };
-        
-        console.error = function(...args) {
-            originalConsoleError.apply(console, args);
-            addLogEntry(args.join(' '), 'error');
-        };
-        
-        console.warn = function(...args) {
-            originalConsoleWarn.apply(console, args);
-            addLogEntry(args.join(' '), 'warn');
-        };
-        
-        // Browser detection
-        function detectBrowser() {
-            const userAgent = navigator.userAgent;
-            let browserName = 'Unknown';
-            
-            if (userAgent.indexOf('Firefox') > -1) {
-                browserName = 'Firefox';
-            } else if (userAgent.indexOf('Safari') > -1 && userAgent.indexOf('Chrome') === -1) {
-                browserName = 'Safari';
-            } else if (userAgent.indexOf('Chrome') > -1) {
-                browserName = 'Chrome';
-            } else if (userAgent.indexOf('Edge') > -1) {
-                browserName = 'Edge';
-            }
-            
-            document.getElementById('browser-name').textContent = browserName;
-            document.getElementById('protocol').textContent = window.location.protocol;
-            
-            console.log(`Browser detected: ${browserName}, Protocol: ${window.location.protocol}`);
+
+        function clearExitIntent() {
+            sessionStorage.removeItem('exitIntentShown');
+            sessionStorage.removeItem('currentIndustry');
+            sessionStorage.removeItem('industryChangeCount');
+            window.__exitIntentShown = false;
+            log('Exit intent cleared');
+            checkStatus();
         }
-        
-        // Mouse position tracking
-        document.addEventListener('mousemove', (e) => {
-            document.getElementById('mouse-y').textContent = e.clientY;
-            document.getElementById('near-edge').textContent = e.clientY <= 5 ? 'YES' : 'NO';
-            document.getElementById('near-edge').style.color = e.clientY <= 5 ? '#fbbf24' : '#ffffff';
-        });
-        
-        // Control functions
-        function clearConsole() {
-            logContainer.innerHTML = '<div class="log-entry info">Console cleared</div>';
+
+        function checkStatus() {
+            const status = {
+                exitIntentShown: sessionStorage.getItem('exitIntentShown'),
+                currentIndustry: sessionStorage.getItem('currentIndustry'),
+                industryChangeCount: sessionStorage.getItem('industryChangeCount'),
+                windowFlag: window.__exitIntentShown
+            };
+            
+            document.getElementById('status-content').innerHTML = `
+                <p><strong>Exit Intent Shown:</strong> ${status.exitIntentShown || 'false'}</p>
+                <p><strong>Current Industry:</strong> ${status.currentIndustry || 'none'}</p>
+                <p><strong>Industry Change Count:</strong> ${status.industryChangeCount || '0'}</p>
+                <p><strong>Window Flag:</strong> ${status.windowFlag || false}</p>
+            `;
         }
-        
-        function resetSession() {
+
+        function switchIndustry(industry) {
+            // Simulate the switchIndustry method from industry-demos.js
             try {
-                sessionStorage.clear();
-                window.__exitIntentShown = false;
-                console.log('Session storage and exit intent flag reset');
-                location.reload();
-            } catch (e) {
-                console.error('Failed to reset session:', e);
-            }
-        }
-        
-        function testExitPopup() {
-            const overlay = document.getElementById('exit-popup-overlay');
-            if (overlay) {
-                overlay.style.display = 'block';
-                document.getElementById('trigger-method').textContent = 'Manual test';
-                document.getElementById('trigger-y').textContent = 'N/A';
-                document.getElementById('trigger-time').textContent = new Date().toLocaleString();
-                console.log('Exit popup manually triggered for testing');
-            } else {
-                console.error('Exit popup overlay not found!');
-            }
-        }
-        
-        function exportLogs() {
-            const logs = Array.from(logContainer.children).map(el => el.textContent).join('\n');
-            const blob = new Blob([logs], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `exit-intent-debug-${Date.now()}.txt`;
-            a.click();
-            URL.revokeObjectURL(url);
-            console.log('Logs exported to file');
-        }
-        
-        // Initialize DataSenseTracking stub if not present
-        if (!window.DataSenseTracking) {
-            window.DataSenseTracking = {
-                trackEvent: function(eventName, data) {
-                    console.log(`DataSenseTracking.trackEvent: ${eventName}`, data);
+                sessionStorage.removeItem('exitIntentShown');
+                sessionStorage.setItem('currentIndustry', industry);
+                sessionStorage.setItem('industryChangeCount', 
+                    (parseInt(sessionStorage.getItem('industryChangeCount') || 0) + 1).toString()
+                );
+                
+                if (window.__exitIntentShown) {
+                    window.__exitIntentShown = false;
                 }
-            };
+                
+                log(`Industry switched to: ${industry}`);
+            } catch(e) {
+                log(`Error: ${e.message}`);
+            }
+            
+            // Update UI
+            document.querySelectorAll('.industry-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.industry === industry);
+            });
+            
+            checkStatus();
         }
-        
-        // Initialize on load
+
+        function handleDropdownChange(industry) {
+            // Simulate the dropdown change handler from interactive-demo.js
+            try {
+                sessionStorage.removeItem('exitIntentShown');
+                sessionStorage.setItem('currentIndustry', industry);
+                sessionStorage.setItem('industryChangeCount', 
+                    (parseInt(sessionStorage.getItem('industryChangeCount') || 0) + 1).toString()
+                );
+                
+                if (window.__exitIntentShown) {
+                    window.__exitIntentShown = false;
+                }
+                
+                log(`Dropdown changed to: ${industry}`);
+            } catch(e) {
+                log(`Error: ${e.message}`);
+            }
+            
+            checkStatus();
+        }
+
+        function log(message) {
+            const logEl = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logEl.innerHTML += `[${timestamp}] ${message}<br>`;
+            console.log(`[${timestamp}] ${message}`);
+        }
+
+        // Initial status check
         window.addEventListener('DOMContentLoaded', () => {
-            detectBrowser();
-            console.log('Exit Intent Debug Test initialized');
-            console.log('Move mouse to top edge of browser to test mouseleave event');
+            checkStatus();
+            log('Test page loaded');
         });
-        
-        // Listen for exit popup show events
-        const originalShowExitPopup = window.showExitPopup;
-        if (originalShowExitPopup) {
-            window.showExitPopup = function() {
-                document.getElementById('trigger-method').textContent = 'Auto (mouseleave/mouseout)';
-                document.getElementById('trigger-y').textContent = document.getElementById('mouse-y').textContent;
-                document.getElementById('trigger-time').textContent = new Date().toLocaleString();
-                return originalShowExitPopup.apply(this, arguments);
-            };
-        }
     </script>
 </body>
 </html>
