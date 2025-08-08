@@ -532,6 +532,50 @@
             window.DataSenseTracking.trackEvent('exit_intent_shown');
         }
         
+        // Add keyboard trigger for local testing (Escape key)
+        document.addEventListener('keydown', (e) => {
+            const wasShown = exitIntentShown === 'true' || exitIntentShown === true;
+            
+            if (e.key === 'Escape' && window.location.protocol === 'file:' && !wasShown) {
+                console.log('Escape key trigger for exit popup (file:// protocol)');
+                showExitPopup();
+            }
+        });
+        
+        // Add visibility change trigger as fallback
+        document.addEventListener('visibilitychange', () => {
+            const wasShown = exitIntentShown === 'true' || exitIntentShown === true;
+            
+            if (document.visibilityState === 'hidden' && !wasShown) {
+                // Store intent to show popup when user returns
+                try {
+                    sessionStorage.setItem('showOnReturn', 'true');
+                } catch (e) {
+                    window.__showOnReturn = true;
+                }
+                console.log('Tab hidden - will show popup on return');
+            } else if (document.visibilityState === 'visible') {
+                // Check if we should show popup on return
+                let shouldShow = false;
+                try {
+                    shouldShow = sessionStorage.getItem('showOnReturn') === 'true';
+                    if (shouldShow) {
+                        sessionStorage.removeItem('showOnReturn');
+                    }
+                } catch (e) {
+                    shouldShow = window.__showOnReturn === true;
+                    if (shouldShow) {
+                        window.__showOnReturn = false;
+                    }
+                }
+                
+                if (shouldShow && !wasShown) {
+                    console.log('Tab visible again - showing exit popup');
+                    showExitPopup();
+                }
+            }
+        });
+        
         // Add debug test button for file:// protocol only
         if (window.location.protocol === 'file:') {
             console.log('Adding test button for exit popup (file:// protocol detected)');
@@ -573,6 +617,13 @@
             
             document.body.appendChild(testButton);
             console.log('Test button added to page');
+            
+            // Add helpful instructions for file:// protocol
+            console.log('%c📋 Exit Intent Testing Instructions (file:// protocol)', 'color: #4CAF50; font-weight: bold; font-size: 14px');
+            console.log('%c1. Press Escape key to trigger the exit popup', 'color: #2196F3');
+            console.log('%c2. Switch tabs and return to trigger the popup', 'color: #2196F3');
+            console.log('%c3. Click the red "Test Exit Popup" button', 'color: #2196F3');
+            console.log('%c4. Try moving mouse to top of window (may not work on file://)', 'color: #FF9800');
         }
         
         // ROI Calculator
