@@ -2,6 +2,9 @@
 (function() {
     'use strict';
 
+    // Track page load time for analytics
+    window.pageLoadTime = Date.now();
+
     // Professional analytics tracking
     window.DataSenseTracking = {
         init: function() {
@@ -376,6 +379,7 @@
     function initExitIntent() {
         const overlay = document.getElementById('exit-popup-overlay');
         const closeBtn = document.getElementById('exit-popup-close');
+        const ctaButton = overlay ? overlay.querySelector('.btn-primary') : null;
         let exitIntentShown = null;
         
         // Try to access sessionStorage (may fail on file:// protocol in some browsers)
@@ -414,6 +418,11 @@
             closeBtn.addEventListener('click', () => {
                 console.log('Exit popup close button clicked');
                 overlay.style.display = 'none';
+                // Track close event
+                window.DataSenseTracking.trackEvent('exit_intent_closed', {
+                    close_method: 'close_button',
+                    time_shown: Date.now() - (window.exitIntentShownTime || Date.now())
+                });
             });
         } else {
             console.warn('Exit popup close button not found');
@@ -423,8 +432,39 @@
             if (e.target === overlay) {
                 console.log('Exit popup overlay clicked');
                 overlay.style.display = 'none';
+                // Track dismiss event
+                window.DataSenseTracking.trackEvent('exit_intent_dismissed', {
+                    dismiss_method: 'overlay_click',
+                    time_shown: Date.now() - (window.exitIntentShownTime || Date.now())
+                });
             }
         });
+        
+        // Track CTA button clicks
+        if (ctaButton) {
+            ctaButton.addEventListener('click', () => {
+                console.log('Exit popup CTA button clicked');
+                // Track CTA click
+                window.DataSenseTracking.trackEvent('exit_intent_cta_clicked', {
+                    button_text: ctaButton.textContent,
+                    time_shown: Date.now() - (window.exitIntentShownTime || Date.now()),
+                    roi_values: {
+                        revenue: parseFloat(document.getElementById('revenue-input')?.value) || 0,
+                        hours: parseFloat(document.getElementById('hours-input')?.value) || 0,
+                        savings: document.getElementById('savings-value')?.textContent || '',
+                        roi: document.getElementById('roi-value')?.textContent || ''
+                    }
+                });
+                
+                // Track conversion event (user took action after seeing exit intent)
+                window.DataSenseTracking.trackEvent('exit_intent_conversion', {
+                    action: 'cta_click_to_signup',
+                    session_id: window.DataSenseTracking.sessionId
+                });
+            });
+        } else {
+            console.warn('Exit popup CTA button not found');
+        }
         
         // Add mouse position tracking for debugging
         let lastMouseY = 0;
@@ -583,6 +623,9 @@
             console.log('showExitPopup called - trigger:', triggerType);
             exitIntentShown = true;
             
+            // Store time when popup was shown for tracking duration
+            window.exitIntentShownTime = Date.now();
+            
             // Try to use sessionStorage, fall back to window variable
             try {
                 sessionStorage.setItem('exitIntentShown', 'true');
@@ -599,7 +642,9 @@
                 popup.style.animation = 'slideUp 0.4s ease-out';
             }
             window.DataSenseTracking.trackEvent('exit_intent_shown', {
-                trigger_type: triggerType
+                trigger_type: triggerType,
+                page_depth: Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100),
+                time_on_page: Math.round((Date.now() - window.pageLoadTime) / 1000)
             });
         }
         
@@ -799,11 +844,52 @@
             savingsValue.textContent = `$${Math.round(totalSavings).toLocaleString()}`;
             timeValue.textContent = `${Math.round(timeSavings)} hours`;
             roiValue.textContent = `${Math.round(monthlyROI)}%`;
+            
+            // Track ROI calculation
+            window.DataSenseTracking.trackEvent('roi_calculated', {
+                revenue_input: revenue,
+                hours_input: hours,
+                total_savings: Math.round(totalSavings),
+                time_savings: Math.round(timeSavings),
+                monthly_roi: Math.round(monthlyROI)
+            });
         }
         
         if (revenueInput && hoursInput) {
-            revenueInput.addEventListener('input', calculateROI);
-            hoursInput.addEventListener('input', calculateROI);
+            // Track ROI calculator interactions
+            let lastInteractionTime = 0;
+            const interactionDebounce = 1000; // Track at most once per second
+            
+            revenueInput.addEventListener('input', (e) => {
+                calculateROI();
+                const now = Date.now();
+                if (now - lastInteractionTime > interactionDebounce) {
+                    lastInteractionTime = now;
+                    window.DataSenseTracking.trackEvent('roi_calculator_interaction', {
+                        field_changed: 'revenue',
+                        interaction_type: 'input'
+                    });
+                    window.DataSenseTracking.trackEvent('roi_calculator_revenue_input', {
+                        revenue_value: parseFloat(e.target.value) || 0
+                    });
+                }
+            });
+            
+            hoursInput.addEventListener('input', (e) => {
+                calculateROI();
+                const now = Date.now();
+                if (now - lastInteractionTime > interactionDebounce) {
+                    lastInteractionTime = now;
+                    window.DataSenseTracking.trackEvent('roi_calculator_interaction', {
+                        field_changed: 'hours',
+                        interaction_type: 'input'
+                    });
+                    window.DataSenseTracking.trackEvent('roi_calculator_hours_input', {
+                        hours_value: parseFloat(e.target.value) || 0
+                    });
+                }
+            });
+            
             calculateROI(); // Initial calculation
         }
     }
