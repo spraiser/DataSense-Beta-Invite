@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A/B Testing Framework Test Suite</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .test-header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .test-header h1 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        
+        .test-header p {
+            margin: 0;
+            color: #666;
+        }
+        
+        .test-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .test-section h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .test-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #64748b;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+        }
+        
+        .test-output {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        
+        .variant-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .variant-card {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+        }
+        
+        .variant-card.active {
+            border-color: #667eea;
+            background: #e0e7ff;
+        }
+        
+        .variant-card h3 {
+            margin: 0 0 10px 0;
+            color: #475569;
+            font-size: 16px;
+        }
+        
+        .variant-card p {
+            margin: 5px 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .metric-label {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .status-active {
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-inactive {
+            background: #ef4444;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            }
+        }
+        
+        .test-scenario {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 15px 0;
+        }
+        
+        .test-scenario h4 {
+            margin: 0 0 8px 0;
+            color: #92400e;
+        }
+        
+        .test-scenario p {
+            margin: 0;
+            color: #78350f;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="test-header">
+            <h1>🧪 A/B Testing Framework Test Suite</h1>
+            <p>Comprehensive testing interface for exit intent popup A/B testing framework</p>
+            <p style="margin-top: 10px;">
+                <span class="status-indicator status-active"></span>
+                <span id="framework-status">Framework Status: Loading...</span>
+            </p>
+        </div>
+
+        <!-- Test 1: Framework Initialization -->
+        <div class="test-section">
+            <h2>1. Framework Initialization</h2>
+            <div class="test-controls">
+                <button class="btn" onclick="testInitialization()">Test Initialization</button>
+                <button class="btn btn-secondary" onclick="clearSession()">Clear Session</button>
+                <button class="btn btn-secondary" onclick="reloadFramework()">Reload Framework</button>
+            </div>
+            <div class="test-output" id="init-output">Press "Test Initialization" to begin...</div>
+        </div>
+
+        <!-- Test 2: Variant Assignment -->
+        <div class="test-section">
+            <h2>2. Variant Assignment & Persistence</h2>
+            <div class="test-controls">
+                <button class="btn" onclick="testVariantAssignment()">Get Current Variants</button>
+                <button class="btn" onclick="testVariantPersistence()">Test Persistence</button>
+                <button class="btn btn-danger" onclick="forceNewVariants()">Force New Variants</button>
+            </div>
+            <div class="variant-display" id="variant-display">
+                <!-- Variants will be displayed here -->
+            </div>
+            <div class="test-output" id="variant-output">Variant information will appear here...</div>
+        </div>
+
+        <!-- Test 3: Timing Variations -->
+        <div class="test-section">
+            <h2>3. Timing Variations (Test A)</h2>
+            <div class="test-scenario">
+                <h4>Test Scenario</h4>
+                <p>Tests different timing delays for popup display: immediate (0ms), 3s delay, 5s delay, or 20s delay</p>
+            </div>
+            <div class="test-controls">
+                <button class="btn" onclick="testTimingVariation()">Test Current Timing</button>
+                <button class="btn" onclick="simulateAllTimings()">Simulate All Timings</button>
+            </div>
+            <div class="test-output" id="timing-output">Timing test results will appear here...</div>
+        </div>
+
+        <!-- Test 4: Calculator Defaults -->
+        <div class="test-section">
+            <h2>4. ROI Calculator Defaults (Test B)</h2>
+            <div class="test-scenario">
+                <h4>Test Scenario</h4>
+                <p>Tests different default values for the ROI calculator: $50k/40hrs, $100k/60hrs, $25k/20hrs, or dynamic based on source</p>
+            </div>
+            <div class="test-controls">
+                <button class="btn" onclick="testCalculatorDefaults()">Test Current Defaults</button>
+                <button class="btn" onclick="testDynamicDefaults()">Test Dynamic Logic</button>
+            </div>
+            <div class="test-output" id="calculator-output">Calculator defaults will appear here...</div>
+        </div>
+
+        <!-- Test 5: Design Variations -->
+        <div class="test-section">
+            <h2>5. Popup Design Variations (Test C)</h2>
+            <div class="test-scenario">
+                <h4>Test Scenario</h4>
+                <p>Tests different popup designs: ROI calculator, simple email capture, video testimonial, or discount offer</p>
+            </div>
+            <div class="test-controls">
+                <button class="btn" onclick="previewCurrentDesign()">Preview Current Design</button>
+                <button class="btn" onclick="previewAllDesigns()">Preview All Designs</button>
+            </div>
+            <div class="test-output" id="design-output">Design preview will appear here...</div>
+        </div>
+
+        <!-- Test 6: Conversion Tracking -->
+        <div class="test-section">
+            <h2>6. Conversion Tracking & Metrics</h2>
+            <div class="test-controls">
+                <button class="btn" onclick="simulateTrigger()">Simulate Trigger</button>
+                <button class="btn" onclick="simulateConversion()">Simulate Conversion</button>
+                <button class="btn" onclick="getMetrics()">Get Metrics</button>
+                <button class="btn btn-secondary" onclick="exportReport()">Export Report</button>
+            </div>
+            <div class="metric-grid" id="metrics-display">
+                <div class="metric-card">
+                    <div class="metric-value" id="trigger-count">0</div>
+                    <div class="metric-label">Triggers</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="conversion-count">0</div>
+                    <div class="metric-label">Conversions</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="conversion-rate">0%</div>
+                    <div class="metric-label">Conversion Rate</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="avg-time">0s</div>
+                    <div class="metric-label">Avg Time to Convert</div>
+                </div>
+            </div>
+            <div class="test-output" id="metrics-output">Tracking data will appear here...</div>
+        </div>
+
+        <!-- Test 7: Integration Test -->
+        <div class="test-section">
+            <h2>7. Full Integration Test</h2>
+            <div class="test-scenario">
+                <h4>Test Scenario</h4>
+                <p>Simulates a complete user journey: page load → exit intent trigger → popup display → interaction → conversion</p>
+            </div>
+            <div class="test-controls">
+                <button class="btn" onclick="runIntegrationTest()">Run Full Test</button>
+                <button class="btn btn-secondary" onclick="runStressTest()">Run Stress Test</button>
+            </div>
+            <div class="test-output" id="integration-output">Integration test results will appear here...</div>
+        </div>
+
+        <!-- Hidden popup overlay for testing -->
+        <div class="exit-popup-overlay" id="exit-popup-overlay" style="display: none;">
+            <div class="exit-popup" id="exit-popup">
+                <button class="exit-popup-close" id="exit-popup-close">&times;</button>
+                <div class="exit-popup-content">
+                    <!-- Content will be dynamically inserted -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include the A/B testing framework -->
+    <script src="ab-testing-framework.js"></script>
+    
+    <script>
+        // Test Suite Implementation
+        let testResults = [];
+        
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            updateFrameworkStatus();
+            console.log('A/B Testing Framework Test Suite loaded');
+        });
+        
+        function updateFrameworkStatus() {
+            const statusEl = document.getElementById('framework-status');
+            if (window.ExitIntentAB) {
+                statusEl.textContent = 'Framework Status: Active ✓';
+                statusEl.style.color = '#10b981';
+            } else {
+                statusEl.textContent = 'Framework Status: Not Loaded ✗';
+                statusEl.style.color = '#ef4444';
+            }
+        }
+        
+        // Test 1: Initialization
+        function testInitialization() {
+            const output = document.getElementById('init-output');
+            let results = [];
+            
+            results.push('=== Framework Initialization Test ===\n');
+            
+            // Check if framework exists
+            if (window.ExitIntentAB) {
+                results.push('✓ Framework loaded successfully');
+                
+                // Check methods
+                const methods = ['init', 'getVariant', 'trackTrigger', 'trackConversion'];
+                methods.forEach(method => {
+                    if (typeof window.ExitIntentAB[method] === 'function') {
+                        results.push(`✓ Method "${method}" exists`);
+                    } else {
+                        results.push(`✗ Method "${method}" missing`);
+                    }
+                });
+                
+                // Initialize framework
+                window.ExitIntentAB.init();
+                results.push('\n✓ Framework initialized');
+                
+                // Check session data
+                if (window.ExitIntentAB.sessionData) {
+                    results.push('✓ Session data created');
+                    results.push(`  Tests configured: ${Object.keys(window.ExitIntentAB.tests).join(', ')}`);
+                }
+            } else {
+                results.push('✗ Framework not loaded!');
+            }
+            
+            output.textContent = results.join('\n');
+        }
+        
+        // Test 2: Variant Assignment
+        function testVariantAssignment() {
+            const output = document.getElementById('variant-output');
+            const display = document.getElementById('variant-display');
+            
+            if (!window.ExitIntentAB) {
+                output.textContent = 'Framework not loaded!';
+                return;
+            }
+            
+            let results = [];
+            let variants = {};
+            
+            // Get variants for each test
+            ['timing', 'calculator', 'design'].forEach(test => {
+                const variant = window.ExitIntentAB.getVariant(test);
+                const value = window.ExitIntentAB.getVariantValue(test);
+                variants[test] = { variant, value };
+                results.push(`${test}: ${variant} = ${JSON.stringify(value)}`);
+            });
+            
+            // Display variant cards
+            display.innerHTML = Object.entries(variants).map(([test, data]) => `
+                <div class="variant-card active">
+                    <h3>${test.charAt(0).toUpperCase() + test.slice(1)} Test</h3>
+                    <p><strong>Variant:</strong> ${data.variant}</p>
+                    <p><strong>Value:</strong> ${typeof data.value === 'object' ? JSON.stringify(data.value) : data.value}</p>
+                </div>
+            `).join('');
+            
+            output.textContent = 'Current variant assignments:\n' + results.join('\n');
+        }
+        
+        function testVariantPersistence() {
+            const output = document.getElementById('variant-output');
+            
+            if (!window.ExitIntentAB) {
+                output.textContent = 'Framework not loaded!';
+                return;
+            }
+            
+            // Get current variants
+            const before = {
+                timing: window.ExitIntentAB.getVariant('timing'),
+                calculator: window.ExitIntentAB.getVariant('calculator'),
+                design: window.ExitIntentAB.getVariant('design')
+            };
+            
+            // Reinitialize framework
+            window.ExitIntentAB.init();
+            
+            // Get variants again
+            const after = {
+                timing: window.ExitIntentAB.getVariant('timing'),
+                calculator: window.ExitIntentAB.getVariant('calculator'),
+                design: window.ExitIntentAB.getVariant('design')
+            };
+            
+            // Compare
+            let results = ['=== Persistence Test ==='];
+            Object.keys(before).forEach(test => {
+                if (before[test] === after[test]) {
+                    results.push(`✓ ${test}: Persisted correctly (${before[test]})`);
+                } else {
+                    results.push(`✗ ${test}: Changed! (${before[test]} → ${after[test]})`);
+                }
+            });
+            
+            output.textContent = results.join('\n');
+        }
+        
+        function clearSession() {
+            sessionStorage.clear();
+            if (window.ExitIntentAB) {
+                window.ExitIntentAB.sessionData = {};
+            }
+            document.getElementById('init-output').textContent = 'Session cleared. Reload page to get new variants.';
+        }
+        
+        function reloadFramework() {
+            window.location.reload();
+        }
+        
+        function forceNewVariants() {
+            clearSession();
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        }
+        
+        // Test 3: Timing Variations
+        function testTimingVariation() {
+            const output = document.getElementById('timing-output');
+            
+            if (!window.ExitIntentAB) {
+                output.textContent = 'Framework not loaded!';
+                return;
+            }
+            
+            const delay = window.ExitIntentAB.getTimingDelay();
+            const variant = window.ExitIntentAB.getVariant('timing');
+            
+            output.textContent = `Current timing variant: ${variant}\nDelay: ${delay}ms\n\nSimulating popup trigger with ${delay}ms delay...`;
+            
+            setTimeout(() => {
+                output.textContent += '\n✓ Popup would be shown now!';
+            }, delay);
+        }
+        
+        function simulateAllTimings() {
+            const output = document.getElementById('timing-output');
+            const timings = window.ExitIntentAB.tests.timing;
+            
+            let results = ['=== All Timing Variations ==='];
+            Object.entries(timings).forEach(([variant, delay]) => {
+                results.push(`${variant}: ${delay}ms (${delay/1000}s)`);
+            });
+            
+            output.textContent = results.join('\n');
+        }
+        
+        // Test 4: Calculator Defaults
+        function testCalculatorDefaults() {
+            const output = document.getElementById('calculator-output');
+            
+            if (!window.ExitIntentAB) {
+                output.textContent = 'Framework not loaded!';
+                return;
+            }
+            
+            const defaults = window.ExitIntentAB.getCalculatorDefaults();
+            const variant = window.ExitIntentAB.getVariant('calculator');
+            
+            let results = [`Current calculator variant: ${variant}`];
+            
+            if (defaults === 'dynamic') {
+                results.push('Type: Dynamic (based on traffic source)');
+                const calculated = window.ExitIntentAB.getDynamicCalculatorDefaults();
+                results.push(`Calculated values: $${calculated.revenue.toLocaleString()} revenue, ${calculated.hours} hours`);
+            } else {
+                results.push(`Static values: $${defaults.revenue.toLocaleString()} revenue, ${defaults.hours} hours`);
+            }
+            
+            output.textContent = results.join('\n');
+        }
+        
+        function testDynamicDefaults() {
+            const output = document.getElementById('calculator-output');
+            
+            if (!window.ExitIntentAB) {
+                output.textContent = 'Framework not loaded!';
+                return;
+            }
+            
+            let results = ['=== Dynamic Calculator Logic Test ==='];
+            
+            // Test different UTM sources
+            const sources = ['enterprise', 'startup', 'agency', 'organic'];
+            
+            sources.forEach(source => {
+                // Temporarily modify URL params
+                const originalSearch = window.location.search;
+                window.history.replaceState(null, '', `?utm_source=${source}`);
+                
+                const defaults = window.ExitIntentAB.getDynamicCalculatorDefaults();
+                results.push(`utm_source=${source}: $${defaults.revenue.toLocaleString()} / ${defaults.hours}hrs`);
+                
+                // Restore original URL
+                window.history.replaceState(null, '', originalSearch || window.location.pathname);
+            });
+            
+            output.textContent = results.join('\n');
+        }
+        
+        // Test 5: Design Variations
+        function previewCurrentDesign() {
+            const output = document.getElementById('design-output');
+            
+            if (!window.ExitIntentAB) {
+                output.textContent = 'Framework not loaded!';
+                return;
+            }
+            
+            const design = window.ExitIntentAB.getPopupDesign();
+            const variant = window.ExitIntentAB.getVariant('design');
+            
+            output.innerHTML = `<strong>Current design variant:</strong> ${variant} (${design})\n\n`;
+            
+            // Show design description
+            const descriptions = {
+                'roi-calculator': 'Interactive ROI calculator with revenue/hours inputs',
+                'simple-email': 'Simple email capture form with value propositions',
+                'video-testimonial': 'Video testimonial with case study',
+                'discount-offer': '20% discount offer with countdown timer'
+            };
+            
+            output.innerHTML += descriptions[design] || 'Unknown design';
+        }
+        
+        function previewAllDesigns() {
+            const output = document.getElementById('design-output');
+            
+            let html = '<strong>All Design Variations:</strong>\n\n';
+            
+            const designs = [
+                { name: 'roi-calculator', desc: 'ROI Calculator', features: ['Revenue input', 'Hours input', 'Instant calculation', 'Savings display'] },
+                { name: 'simple-email', desc: 'Simple Email', features: ['Email input only', 'Value props', 'Quick signup', 'No spam promise'] },
+                { name: 'video-testimonial', desc: 'Video Testimonial', features: ['Customer video', 'Success story', 'Social proof', 'Case study'] },
+                { name: 'discount-offer', desc: 'Discount Offer', features: ['20% off', 'Countdown timer', 'Promo code', 'Urgency'] }
+            ];
+            
+            designs.forEach(design => {
+                html += `<strong>${design.desc}:</strong>\n`;
+                design.features.forEach(feature => {
+                    html += `  • ${feature}\n`;
+                });
+                html += '\n';
+            });
+            
+            output.textContent = html;
+        }
+        
+        // Test 6: Conversion Tracking
+        function simulateTrigger() {
+            const output = document.getElementById('metrics-output');
+            
+            if (!window.ExitIntentAB) {
+                output.textContent = 'Framework not loaded!';
+                return;
+            }
+            
+            // Track triggers for all tests
+            window.ExitIntentAB.trackTrigger('timing');
+            window.ExitIntentAB.trackTrigger('calculator');
+            window.ExitIntentAB.trackTrigger('design');
+            
+            output.textContent = 'Triggered all tests!\n\nSession data:\n' + JSON.stringify(window.ExitIntentAB.sessionData, null, 2);
+            updateMetrics();
+        }
+        
+        function simulateConversion() {
+            const output = document.getElementById('metrics-output');
+            
+            if (!window.ExitIntentAB) {
+                output.textContent = 'Framework not loaded!';
+                return;
+            }
+            
+            // Track conversions
+            window.ExitIntentAB.trackConversion('timing', { test: true });
+            window.ExitIntentAB.trackConversion('calculator', { revenue: 50000, hours: 40 });
+            window.ExitIntentAB.trackConversion('design', { clicked: 'cta' });
+            
+            output.textContent = 'Conversions tracked!\n\nSession data:\n' + JSON.stringify(window.ExitIntentAB.sessionData, null, 2);
+            updateMetrics();
+        }
+        
+        function getMetrics() {
+            const output = document.getElementById('metrics-output');
+            
+            if (!window.ExitIntentAB) {
+                output.textContent = 'Framework not loaded!';
+                return;
+            }
+            
+            const report = window.ExitIntentAB.getSessionReport();
+            output.textContent = 'Session Report:\n' + JSON.stringify(report, null, 2);
+            updateMetrics();
+        }
+        
+        function updateMetrics() {
+            if (!window.ExitIntentAB || !window.ExitIntentAB.sessionData) return;
+            
+            let triggers = 0;
+            let conversions = 0;
+            let totalTime = 0;
+            let conversionCount = 0;
+            
+            Object.values(window.ExitIntentAB.sessionData).forEach(test => {
+                if (test.triggered) triggers++;
+                if (test.converted) {
+                    conversions++;
+                    if (test.conversionTime && test.triggerTime) {
+                        totalTime += (test.conversionTime - test.triggerTime);
+                        conversionCount++;
+                    }
+                }
+            });
+            
+            document.getElementById('trigger-count').textContent = triggers;
+            document.getElementById('conversion-count').textContent = conversions;
+            document.getElementById('conversion-rate').textContent = triggers > 0 ? Math.round((conversions / triggers) * 100) + '%' : '0%';
+            document.getElementById('avg-time').textContent = conversionCount > 0 ? Math.round(totalTime / conversionCount / 1000) + 's' : '0s';
+        }
+        
+        function exportReport() {
+            if (!window.ExitIntentAB) {
+                alert('Framework not loaded!');
+                return;
+            }
+            
+            const report = window.ExitIntentAB.getSessionReport();
+            const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ab-test-report-${Date.now()}.json`;
+            a.click();
+        }
+        
+        // Test 7: Integration Test
+        async function runIntegrationTest() {
+            const output = document.getElementById('integration-output');
+            const steps = [];
+            
+            steps.push('=== Running Full Integration Test ===\n');
+            
+            // Step 1: Initialize
+            steps.push('1. Initializing framework...');
+            window.ExitIntentAB.init();
+            await sleep(500);
+            steps.push('   ✓ Framework initialized');
+            
+            // Step 2: Get variants
+            steps.push('\n2. Getting test variants...');
+            const variants = {
+                timing: window.ExitIntentAB.getVariant('timing'),
+                calculator: window.ExitIntentAB.getVariant('calculator'),
+                design: window.ExitIntentAB.getVariant('design')
+            };
+            steps.push(`   Timing: ${variants.timing}`);
+            steps.push(`   Calculator: ${variants.calculator}`);
+            steps.push(`   Design: ${variants.design}`);
+            
+            // Step 3: Simulate trigger
+            steps.push('\n3. Simulating exit intent trigger...');
+            window.ExitIntentAB.trackTrigger('timing');
+            const delay = window.ExitIntentAB.getTimingDelay();
+            steps.push(`   Waiting ${delay}ms...`);
+            output.textContent = steps.join('\n');
+            await sleep(delay);
+            
+            // Step 4: Show popup
+            steps.push('   ✓ Popup displayed');
+            window.ExitIntentAB.trackTrigger('design');
+            
+            // Step 5: Simulate interaction
+            steps.push('\n4. Simulating user interaction...');
+            await sleep(1000);
+            window.ExitIntentAB.trackEngagement('design', 'hover', { element: 'cta' });
+            steps.push('   ✓ User engaged with popup');
+            
+            // Step 6: Simulate conversion
+            steps.push('\n5. Simulating conversion...');
+            await sleep(500);
+            window.ExitIntentAB.trackConversion('timing');
+            window.ExitIntentAB.trackConversion('design');
+            steps.push('   ✓ Conversion tracked');
+            
+            // Step 7: Generate report
+            steps.push('\n6. Generating report...');
+            const report = window.ExitIntentAB.getSessionReport();
+            steps.push('   ✓ Report generated');
+            steps.push('\n=== Test Complete ===');
+            steps.push(`\nResults: ${JSON.stringify(report, null, 2)}`);
+            
+            output.textContent = steps.join('\n');
+            updateMetrics();
+        }
+        
+        async function runStressTest() {
+            const output = document.getElementById('integration-output');
+            
+            output.textContent = 'Running stress test (100 iterations)...\n';
+            
+            for (let i = 0; i < 100; i++) {
+                // Clear and reinit
+                window.ExitIntentAB.sessionData = {};
+                window.ExitIntentAB.init();
+                
+                // Get variants
+                window.ExitIntentAB.getVariant('timing');
+                window.ExitIntentAB.getVariant('calculator');
+                window.ExitIntentAB.getVariant('design');
+                
+                // Track events
+                window.ExitIntentAB.trackTrigger('timing');
+                window.ExitIntentAB.trackEngagement('design', 'test', { iteration: i });
+                
+                if (Math.random() > 0.5) {
+                    window.ExitIntentAB.trackConversion('timing');
+                }
+                
+                if (i % 10 === 0) {
+                    output.textContent = `Running stress test... ${i}/100 complete`;
+                }
+            }
+            
+            output.textContent = 'Stress test complete! 100 iterations executed successfully.';
+        }
+        
+        // Utility function
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        
+        // Mock DataSenseTracking for testing
+        if (!window.DataSenseTracking) {
+            window.DataSenseTracking = {
+                trackEvent: function(name, data) {
+                    console.log('Track Event:', name, data);
+                }
+            };
+        }
+    </script>
+</body>
+</html>

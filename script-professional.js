@@ -381,12 +381,17 @@
         }, 45000);
     }
 
-    // Enhanced Exit Intent Popup
+    // Enhanced Exit Intent Popup with A/B Testing
     function initExitIntent() {
         const overlay = document.getElementById('exit-popup-overlay');
         const closeBtn = document.getElementById('exit-popup-close');
         const ctaButton = overlay ? overlay.querySelector('.btn-primary') : null;
         let exitIntentShown = null;
+        
+        // Initialize A/B testing if available
+        if (window.ExitIntentAB) {
+            window.ExitIntentAB.init();
+        }
         
         // Environment check
         const isDevelopment = window.location.hostname === 'localhost' || 
@@ -455,31 +460,63 @@
             }
         });
         
-        // Track CTA button clicks
-        if (ctaButton) {
-            ctaButton.addEventListener('click', () => {
-                debugLog('Exit popup CTA button clicked');
-                // Track CTA click
-                window.DataSenseTracking.trackEvent('exit_intent_cta_clicked', {
-                    button_text: ctaButton.textContent,
-                    time_shown: Date.now() - (window.exitIntentShownTime || Date.now()),
-                    roi_values: {
+        // Track CTA button clicks (will be reattached after design variant is applied)
+        const setupCTATracking = () => {
+            const currentCTAButton = overlay.querySelector('.btn-primary');
+            if (currentCTAButton) {
+                currentCTAButton.addEventListener('click', () => {
+                    debugLog('Exit popup CTA button clicked');
+                    
+                    // Get ROI values if calculator is present
+                    const roiValues = {
                         revenue: parseFloat(document.getElementById('revenue-input')?.value) || 0,
                         hours: parseFloat(document.getElementById('hours-input')?.value) || 0,
                         savings: document.getElementById('savings-value')?.textContent || '',
                         roi: document.getElementById('roi-value')?.textContent || ''
+                    };
+                    
+                    // Track CTA click
+                    window.DataSenseTracking.trackEvent('exit_intent_cta_clicked', {
+                        button_text: currentCTAButton.textContent,
+                        time_shown: Date.now() - (window.exitIntentShownTime || Date.now()),
+                        roi_values: roiValues
+                    });
+                    
+                    // Track A/B test conversions
+                    if (window.ExitIntentAB) {
+                        const design = window.ExitIntentAB.getPopupDesign();
+                        window.ExitIntentAB.trackConversion('design', {
+                            button_text: currentCTAButton.textContent,
+                            roi_values: roiValues
+                        });
+                        window.ExitIntentAB.trackConversion('timing', {
+                            design: design
+                        });
+                        if (design === 'roi-calculator') {
+                            window.ExitIntentAB.trackConversion('calculator', {
+                                roi_values: roiValues
+                            });
+                        }
                     }
+                    
+                    // Track conversion event (user took action after seeing exit intent)
+                    window.DataSenseTracking.trackEvent('exit_intent_conversion', {
+                        action: 'cta_click_to_signup',
+                        session_id: window.DataSenseTracking.sessionId
+                    });
                 });
-                
-                // Track conversion event (user took action after seeing exit intent)
-                window.DataSenseTracking.trackEvent('exit_intent_conversion', {
-                    action: 'cta_click_to_signup',
-                    session_id: window.DataSenseTracking.sessionId
-                });
-            });
-        } else {
-            debugLog('Exit popup CTA button not found');
+            } else {
+                debugLog('Exit popup CTA button not found');
+            }
+        };
+        
+        // Set up initial CTA tracking (will be called again after design variant is applied)
+        if (ctaButton) {
+            setupCTATracking();
         }
+        
+        // Store setup function for later use
+        window.setupExitPopupCTATracking = setupCTATracking;
         
         // Add mouse position tracking with throttling
         let lastMouseY = 0;
@@ -649,42 +686,78 @@
         
         function showExitPopup(triggerType = 'mouse_leave') {
             debugLog('showExitPopup called - trigger:', triggerType);
-            exitIntentShown = true;
             
-            // Lazy load ROI calculator when popup is shown
-            if (window.initROICalculator) {
-                window.initROICalculator();
+            // Get timing delay from A/B test
+            let delay = 0;
+            if (window.ExitIntentAB) {
+                delay = window.ExitIntentAB.getTimingDelay();
+                window.ExitIntentAB.trackTrigger('timing');
+                debugLog('A/B Test timing delay:', delay);
             }
             
-            // Store time when popup was shown for tracking duration
-            window.exitIntentShownTime = Date.now();
-            
-            // Try to use sessionStorage, fall back to window variable
-            try {
-                sessionStorage.setItem('exitIntentShown', 'true');
-            } catch (e) {
-                debugLog('Could not save to sessionStorage:', e.message);
-                window.__exitIntentShown = true;
-            }
-            
-            overlay.style.display = 'block';
-            debugLog('Exit popup displayed - trigger:', triggerType);
-            overlay.style.animation = 'fadeIn 0.3s ease-out';
-            const popup = document.getElementById('exit-popup');
-            if (popup) {
-                popup.style.animation = 'slideUp 0.4s ease-out';
-            }
-            
-            // Remove unnecessary event listeners after popup is shown
-            if (mouseMoveThrottle) {
-                clearTimeout(mouseMoveThrottle);
-            }
-            
-            window.DataSenseTracking.trackEvent('exit_intent_shown', {
-                trigger_type: triggerType,
-                page_depth: Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100),
-                time_on_page: Math.round((Date.now() - window.pageLoadTime) / 1000)
-            });
+            // Apply delay based on A/B test variant
+            setTimeout(() => {
+                exitIntentShown = true;
+                
+                // Apply A/B test design variant
+                if (window.ExitIntentAB) {
+                    window.ExitIntentAB.applyPopupDesign(overlay);
+                    
+                    // For ROI calculator design, also apply defaults
+                    if (window.ExitIntentAB.getPopupDesign() === 'roi-calculator') {
+                        window.ExitIntentAB.trackTrigger('calculator');
+                        // Lazy load ROI calculator when popup is shown
+                        if (window.initROICalculator) {
+                            window.initROICalculator();
+                        }
+                    }
+                } else {
+                    // Fallback: Lazy load ROI calculator when popup is shown
+                    if (window.initROICalculator) {
+                        window.initROICalculator();
+                    }
+                }
+                
+                // Store time when popup was shown for tracking duration
+                window.exitIntentShownTime = Date.now();
+                
+                // Try to use sessionStorage, fall back to window variable
+                try {
+                    sessionStorage.setItem('exitIntentShown', 'true');
+                } catch (e) {
+                    debugLog('Could not save to sessionStorage:', e.message);
+                    window.__exitIntentShown = true;
+                }
+                
+                overlay.style.display = 'block';
+                debugLog('Exit popup displayed - trigger:', triggerType);
+                overlay.style.animation = 'fadeIn 0.3s ease-out';
+                const popup = document.getElementById('exit-popup');
+                if (popup) {
+                    popup.style.animation = 'slideUp 0.4s ease-out';
+                }
+                
+                // Remove unnecessary event listeners after popup is shown
+                if (mouseMoveThrottle) {
+                    clearTimeout(mouseMoveThrottle);
+                }
+                
+                // Track event with A/B test data
+                const trackingData = {
+                    trigger_type: triggerType,
+                    page_depth: Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100),
+                    time_on_page: Math.round((Date.now() - window.pageLoadTime) / 1000)
+                };
+                
+                if (window.ExitIntentAB) {
+                    trackingData.ab_timing_variant = window.ExitIntentAB.getVariant('timing');
+                    trackingData.ab_timing_delay = delay;
+                    trackingData.ab_design_variant = window.ExitIntentAB.getVariant('design');
+                    trackingData.ab_calculator_variant = window.ExitIntentAB.getVariant('calculator');
+                }
+                
+                window.DataSenseTracking.trackEvent('exit_intent_shown', trackingData);
+            }, delay);
         }
         
         // Add keyboard trigger for local testing (Escape key)
@@ -885,6 +958,16 @@
             const roiValue = document.getElementById('roi-value');
             
             if (!revenueInput || !hoursInput) return;
+            
+            // Apply A/B test calculator defaults if available
+            if (window.ExitIntentAB) {
+                const defaults = window.ExitIntentAB.getCalculatorDefaults();
+                if (defaults && defaults !== 'dynamic') {
+                    revenueInput.value = defaults.revenue;
+                    hoursInput.value = defaults.hours;
+                    window.ExitIntentAB.trackEngagement('calculator', 'defaults_applied', defaults);
+                }
+            }
             
             function calculateROI() {
                 const revenue = parseFloat(revenueInput.value) || 50000;
