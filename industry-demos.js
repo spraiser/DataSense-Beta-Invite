@@ -219,7 +219,7 @@ ORDER BY correlation DESC;`,
                     demoSection = document.createElement('section');
                     demoSection.id = 'industry-demo-section';
                     demoSection.className = 'industry-demo-section';
-                    mainDemo.parentNode.insertBefore(demoSection.nextSibling, mainDemo);
+                    mainDemo.parentNode.insertBefore(demoSection, mainDemo.nextSibling);
                 }
             }
 
