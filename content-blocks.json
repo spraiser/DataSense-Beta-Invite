@@ -1,0 +1,88 @@
+{
+  "blocks": {
+    "hero_title": {
+      "id": "hero_title",
+      "label": "Hero Title",
+      "default": "See what's really driving your business growth",
+      "selector": ".hero-title",
+      "type": "text"
+    },
+    "hero_subtitle": {
+      "id": "hero_subtitle",
+      "label": "Hero Subtitle",
+      "default": "Connect your data. Ask questions in plain English. Get answers that grow revenue. No credit card required • Setup in 10 minutes.",
+      "selector": ".hero-subtitle",
+      "type": "text"
+    },
+    "hero_highlight": {
+      "id": "hero_highlight",
+      "label": "Hero Title Highlight",
+      "default": "with AI that speaks your language",
+      "selector": ".hero-title-highlight",
+      "type": "text"
+    },
+    "urgency_text": {
+      "id": "urgency_text",
+      "label": "Urgency Banner Text",
+      "default": "Limited beta access: Only 12 spots remaining this week",
+      "selector": ".urgency-text",
+      "type": "text"
+    },
+    "badge_text": {
+      "id": "badge_text",
+      "label": "Hero Badge Text",
+      "default": "Join 500+ businesses in beta",
+      "selector": ".badge-text",
+      "type": "text"
+    },
+    "cta_primary": {
+      "id": "cta_primary",
+      "label": "Primary CTA Button",
+      "default": "Start Free Analysis",
+      "selector": ".btn-primary span",
+      "type": "text"
+    },
+    "cta_secondary": {
+      "id": "cta_secondary",
+      "label": "Secondary CTA Button",
+      "default": "Watch 2-Min Demo",
+      "selector": ".btn-secondary span",
+      "type": "text"
+    },
+    "social_proof": {
+      "id": "social_proof",
+      "label": "Social Proof Text",
+      "default": "Join 500+ growing businesses using DataSense",
+      "selector": ".social-proof-text",
+      "type": "text"
+    },
+    "roi_stat_1": {
+      "id": "roi_stat_1",
+      "label": "ROI Statistic 1",
+      "default": "3.2x",
+      "selector": ".roi-number:nth-of-type(1)",
+      "type": "text"
+    },
+    "roi_label_1": {
+      "id": "roi_label_1",
+      "label": "ROI Label 1",
+      "default": "Average ROI in 90 days",
+      "selector": ".roi-label:nth-of-type(1)",
+      "type": "text"
+    },
+    "exit_popup_title": {
+      "id": "exit_popup_title",
+      "label": "Exit Popup Title",
+      "default": "Wait! Calculate Your ROI First",
+      "selector": ".exit-popup-title",
+      "type": "text"
+    },
+    "exit_popup_subtitle": {
+      "id": "exit_popup_subtitle",
+      "label": "Exit Popup Subtitle",
+      "default": "See exactly how much DataSense could save your business",
+      "selector": ".exit-popup-subtitle",
+      "type": "text"
+    }
+  }
+}
