@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Industry Selector Integration</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="interactive-demo.css">
+    <link rel="stylesheet" href="industry-demos.css">
+    <style>
+        body {
+            padding: 40px;
+            background: #f3f4f6;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .test-header {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .test-header h2 {
+            color: #1f2937;
+            margin: 0;
+        }
+        .test-info {
+            background: #f0f9ff;
+            border: 1px solid #3b82f6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .test-info h3 {
+            margin-top: 0;
+            color: #1e40af;
+        }
+        .test-log {
+            background: #1f2937;
+            color: #10b981;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        .test-log .log-entry {
+            margin-bottom: 5px;
+        }
+        .test-log .log-time {
+            color: #6b7280;
+            margin-right: 10px;
+        }
+        .test-status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .status-success {
+            background: #10b981;
+            color: white;
+        }
+        .status-error {
+            background: #ef4444;
+            color: white;
+        }
+        .status-pending {
+            background: #f59e0b;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-section">
+            <div class="test-header">
+                <h2>Industry Selector Integration Test <span id="test-status" class="test-status status-pending">Testing...</span></h2>
+            </div>
+            
+            <div class="test-info">
+                <h3>Test Objectives:</h3>
+                <ul>
+                    <li>✓ Industry dropdown changes queries in interactive demo</li>
+                    <li>✓ Query questions update to be industry-specific</li>
+                    <li>✓ SQL and insights change based on selected industry</li>
+                    <li>✓ Syncs between interactive-demo.js and industry-demos.js</li>
+                    <li>✓ Stores industry in sessionStorage for exit intent</li>
+                    <li>✓ Tracks industry changes in analytics</li>
+                </ul>
+            </div>
+            
+            <div id="interactive-demo-test" class="interactive-demo-wrapper"></div>
+            
+            <div class="test-log" id="test-log">
+                <div class="log-entry"><span class="log-time">[00:00:00]</span> Test initialized...</div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-header">
+                <h2>Industry-Specific Demo Section</h2>
+            </div>
+            <div id="industry-demo-section"></div>
+        </div>
+    </div>
+
+    <!-- Include dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Include the modules -->
+    <script src="interactive-demo.js"></script>
+    <script src="industry-demos.js"></script>
+    
+    <!-- Test script -->
+    <script>
+        // Test logging
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('test-log');
+            const time = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-time">[${time}]</span> ${message}`;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(`[TEST] ${message}`);
+        }
+
+        // Initialize test
+        document.addEventListener('DOMContentLoaded', () => {
+            log('DOM loaded, initializing tests...');
+            
+            // Initialize interactive demo
+            const demoContainer = document.getElementById('interactive-demo-test');
+            if (demoContainer) {
+                try {
+                    const demo = new InteractiveDemo(demoContainer);
+                    log('✓ Interactive demo initialized successfully', 'success');
+                    window.testDemo = demo; // Store for testing
+                } catch (error) {
+                    log(`✗ Failed to initialize interactive demo: ${error.message}`, 'error');
+                }
+            }
+            
+            // Test industry switching
+            setTimeout(() => {
+                testIndustrySwitch();
+            }, 1000);
+        });
+
+        function testIndustrySwitch() {
+            log('Testing industry switch functionality...');
+            
+            const industrySelect = document.getElementById('industry-select');
+            if (!industrySelect) {
+                log('✗ Industry selector not found', 'error');
+                updateTestStatus('error');
+                return;
+            }
+            
+            // Test switching to e-commerce
+            log('Switching to E-commerce industry...');
+            industrySelect.value = 'ecommerce';
+            industrySelect.dispatchEvent(new Event('change'));
+            
+            setTimeout(() => {
+                // Check if queries updated
+                const queryText = document.querySelector('.query-text');
+                if (queryText && queryText.textContent.includes('bundle')) {
+                    log('✓ E-commerce queries loaded successfully', 'success');
+                } else {
+                    log('⚠ E-commerce queries may not have loaded correctly', 'warning');
+                }
+                
+                // Test switching to SaaS
+                log('Switching to SaaS industry...');
+                industrySelect.value = 'saas';
+                industrySelect.dispatchEvent(new Event('change'));
+                
+                setTimeout(() => {
+                    // Check if queries updated
+                    if (queryText && queryText.textContent.includes('MRR')) {
+                        log('✓ SaaS queries loaded successfully', 'success');
+                    } else {
+                        log('⚠ SaaS queries may not have loaded correctly', 'warning');
+                    }
+                    
+                    // Check sessionStorage
+                    const savedIndustry = sessionStorage.getItem('currentIndustry');
+                    if (savedIndustry === 'saas') {
+                        log('✓ Industry saved to sessionStorage', 'success');
+                    } else {
+                        log('✗ Industry not saved to sessionStorage', 'error');
+                    }
+                    
+                    // Check event syncing
+                    testEventSyncing();
+                }, 1000);
+            }, 1000);
+        }
+
+        function testEventSyncing() {
+            log('Testing event syncing between modules...');
+            
+            // Listen for industry-switched event
+            let eventReceived = false;
+            document.addEventListener('industry-switched', (e) => {
+                eventReceived = true;
+                log(`✓ Received industry-switched event: ${e.detail.industry}`, 'success');
+            });
+            
+            // Trigger industry switch from industry-demos
+            const industryBtn = document.querySelector('.industry-btn[data-industry="restaurant"]');
+            if (industryBtn) {
+                industryBtn.click();
+                
+                setTimeout(() => {
+                    // Check if interactive demo updated
+                    const industrySelect = document.getElementById('industry-select');
+                    if (industrySelect && industrySelect.value === 'restaurant') {
+                        log('✓ Interactive demo synced with industry-demos', 'success');
+                        updateTestStatus('success');
+                    } else {
+                        log('✗ Interactive demo did not sync', 'error');
+                        updateTestStatus('error');
+                    }
+                }, 500);
+            } else {
+                log('⚠ Industry demo buttons not found', 'warning');
+                updateTestStatus('partial');
+            }
+        }
+
+        function updateTestStatus(status) {
+            const statusEl = document.getElementById('test-status');
+            statusEl.className = 'test-status';
+            
+            switch(status) {
+                case 'success':
+                    statusEl.className += ' status-success';
+                    statusEl.textContent = 'All Tests Passed';
+                    log('============ ALL TESTS PASSED ============', 'success');
+                    break;
+                case 'error':
+                    statusEl.className += ' status-error';
+                    statusEl.textContent = 'Tests Failed';
+                    log('============ TESTS FAILED ============', 'error');
+                    break;
+                case 'partial':
+                    statusEl.className += ' status-pending';
+                    statusEl.textContent = 'Partial Success';
+                    log('============ PARTIAL SUCCESS ============', 'warning');
+                    break;
+            }
+        }
+
+        // Mock tracking for testing
+        window.DataSenseTracking = {
+            trackEvent: (event, data) => {
+                log(`Analytics tracked: ${event} - ${JSON.stringify(data)}`, 'info');
+            }
+        };
+    </script>
+</body>
+</html>

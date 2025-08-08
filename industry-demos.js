@@ -374,6 +374,11 @@ ORDER BY correlation DESC;`,
                     content.style.opacity = '1';
                 }, 300);
             }
+            
+            // Dispatch custom event to sync with interactive demo
+            document.dispatchEvent(new CustomEvent('industry-switched', {
+                detail: { industry: industryKey }
+            }));
 
             // Track switch
             if (window.DataSenseTracking) {
