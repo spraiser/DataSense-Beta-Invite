@@ -269,6 +269,9 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 550px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .dashboard-mockup {
@@ -1448,6 +1451,10 @@ body {
   .btn-secondary {
     width: 100%;
     justify-content: center;
+  }
+  
+  .hero-visual {
+    height: 400px;
   }
 }
 
