@@ -869,6 +869,52 @@
         }
     }
 
+    // Copy to clipboard functionality
+    function copyToClipboard(elementId, buttonElement) {
+        const input = document.getElementById(elementId);
+        
+        if (!input) return;
+        
+        // Select the text
+        input.select();
+        input.setSelectionRange(0, 99999); // For mobile devices
+        
+        // Copy the text
+        try {
+            navigator.clipboard.writeText(input.value).then(function() {
+                // Success - update button
+                buttonElement.classList.add('copied');
+                
+                // Track copy event
+                window.DataSenseTracking.trackEvent('credential_copied', {
+                    credential_type: elementId.includes('email') ? 'email' : 'password',
+                    timestamp: Date.now()
+                });
+                
+                // Reset button after 2 seconds
+                setTimeout(function() {
+                    buttonElement.classList.remove('copied');
+                }, 2000);
+            }).catch(function(err) {
+                // Fallback for older browsers
+                try {
+                    document.execCommand('copy');
+                    buttonElement.classList.add('copied');
+                    setTimeout(function() {
+                        buttonElement.classList.remove('copied');
+                    }, 2000);
+                } catch (e) {
+                    console.error('Failed to copy:', e);
+                }
+            });
+        } catch (err) {
+            console.error('Failed to copy:', err);
+        }
+    }
+    
+    // Make copyToClipboard globally available
+    window.copyToClipboard = copyToClipboard;
+    
     // Initialize everything when DOM is ready
     function init() {
         window.DataSenseTracking.init();
