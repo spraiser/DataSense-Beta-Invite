@@ -404,9 +404,9 @@
             return;
         }
         
+        // Log if exit intent was previously shown but don't return early
         if (exitIntentShown) {
-            console.log('Exit intent already shown in this session');
-            return;
+            console.log('Exit intent already shown in this session - listeners will still be attached');
         }
         
         // Close popup functionality
@@ -426,12 +426,61 @@
             }
         });
         
+        // Add mouse position tracking for debugging
+        let lastMouseY = 0;
+        document.addEventListener('mousemove', (e) => {
+            lastMouseY = e.clientY;
+            // Log when mouse is very close to top edge
+            if (e.clientY <= 5 && e.clientY >= 0) {
+                console.log(`Mouse near top edge: clientY=${e.clientY}`);
+            }
+        });
+        
         // Desktop exit intent - mouse leave
         document.addEventListener('mouseleave', (e) => {
-            console.log('Mouse leave detected:', { clientY: e.clientY, exitIntentShown });
-            if (e.clientY <= 0 && !exitIntentShown) {
-                console.log('Triggering exit popup on mouse leave');
+            // Enhanced logging for debugging
+            console.log('Mouse leave detected:', { 
+                clientY: e.clientY, 
+                exitIntentShown: exitIntentShown,
+                exitIntentShownType: typeof exitIntentShown,
+                isAtTop: e.clientY <= 0,
+                protocol: window.location.protocol,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Check if exit intent was already shown (handle both string and boolean)
+            const wasShown = exitIntentShown === 'true' || exitIntentShown === true;
+            
+            if (e.clientY <= 0 && !wasShown) {
+                console.log('Triggering exit popup on mouse leave - conditions met');
                 showExitPopup();
+            } else if (e.clientY <= 0 && wasShown) {
+                console.log('Mouse left at top but exit intent already shown');
+            } else if (e.clientY > 0) {
+                console.log(`Mouse left but not at top (clientY: ${e.clientY})`);
+            }
+        });
+        
+        // Alternative method: mouseout event as fallback for file:// protocol
+        document.addEventListener('mouseout', (e) => {
+            // Check if mouse actually left the document
+            if (e.relatedTarget === null || e.relatedTarget === undefined) {
+                console.log('Mouseout detected (left document):', {
+                    clientY: e.clientY,
+                    lastMouseY: lastMouseY,
+                    exitIntentShown: exitIntentShown,
+                    relatedTarget: e.relatedTarget
+                });
+                
+                const wasShown = exitIntentShown === 'true' || exitIntentShown === true;
+                
+                // Use lastMouseY if clientY is not reliable
+                const effectiveY = e.clientY <= 0 ? e.clientY : lastMouseY;
+                
+                if (effectiveY <= 10 && !wasShown) {
+                    console.log('Triggering exit popup via mouseout - conditions met');
+                    showExitPopup();
+                }
             }
         });
         
