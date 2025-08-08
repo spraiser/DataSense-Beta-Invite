@@ -804,6 +804,71 @@
         }, 300);
     }
 
+    // Live Product Demo Iframe Handler
+    function initLiveProductDemo() {
+        const iframe = document.getElementById('snapclass-demo-iframe');
+        const loadingDiv = document.querySelector('.iframe-loading');
+        
+        if (iframe) {
+            let loadTimeout;
+            
+            // Set a timeout for loading
+            loadTimeout = setTimeout(function() {
+                if (loadingDiv) {
+                    loadingDiv.innerHTML = `
+                        <p style="color: #ef4444; font-size: 18px; font-weight: 600;">Demo Temporarily Unavailable</p>
+                        <p style="color: #64748b; margin-top: 10px; font-size: 14px;">The live demo cannot be embedded at this time.</p>
+                        <a href="https://app.snapclass.ai" target="_blank" class="btn btn-primary" style="margin-top: 20px; display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
+                            Open SnapClass.ai in New Tab
+                        </a>
+                    `;
+                }
+            }, 10000); // 10 second timeout
+            
+            // Hide loading spinner when iframe loads successfully
+            iframe.addEventListener('load', function() {
+                clearTimeout(loadTimeout);
+                if (loadingDiv) {
+                    loadingDiv.style.display = 'none';
+                }
+                
+                // Check if we got redirected to login
+                try {
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    // This will fail due to cross-origin but that's OK
+                } catch(e) {
+                    console.log('Iframe loaded but cross-origin restrictions apply');
+                }
+                
+                // Track successful demo load
+                window.DataSenseTracking.trackEvent('demo_loaded', {
+                    demo_type: 'live_product',
+                    load_time: Date.now()
+                });
+            });
+            
+            // Handle iframe error
+            iframe.addEventListener('error', function() {
+                clearTimeout(loadTimeout);
+                if (loadingDiv) {
+                    loadingDiv.innerHTML = `
+                        <p style="color: #ef4444; font-size: 18px; font-weight: 600;">Unable to Load Demo</p>
+                        <p style="color: #64748b; margin-top: 10px; font-size: 14px;">Please try opening the demo directly.</p>
+                        <a href="https://app.snapclass.ai" target="_blank" class="btn btn-secondary" style="margin-top: 20px; display: inline-block; padding: 12px 24px; background: #64748b; color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
+                            Open in New Tab
+                        </a>
+                    `;
+                }
+                
+                // Track demo error
+                window.DataSenseTracking.trackEvent('demo_error', {
+                    demo_type: 'live_product',
+                    error_time: Date.now()
+                });
+            });
+        }
+    }
+
     // Initialize everything when DOM is ready
     function init() {
         window.DataSenseTracking.init();
@@ -822,6 +887,7 @@
         initMobileStickyButton();
         initCountingAnimation();
         initParallaxEffect();
+        initLiveProductDemo(); // Added iframe handler
     }
 
     // Start when DOM is ready
