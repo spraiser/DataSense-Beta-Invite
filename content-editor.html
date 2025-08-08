@@ -82,6 +82,51 @@
             gap: 10px;
         }
 
+        .save-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: #f0f0f0;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .save-indicator.saving {
+            background: #FFF3CD;
+            color: #856404;
+        }
+
+        .save-indicator.saved {
+            background: #D1F4DD;
+            color: #155724;
+        }
+
+        .save-indicator.error {
+            background: #FFE0E0;
+            color: #721C24;
+        }
+
+        .save-indicator .spinner {
+            width: 12px;
+            height: 12px;
+            border: 2px solid #ccc;
+            border-top-color: #666;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        .save-indicator.saving .spinner {
+            display: block;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         button {
             padding: 8px 16px;
             border-radius: 6px;
@@ -118,6 +163,31 @@
 
         .btn-preview:hover {
             background: #248A3D;
+        }
+
+        .btn-download {
+            background: #FF9500;
+            color: white;
+        }
+
+        .btn-download:hover {
+            background: #E07C00;
+        }
+
+        .btn-undo, .btn-redo {
+            background: #fff;
+            color: #666;
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+        }
+
+        .btn-undo:hover:not(:disabled), .btn-redo:hover:not(:disabled) {
+            background: #f5f5f7;
+        }
+
+        .btn-undo:disabled, .btn-redo:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .content-grid {
@@ -249,10 +319,17 @@
                         <option value="default">Original</option>
                     </select>
                 </div>
+                <div class="save-indicator" id="save-indicator">
+                    <div class="spinner"></div>
+                    <span id="save-status">All changes saved</span>
+                </div>
                 <div class="action-buttons">
-                    <button class="btn-save" onclick="saveChanges()">Save Changes</button>
-                    <button class="btn-reset" onclick="resetToDefault()">Reset to Default</button>
-                    <button class="btn-preview" onclick="previewInNewTab()">Preview in New Tab</button>
+                    <button class="btn-undo" id="btn-undo" onclick="undo()" title="Undo (Ctrl+Z)">↶</button>
+                    <button class="btn-redo" id="btn-redo" onclick="redo()" title="Redo (Ctrl+Y)">↷</button>
+                    <button class="btn-save" onclick="saveChanges()">Save Now</button>
+                    <button class="btn-download" onclick="downloadBackup()">Download Backup</button>
+                    <button class="btn-reset" onclick="resetToDefault()">Reset</button>
+                    <button class="btn-preview" onclick="previewInNewTab()">Preview</button>
                 </div>
             </div>
         </header>
@@ -268,6 +345,21 @@
         let variationsData = {};
         let currentVariation = 'default';
         let originalData = {};
+        
+        // Undo/Redo system
+        let undoStack = [];
+        let redoStack = [];
+        const MAX_HISTORY = 50;
+        
+        // Auto-save system
+        let autoSaveTimer = null;
+        let hasUnsavedChanges = false;
+        const AUTO_SAVE_DELAY = 2000; // 2 seconds
+        
+        // Storage keys
+        const STORAGE_KEY = 'vibe_kanban_variations';
+        const BACKUP_KEY = 'vibe_kanban_backup';
+        const HISTORY_KEY = 'vibe_kanban_history';
 
         // Load variations data on page load
         async function loadVariations() {
@@ -381,14 +473,186 @@
                 }
             }
             
-            textarea.addEventListener('input', updateCharCount);
+            textarea.addEventListener('input', (e) => {
+                updateCharCount();
+                handleTextChange(e);
+            });
             updateCharCount(); // Initial count
             
             return box;
         }
 
-        // Save changes
-        async function saveChanges() {
+        // Handle text changes for undo/redo and auto-save
+        function handleTextChange(event) {
+            const textarea = event.target;
+            const key = textarea.dataset.key;
+            
+            // Save current state to undo stack
+            if (!event.isUndo) {
+                saveToUndoStack();
+            }
+            
+            // Mark as having unsaved changes
+            hasUnsavedChanges = true;
+            updateSaveIndicator('unsaved');
+            
+            // Clear existing auto-save timer
+            if (autoSaveTimer) {
+                clearTimeout(autoSaveTimer);
+            }
+            
+            // Set new auto-save timer
+            autoSaveTimer = setTimeout(() => {
+                autoSave();
+            }, AUTO_SAVE_DELAY);
+        }
+
+        // Save current state to undo stack
+        function saveToUndoStack() {
+            const currentState = getCurrentState();
+            
+            // Don't save if it's the same as the last state
+            if (undoStack.length > 0) {
+                const lastState = undoStack[undoStack.length - 1];
+                if (JSON.stringify(lastState) === JSON.stringify(currentState)) {
+                    return;
+                }
+            }
+            
+            undoStack.push(currentState);
+            
+            // Limit stack size
+            if (undoStack.length > MAX_HISTORY) {
+                undoStack.shift();
+            }
+            
+            // Clear redo stack when new action is performed
+            redoStack = [];
+            
+            updateUndoRedoButtons();
+        }
+
+        // Get current state of all textareas
+        function getCurrentState() {
+            const state = {};
+            const textareas = document.querySelectorAll('textarea');
+            textareas.forEach(textarea => {
+                const key = textarea.dataset.key;
+                if (key) {
+                    state[key] = textarea.value;
+                }
+            });
+            return state;
+        }
+
+        // Restore state from history
+        function restoreState(state) {
+            const textareas = document.querySelectorAll('textarea');
+            textareas.forEach(textarea => {
+                const key = textarea.dataset.key;
+                if (key && state[key] !== undefined) {
+                    textarea.value = state[key];
+                    // Trigger input event to update character count
+                    const event = new Event('input');
+                    event.isUndo = true;
+                    textarea.dispatchEvent(event);
+                }
+            });
+        }
+
+        // Undo function
+        function undo() {
+            if (undoStack.length === 0) return;
+            
+            // Save current state to redo stack
+            const currentState = getCurrentState();
+            redoStack.push(currentState);
+            
+            // Get previous state
+            const previousState = undoStack.pop();
+            restoreState(previousState);
+            
+            updateUndoRedoButtons();
+            hasUnsavedChanges = true;
+            updateSaveIndicator('unsaved');
+        }
+
+        // Redo function
+        function redo() {
+            if (redoStack.length === 0) return;
+            
+            // Save current state to undo stack
+            const currentState = getCurrentState();
+            undoStack.push(currentState);
+            
+            // Get next state
+            const nextState = redoStack.pop();
+            restoreState(nextState);
+            
+            updateUndoRedoButtons();
+            hasUnsavedChanges = true;
+            updateSaveIndicator('unsaved');
+        }
+
+        // Update undo/redo button states
+        function updateUndoRedoButtons() {
+            const undoBtn = document.getElementById('btn-undo');
+            const redoBtn = document.getElementById('btn-redo');
+            
+            if (undoBtn) {
+                undoBtn.disabled = undoStack.length === 0;
+            }
+            if (redoBtn) {
+                redoBtn.disabled = redoStack.length === 0;
+            }
+        }
+
+        // Update save indicator
+        function updateSaveIndicator(status) {
+            const indicator = document.getElementById('save-indicator');
+            const statusText = document.getElementById('save-status');
+            
+            if (!indicator || !statusText) return;
+            
+            indicator.className = 'save-indicator';
+            
+            switch(status) {
+                case 'saving':
+                    indicator.classList.add('saving');
+                    statusText.textContent = 'Saving...';
+                    break;
+                case 'saved':
+                    indicator.classList.add('saved');
+                    statusText.textContent = 'All changes saved';
+                    break;
+                case 'unsaved':
+                    statusText.textContent = 'Unsaved changes';
+                    break;
+                case 'error':
+                    indicator.classList.add('error');
+                    statusText.textContent = 'Save failed - Download backup';
+                    break;
+            }
+        }
+
+        // Auto-save function
+        async function autoSave() {
+            updateSaveIndicator('saving');
+            
+            try {
+                await saveToLocalStorage();
+                hasUnsavedChanges = false;
+                updateSaveIndicator('saved');
+            } catch (error) {
+                console.error('Auto-save failed:', error);
+                updateSaveIndicator('error');
+                // Attempt backup save
+                tryBackupSave();
+            }
+        }
+
+        // Save to localStorage
+        async function saveToLocalStorage() {
             const variation = variationsData.variations[currentVariation];
             
             // Collect all textarea values
@@ -400,14 +664,74 @@
                 }
             });
             
-            // In a real application, you would save to a server
-            // For now, we'll just save to localStorage
-            localStorage.setItem('variationsData', JSON.stringify(variationsData));
+            // Try to save to localStorage
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(variationsData));
+                
+                // Save timestamp
+                localStorage.setItem(STORAGE_KEY + '_timestamp', new Date().toISOString());
+                
+                // Save history
+                localStorage.setItem(HISTORY_KEY, JSON.stringify({
+                    undoStack: undoStack.slice(-20), // Save last 20 states
+                    currentVariation: currentVariation
+                }));
+                
+                // Update original data after successful save
+                originalData = JSON.parse(JSON.stringify(variation.content));
+                
+                return true;
+            } catch (e) {
+                // localStorage might be full or disabled
+                throw new Error('localStorage save failed: ' + e.message);
+            }
+        }
+
+        // Try backup save if localStorage fails
+        function tryBackupSave() {
+            try {
+                // Try sessionStorage as fallback
+                sessionStorage.setItem(BACKUP_KEY, JSON.stringify(variationsData));
+                showStatus('Saved to temporary storage. Download backup recommended.', 'error');
+            } catch (e) {
+                // If all storage fails, prompt download
+                showStatus('Storage failed. Please download backup.', 'error');
+                downloadBackup();
+            }
+        }
+
+        // Download backup as JSON
+        function downloadBackup() {
+            const dataStr = JSON.stringify(variationsData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
             
-            showStatus('Changes saved successfully!', 'success');
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+            const filename = `vibe-kanban-backup-${timestamp}.json`;
             
-            // Update original data after successful save
-            originalData = JSON.parse(JSON.stringify(variation.content));
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+            showStatus('Backup downloaded successfully', 'success');
+        }
+
+        // Manual save changes
+        async function saveChanges() {
+            updateSaveIndicator('saving');
+            
+            try {
+                await saveToLocalStorage();
+                hasUnsavedChanges = false;
+                updateSaveIndicator('saved');
+                showStatus('Changes saved successfully!', 'success');
+            } catch (error) {
+                console.error('Save failed:', error);
+                updateSaveIndicator('error');
+                tryBackupSave();
+            }
         }
 
         // Reset to default values
@@ -451,23 +775,99 @@
 
         // Check for saved data in localStorage on load
         function checkLocalStorage() {
-            const savedData = localStorage.getItem('variationsData');
+            const savedData = localStorage.getItem(STORAGE_KEY);
             if (savedData) {
                 try {
                     variationsData = JSON.parse(savedData);
                     populateVariationSelector();
                     loadVariation('default');
+                    
+                    // Load history if available
+                    const historyData = localStorage.getItem(HISTORY_KEY);
+                    if (historyData) {
+                        const history = JSON.parse(historyData);
+                        undoStack = history.undoStack || [];
+                        updateUndoRedoButtons();
+                    }
+                    
+                    // Show last save time
+                    const timestamp = localStorage.getItem(STORAGE_KEY + '_timestamp');
+                    if (timestamp) {
+                        const date = new Date(timestamp);
+                        const timeAgo = getTimeAgo(date);
+                        updateSaveIndicator('saved');
+                        document.getElementById('save-status').textContent = `Last saved ${timeAgo}`;
+                    }
                 } catch (error) {
                     console.error('Error loading saved data:', error);
-                    loadVariations(); // Fall back to loading from file
+                    // Try backup
+                    const backupData = sessionStorage.getItem(BACKUP_KEY);
+                    if (backupData) {
+                        variationsData = JSON.parse(backupData);
+                        populateVariationSelector();
+                        loadVariation('default');
+                        showStatus('Loaded from backup storage', 'success');
+                    } else {
+                        loadVariations(); // Fall back to loading from file
+                    }
                 }
             } else {
                 loadVariations();
             }
         }
 
+        // Get relative time string
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            
+            if (seconds < 60) return 'just now';
+            if (seconds < 3600) return Math.floor(seconds / 60) + ' min ago';
+            if (seconds < 86400) return Math.floor(seconds / 3600) + ' hours ago';
+            return Math.floor(seconds / 86400) + ' days ago';
+        }
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + Z for undo
+            if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+                e.preventDefault();
+                undo();
+            }
+            
+            // Ctrl/Cmd + Y or Ctrl/Cmd + Shift + Z for redo
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+                e.preventDefault();
+                redo();
+            }
+            
+            // Ctrl/Cmd + S for save
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                saveChanges();
+            }
+        });
+
+        // Warn before leaving with unsaved changes
+        window.addEventListener('beforeunload', (e) => {
+            if (hasUnsavedChanges) {
+                const message = 'You have unsaved changes. Are you sure you want to leave?';
+                e.returnValue = message;
+                return message;
+            }
+        });
+
         // Initialize on page load
-        document.addEventListener('DOMContentLoaded', checkLocalStorage);
+        document.addEventListener('DOMContentLoaded', () => {
+            checkLocalStorage();
+            updateUndoRedoButtons();
+            
+            // Periodic auto-save every 30 seconds if there are changes
+            setInterval(() => {
+                if (hasUnsavedChanges) {
+                    autoSave();
+                }
+            }, 30000);
+        });
     </script>
 </body>
 </html>
