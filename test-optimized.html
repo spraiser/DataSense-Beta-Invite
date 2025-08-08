@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimized Exit Intent Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: system-ui, -apple-system, sans-serif;
+            min-height: 200vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        h1 {
+            text-align: center;
+        }
+        
+        .status {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .console-output {
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            height: 200px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        
+        /* Exit popup styles */
+        #exit-popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 99999;
+        }
+        
+        #exit-popup {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            color: #333;
+        }
+        
+        #exit-popup h2 {
+            margin-top: 0;
+            color: #ef4444;
+        }
+        
+        #exit-popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translate(-50%, -40%);
+            }
+            to { 
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+        
+        /* Beta form for testing */
+        #beta-form {
+            margin: 20px 0;
+        }
+        
+        input[type="email"] {
+            padding: 10px;
+            width: 100%;
+            max-width: 300px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 5px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        
+        button:hover {
+            background: #2563eb;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Optimized Exit Intent Test</h1>
+        
+        <div class="status">
+            <h2>Production Optimizations Applied:</h2>
+            <ul>
+                <li>✅ All debug console.log statements removed (conditional logging only)</li>
+                <li>✅ Test button only shows in development mode</li>
+                <li>✅ Environment detection (production vs development)</li>
+                <li>✅ Debounced scroll events (50ms throttle)</li>
+                <li>✅ Passive event listeners for better performance</li>
+                <li>✅ Lazy loading of ROI calculator</li>
+                <li>✅ Optimized event tracking with requestAnimationFrame</li>
+                <li>✅ Throttled mouse move events</li>
+            </ul>
+            
+            <h3>Test Instructions:</h3>
+            <p>Move your mouse to the top of the browser window to trigger the exit intent popup.</p>
+            <p>In production mode, console logs will be minimal.</p>
+            <p>Current Mode: <strong id="mode">Detecting...</strong></p>
+        </div>
+        
+        <!-- Test form -->
+        <form id="beta-form">
+            <input type="email" name="email" placeholder="Enter email to test">
+            <button type="submit">Submit</button>
+        </form>
+        
+        <h3>Console Output:</h3>
+        <div id="console" class="console-output">
+            Waiting for events...
+        </div>
+    </div>
+    
+    <!-- Exit Popup -->
+    <div id="exit-popup-overlay">
+        <div id="exit-popup">
+            <button id="exit-popup-close">×</button>
+            <h2>Wait! Don't Leave Yet!</h2>
+            <p>Get exclusive access to our beta program.</p>
+            
+            <!-- ROI Calculator inputs for testing lazy loading -->
+            <div style="margin: 20px 0;">
+                <label>Revenue: <input type="number" id="revenue-input" value="50000"></label><br>
+                <label>Hours: <input type="number" id="hours-input" value="40"></label><br>
+                <div>Savings: <span id="savings-value">calculating...</span></div>
+                <div>Time saved: <span id="time-value">calculating...</span></div>
+                <div>ROI: <span id="roi-value">calculating...</span></div>
+            </div>
+            
+            <button class="btn-primary">Get Started</button>
+        </div>
+    </div>
+    
+    <!-- Include the optimized script -->
+    <script src="script-professional.js"></script>
+    
+    <!-- Test monitoring script -->
+    <script>
+        // Monitor console output
+        const logContainer = document.getElementById('console');
+        const originalLog = console.log;
+        let logCount = 0;
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            logCount++;
+            const entry = document.createElement('div');
+            entry.textContent = `[${logCount}] ${args.join(' ')}`;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        };
+        
+        // Detect mode
+        const isDevelopment = window.location.hostname === 'localhost' || 
+                            window.location.protocol === 'file:';
+        document.getElementById('mode').textContent = isDevelopment ? 'Development' : 'Production';
+        document.getElementById('mode').style.color = isDevelopment ? '#fbbf24' : '#10b981';
+        
+        // Performance monitoring
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const perfData = performance.timing;
+                const loadTime = perfData.loadEventEnd - perfData.navigationStart;
+                console.log(`Page load time: ${loadTime}ms`);
+                
+                // Check if test button exists
+                const testBtn = document.getElementById('test-exit-popup-btn');
+                if (testBtn) {
+                    console.log('Test button found (development mode)');
+                } else {
+                    console.log('Test button not present (production mode)');
+                }
+                
+                // Count event listeners
+                const eventCounts = performance.getEntriesByType('measure').length;
+                console.log(`Performance measures: ${eventCounts}`);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

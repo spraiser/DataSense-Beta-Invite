@@ -30,16 +30,22 @@
         },
 
         trackEvent: function(eventName, properties = {}) {
-            // Google Analytics
-            if (typeof gtag !== 'undefined') {
-                gtag('event', eventName, {
-                    ...properties,
-                    session_id: this.sessionId,
-                    timestamp: Date.now()
-                });
-            }
-            
-            console.log('Event tracked:', eventName, properties);
+            // Batch event tracking for better performance
+            requestAnimationFrame(() => {
+                // Google Analytics
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', eventName, {
+                        ...properties,
+                        session_id: this.sessionId,
+                        timestamp: Date.now()
+                    });
+                }
+                
+                // Only log in development mode
+                if (window.location.hostname === 'localhost' || window.location.protocol === 'file:') {
+                    console.log('Event tracked:', eventName, properties);
+                }
+            });
         },
 
         initScrollTracking: function() {
@@ -382,41 +388,50 @@
         const ctaButton = overlay ? overlay.querySelector('.btn-primary') : null;
         let exitIntentShown = null;
         
+        // Environment check
+        const isDevelopment = window.location.hostname === 'localhost' || 
+                            window.location.protocol === 'file:';
+        
+        // Debug logging helper
+        function debugLog(message, data) {
+            if (isDevelopment) {
+                console.log(message, data);
+            }
+        }
+        
         // Try to access sessionStorage (may fail on file:// protocol in some browsers)
         try {
             exitIntentShown = sessionStorage.getItem('exitIntentShown');
-            console.log('SessionStorage access successful');
+            debugLog('SessionStorage access successful');
         } catch (e) {
-            console.warn('SessionStorage not available:', e.message);
+            debugLog('SessionStorage not available:', e.message);
             // Fall back to a variable that will reset on page reload
             exitIntentShown = window.__exitIntentShown || null;
         }
         
         // Debug logging
-        console.log('Exit intent init:', {
+        debugLog('Exit intent init:', {
             overlay: !!overlay,
             closeBtn: !!closeBtn,
             exitIntentShown: exitIntentShown,
             protocol: window.location.protocol,
-            url: window.location.href,
-            overlayElement: overlay,
-            closeBtnElement: closeBtn
+            url: window.location.href
         });
         
         if (!overlay) {
-            console.error('Exit popup overlay element not found');
+            debugLog('Exit popup overlay element not found');
             return;
         }
         
         // Log if exit intent was previously shown but don't return early
         if (exitIntentShown) {
-            console.log('Exit intent already shown in this session - listeners will still be attached');
+            debugLog('Exit intent already shown in this session - listeners will still be attached');
         }
         
         // Close popup functionality
         if (closeBtn) {
             closeBtn.addEventListener('click', () => {
-                console.log('Exit popup close button clicked');
+                debugLog('Exit popup close button clicked');
                 overlay.style.display = 'none';
                 // Track close event
                 window.DataSenseTracking.trackEvent('exit_intent_closed', {
@@ -425,12 +440,12 @@
                 });
             });
         } else {
-            console.warn('Exit popup close button not found');
+            debugLog('Exit popup close button not found');
         }
         
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) {
-                console.log('Exit popup overlay clicked');
+                debugLog('Exit popup overlay clicked');
                 overlay.style.display = 'none';
                 // Track dismiss event
                 window.DataSenseTracking.trackEvent('exit_intent_dismissed', {
@@ -443,7 +458,7 @@
         // Track CTA button clicks
         if (ctaButton) {
             ctaButton.addEventListener('click', () => {
-                console.log('Exit popup CTA button clicked');
+                debugLog('Exit popup CTA button clicked');
                 // Track CTA click
                 window.DataSenseTracking.trackEvent('exit_intent_cta_clicked', {
                     button_text: ctaButton.textContent,
@@ -463,41 +478,44 @@
                 });
             });
         } else {
-            console.warn('Exit popup CTA button not found');
+            debugLog('Exit popup CTA button not found');
         }
         
-        // Add mouse position tracking for debugging
+        // Add mouse position tracking with throttling
         let lastMouseY = 0;
+        let mouseMoveThrottle = null;
         document.addEventListener('mousemove', (e) => {
             lastMouseY = e.clientY;
-            // Log when mouse is very close to top edge
-            if (e.clientY <= 5 && e.clientY >= 0) {
-                console.log(`Mouse near top edge: clientY=${e.clientY}`);
+            // Throttle debug logging
+            if (isDevelopment && e.clientY <= 5 && e.clientY >= 0) {
+                if (!mouseMoveThrottle) {
+                    mouseMoveThrottle = setTimeout(() => {
+                        debugLog(`Mouse near top edge: clientY=${e.clientY}`);
+                        mouseMoveThrottle = null;
+                    }, 100);
+                }
             }
-        });
+        }, { passive: true });
         
         // Desktop exit intent - mouse leave
         document.addEventListener('mouseleave', (e) => {
             // Enhanced logging for debugging
-            console.log('Mouse leave detected:', { 
+            debugLog('Mouse leave detected:', { 
                 clientY: e.clientY, 
                 exitIntentShown: exitIntentShown,
-                exitIntentShownType: typeof exitIntentShown,
-                isAtTop: e.clientY <= 0,
-                protocol: window.location.protocol,
-                timestamp: new Date().toISOString()
+                isAtTop: e.clientY <= 0
             });
             
             // Check if exit intent was already shown (handle both string and boolean)
             const wasShown = exitIntentShown === 'true' || exitIntentShown === true;
             
             if (e.clientY <= 0 && !wasShown) {
-                console.log('Triggering exit popup on mouse leave - conditions met');
+                debugLog('Triggering exit popup on mouse leave - conditions met');
                 showExitPopup('mouse_leave');
             } else if (e.clientY <= 0 && wasShown) {
-                console.log('Mouse left at top but exit intent already shown');
+                debugLog('Mouse left at top but exit intent already shown');
             } else if (e.clientY > 0) {
-                console.log(`Mouse left but not at top (clientY: ${e.clientY})`);
+                debugLog(`Mouse left but not at top (clientY: ${e.clientY})`);
             }
         });
         
@@ -505,11 +523,10 @@
         document.addEventListener('mouseout', (e) => {
             // Check if mouse actually left the document
             if (e.relatedTarget === null || e.relatedTarget === undefined) {
-                console.log('Mouseout detected (left document):', {
+                debugLog('Mouseout detected (left document):', {
                     clientY: e.clientY,
                     lastMouseY: lastMouseY,
-                    exitIntentShown: exitIntentShown,
-                    relatedTarget: e.relatedTarget
+                    exitIntentShown: exitIntentShown
                 });
                 
                 const wasShown = exitIntentShown === 'true' || exitIntentShown === true;
@@ -518,7 +535,7 @@
                 const effectiveY = e.clientY <= 0 ? e.clientY : lastMouseY;
                 
                 if (effectiveY <= 10 && !wasShown) {
-                    console.log('Triggering exit popup via mouseout - conditions met');
+                    debugLog('Triggering exit popup via mouseout - conditions met');
                     showExitPopup('mouse_out');
                 }
             }
@@ -529,8 +546,8 @@
         let scrollVelocity = 0;
         let scrollTimer = null;
         
-        // Enhanced scroll detection with proper velocity calculation
-        window.addEventListener('scroll', () => {
+        // Throttled scroll handler for better performance
+        function handleScroll() {
             const currentScrollY = window.scrollY;
             // Calculate velocity - positive value means scrolling up
             scrollVelocity = lastScrollY - currentScrollY;
@@ -544,7 +561,7 @@
                 
                 // Trigger on fast upward scroll near top of page on mobile devices
                 if (scrollVelocity > 50 && currentScrollY < 200 && !wasShown && window.innerWidth <= 768) {
-                    console.log('Mobile scroll trigger detected:', { 
+                    debugLog('Mobile scroll trigger detected:', { 
                         scrollVelocity, 
                         currentScrollY, 
                         windowWidth: window.innerWidth 
@@ -555,6 +572,17 @@
             }, 100); // Small debounce to avoid false positives
             
             lastScrollY = currentScrollY;
+        }
+        
+        // Throttle scroll event for better performance
+        let scrollThrottle = null;
+        window.addEventListener('scroll', () => {
+            if (!scrollThrottle) {
+                scrollThrottle = setTimeout(() => {
+                    handleScroll();
+                    scrollThrottle = null;
+                }, 50);
+            }
         }, { passive: true });
         
         // Enhanced mobile back button detection with popstate
@@ -567,7 +595,7 @@
             const wasShown = exitIntentShown === 'true' || exitIntentShown === true;
             
             if (!wasShown && window.innerWidth <= 768) {
-                console.log('Mobile back button detected via popstate');
+                debugLog('Mobile back button detected via popstate');
                 showExitPopup('mobile_back_button');
                 // Re-push state to prevent actual navigation
                 setTimeout(() => {
@@ -607,7 +635,7 @@
                     !wasShown && 
                     window.innerWidth <= 768) {
                     
-                    console.log('Touch swipe exit intent detected:', {
+                    debugLog('Touch swipe exit intent detected:', {
                         swipeDistance,
                         swipeVelocity,
                         swipeTime,
@@ -620,8 +648,13 @@
         }, { passive: true });
         
         function showExitPopup(triggerType = 'mouse_leave') {
-            console.log('showExitPopup called - trigger:', triggerType);
+            debugLog('showExitPopup called - trigger:', triggerType);
             exitIntentShown = true;
+            
+            // Lazy load ROI calculator when popup is shown
+            if (window.initROICalculator) {
+                window.initROICalculator();
+            }
             
             // Store time when popup was shown for tracking duration
             window.exitIntentShownTime = Date.now();
@@ -630,17 +663,23 @@
             try {
                 sessionStorage.setItem('exitIntentShown', 'true');
             } catch (e) {
-                console.warn('Could not save to sessionStorage:', e.message);
+                debugLog('Could not save to sessionStorage:', e.message);
                 window.__exitIntentShown = true;
             }
             
             overlay.style.display = 'block';
-            console.log('Exit popup displayed - trigger:', triggerType);
+            debugLog('Exit popup displayed - trigger:', triggerType);
             overlay.style.animation = 'fadeIn 0.3s ease-out';
             const popup = document.getElementById('exit-popup');
             if (popup) {
                 popup.style.animation = 'slideUp 0.4s ease-out';
             }
+            
+            // Remove unnecessary event listeners after popup is shown
+            if (mouseMoveThrottle) {
+                clearTimeout(mouseMoveThrottle);
+            }
+            
             window.DataSenseTracking.trackEvent('exit_intent_shown', {
                 trigger_type: triggerType,
                 page_depth: Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100),
@@ -652,8 +691,8 @@
         document.addEventListener('keydown', (e) => {
             const wasShown = exitIntentShown === 'true' || exitIntentShown === true;
             
-            if (e.key === 'Escape' && window.location.protocol === 'file:' && !wasShown) {
-                console.log('Escape key trigger for exit popup (file:// protocol)');
+            if (e.key === 'Escape' && isDevelopment && !wasShown) {
+                debugLog('Escape key trigger for exit popup (development mode)');
                 showExitPopup('escape_key');
             }
         });
@@ -669,7 +708,7 @@
                 } catch (e) {
                     window.__showOnReturn = true;
                 }
-                console.log('Tab hidden - will show popup on return');
+                debugLog('Tab hidden - will show popup on return');
             } else if (document.visibilityState === 'visible') {
                 // Check if we should show popup on return
                 let shouldShow = false;
@@ -686,7 +725,7 @@
                 }
                 
                 if (shouldShow && !wasShown) {
-                    console.log('Tab visible again - showing exit popup');
+                    debugLog('Tab visible again - showing exit popup');
                     showExitPopup('tab_visibility');
                 }
             }
@@ -702,7 +741,7 @@
                 inactivityTimer = setTimeout(() => {
                     const stillNotShown = exitIntentShown !== 'true' && exitIntentShown !== true;
                     if (stillNotShown && document.visibilityState === 'visible') {
-                        console.log('Inactivity trigger: 30 seconds of inactivity detected');
+                        debugLog('Inactivity trigger: 30 seconds of inactivity detected');
                         showExitPopup('inactivity_30s');
                     }
                 }, 30000); // 30 seconds
@@ -719,7 +758,9 @@
         
         // FALLBACK TRIGGER 2: Scroll depth trigger (70% of page)
         let scrollDepthTriggered = false;
-        window.addEventListener('scroll', () => {
+        let scrollDepthThrottle = null;
+        
+        function checkScrollDepth() {
             if (scrollDepthTriggered) return;
             
             const scrollPercent = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
@@ -727,8 +768,17 @@
             
             if (scrollPercent > 70 && !wasShown) {
                 scrollDepthTriggered = true;
-                console.log('Scroll depth trigger: ' + scrollPercent.toFixed(1) + '% of page scrolled');
+                debugLog('Scroll depth trigger: ' + scrollPercent.toFixed(1) + '% of page scrolled');
                 showExitPopup('scroll_depth_70');
+            }
+        }
+        
+        window.addEventListener('scroll', () => {
+            if (!scrollDepthThrottle && !scrollDepthTriggered) {
+                scrollDepthThrottle = setTimeout(() => {
+                    checkScrollDepth();
+                    scrollDepthThrottle = null;
+                }, 200);
             }
         }, { passive: true });
         
@@ -755,7 +805,7 @@
                     blurTimeout = setTimeout(() => {
                         const stillNotShown = exitIntentShown !== 'true' && exitIntentShown !== true;
                         if (stillNotShown && !emailInput.value) {
-                            console.log('Form abandonment trigger: Email field abandoned');
+                            debugLog('Form abandonment trigger: Email field abandoned');
                             showExitPopup('form_abandonment');
                         }
                     }, 3000);
@@ -771,9 +821,9 @@
             });
         });
         
-        // Add debug test button for file:// protocol only
-        if (window.location.protocol === 'file:') {
-            console.log('Adding test button for exit popup (file:// protocol detected)');
+        // Add debug test button for development mode only
+        if (isDevelopment) {
+            debugLog('Adding test button for exit popup (development mode detected)');
             const testButton = document.createElement('button');
             testButton.id = 'test-exit-popup-btn';
             testButton.textContent = 'Test Exit Popup';
@@ -805,93 +855,98 @@
             });
             
             testButton.addEventListener('click', () => {
-                console.log('Test button clicked - triggering exit popup');
+                debugLog('Test button clicked - triggering exit popup');
                 exitIntentShown = false; // Reset flag to allow testing multiple times
                 showExitPopup('test_button');
             });
             
             document.body.appendChild(testButton);
-            console.log('Test button added to page');
+            debugLog('Test button added to page');
             
-            // Add helpful instructions for file:// protocol
-            console.log('%c📋 Exit Intent Testing Instructions (file:// protocol)', 'color: #4CAF50; font-weight: bold; font-size: 14px');
+            // Add helpful instructions for development mode
+            console.log('%c📋 Exit Intent Testing Instructions (development mode)', 'color: #4CAF50; font-weight: bold; font-size: 14px');
             console.log('%c1. Press Escape key to trigger the exit popup', 'color: #2196F3');
             console.log('%c2. Switch tabs and return to trigger the popup', 'color: #2196F3');
             console.log('%c3. Click the red "Test Exit Popup" button', 'color: #2196F3');
-            console.log('%c4. Try moving mouse to top of window (may not work on file://)', 'color: #FF9800');
+            console.log('%c4. Try moving mouse to top of window', 'color: #2196F3');
         }
         
-        // ROI Calculator
-        const revenueInput = document.getElementById('revenue-input');
-        const hoursInput = document.getElementById('hours-input');
-        const savingsValue = document.getElementById('savings-value');
-        const timeValue = document.getElementById('time-value');
-        const roiValue = document.getElementById('roi-value');
+        // Lazy load ROI Calculator
+        let roiCalculatorInitialized = false;
         
-        function calculateROI() {
-            const revenue = parseFloat(revenueInput.value) || 50000;
-            const hours = parseFloat(hoursInput.value) || 40;
+        function initROICalculator() {
+            if (roiCalculatorInitialized) return;
+            roiCalculatorInitialized = true;
             
-            // Calculate savings (2% of revenue improvement + hourly rate savings)
-            const revenueSavings = revenue * 0.02;
-            const timeSavings = hours * 0.875; // Save 87.5% of time
-            const hourlySavings = timeSavings * 75; // $75/hour average
-            const totalSavings = revenueSavings + hourlySavings;
+            const revenueInput = document.getElementById('revenue-input');
+            const hoursInput = document.getElementById('hours-input');
+            const savingsValue = document.getElementById('savings-value');
+            const timeValue = document.getElementById('time-value');
+            const roiValue = document.getElementById('roi-value');
             
-            // Calculate ROI (assuming $299/month cost)
-            const monthlyROI = ((totalSavings - 299) / 299) * 100;
+            if (!revenueInput || !hoursInput) return;
             
-            savingsValue.textContent = `$${Math.round(totalSavings).toLocaleString()}`;
-            timeValue.textContent = `${Math.round(timeSavings)} hours`;
-            roiValue.textContent = `${Math.round(monthlyROI)}%`;
+            function calculateROI() {
+                const revenue = parseFloat(revenueInput.value) || 50000;
+                const hours = parseFloat(hoursInput.value) || 40;
+                
+                // Calculate savings (2% of revenue improvement + hourly rate savings)
+                const revenueSavings = revenue * 0.02;
+                const timeSavings = hours * 0.875; // Save 87.5% of time
+                const hourlySavings = timeSavings * 75; // $75/hour average
+                const totalSavings = revenueSavings + hourlySavings;
+                
+                // Calculate ROI (assuming $299/month cost)
+                const monthlyROI = ((totalSavings - 299) / 299) * 100;
+                
+                savingsValue.textContent = `$${Math.round(totalSavings).toLocaleString()}`;
+                timeValue.textContent = `${Math.round(timeSavings)} hours`;
+                roiValue.textContent = `${Math.round(monthlyROI)}%`;
+                
+                // Track ROI calculation
+                window.DataSenseTracking.trackEvent('roi_calculated', {
+                    revenue_input: revenue,
+                    hours_input: hours,
+                    total_savings: Math.round(totalSavings),
+                    time_savings: Math.round(timeSavings),
+                    monthly_roi: Math.round(monthlyROI)
+                });
+            }
             
-            // Track ROI calculation
-            window.DataSenseTracking.trackEvent('roi_calculated', {
-                revenue_input: revenue,
-                hours_input: hours,
-                total_savings: Math.round(totalSavings),
-                time_savings: Math.round(timeSavings),
-                monthly_roi: Math.round(monthlyROI)
-            });
-        }
-        
-        if (revenueInput && hoursInput) {
-            // Track ROI calculator interactions
-            let lastInteractionTime = 0;
-            const interactionDebounce = 1000; // Track at most once per second
+            // Debounced input handlers
+            let calcTimeout = null;
+            let trackTimeout = null;
+            
+            function handleInput(field, value) {
+                // Debounce calculation
+                if (calcTimeout) clearTimeout(calcTimeout);
+                calcTimeout = setTimeout(calculateROI, 100);
+                
+                // Debounce tracking
+                if (trackTimeout) clearTimeout(trackTimeout);
+                trackTimeout = setTimeout(() => {
+                    window.DataSenseTracking.trackEvent('roi_calculator_interaction', {
+                        field_changed: field,
+                        interaction_type: 'input',
+                        value: value
+                    });
+                }, 1000);
+            }
             
             revenueInput.addEventListener('input', (e) => {
-                calculateROI();
-                const now = Date.now();
-                if (now - lastInteractionTime > interactionDebounce) {
-                    lastInteractionTime = now;
-                    window.DataSenseTracking.trackEvent('roi_calculator_interaction', {
-                        field_changed: 'revenue',
-                        interaction_type: 'input'
-                    });
-                    window.DataSenseTracking.trackEvent('roi_calculator_revenue_input', {
-                        revenue_value: parseFloat(e.target.value) || 0
-                    });
-                }
+                handleInput('revenue', parseFloat(e.target.value) || 0);
             });
             
             hoursInput.addEventListener('input', (e) => {
-                calculateROI();
-                const now = Date.now();
-                if (now - lastInteractionTime > interactionDebounce) {
-                    lastInteractionTime = now;
-                    window.DataSenseTracking.trackEvent('roi_calculator_interaction', {
-                        field_changed: 'hours',
-                        interaction_type: 'input'
-                    });
-                    window.DataSenseTracking.trackEvent('roi_calculator_hours_input', {
-                        hours_value: parseFloat(e.target.value) || 0
-                    });
-                }
+                handleInput('hours', parseFloat(e.target.value) || 0);
             });
             
             calculateROI(); // Initial calculation
         }
+        
+        // Initialize ROI calculator when popup is about to show
+        // This will be called from showExitPopup
+        window.initROICalculator = initROICalculator;
     }
 
     // Enhanced Mobile Sticky CTA with Smart Scroll Trigger
@@ -1264,7 +1319,7 @@
                     const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
                     // This will fail due to cross-origin but that's OK
                 } catch(e) {
-                    console.log('Iframe loaded but cross-origin restrictions apply');
+                    // Silently handle cross-origin restrictions
                 }
                 
                 // Track successful demo load
@@ -1344,9 +1399,14 @@
     
     // Initialize everything when DOM is ready
     function init() {
-        console.log('Main init() function called');
-        console.log('Current protocol:', window.location.protocol);
-        console.log('Document readyState:', document.readyState);
+        const isDevelopment = window.location.hostname === 'localhost' || 
+                            window.location.protocol === 'file:';
+        
+        if (isDevelopment) {
+            console.log('Main init() function called');
+            console.log('Current protocol:', window.location.protocol);
+            console.log('Document readyState:', document.readyState);
+        }
         
         window.DataSenseTracking.init();
         initSmoothScrolling();
@@ -1360,7 +1420,9 @@
         // New features
         initCountdownTimer();
         initSpotsRemaining();
-        console.log('About to call initExitIntent()');
+        if (isDevelopment) {
+            console.log('About to call initExitIntent()');
+        }
         initExitIntent();
         initMobileStickyButton();
         initCountingAnimation();
