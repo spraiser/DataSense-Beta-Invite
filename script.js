@@ -1467,24 +1467,137 @@ inal integration testing and validation
         runFinalValidation: runFinalValidation
     };
 
-// Live Product Demo Iframe Handler
+// Live Product Demo Iframe Handler with Auto-Login
 document.addEventListener('DOMContentLoaded', function() {
     const iframe = document.getElementById('snapclass-demo-iframe');
     const loadingDiv = document.querySelector('.iframe-loading');
     
     if (iframe) {
+        // Get demo credentials from data attributes
+        const demoEmail = iframe.getAttribute('data-demo-email');
+        const demoPassword = iframe.getAttribute('data-demo-password');
+        
+        let loginAttempted = false;
+        let loadTimeout;
+        
+        // Set a timeout for loading
+        loadTimeout = setTimeout(function() {
+            if (loadingDiv && !loginAttempted) {
+                loadingDiv.innerHTML = `
+                    <p style="color: #ef4444; font-size: 16px; font-weight: 600;">Demo Loading...</p>
+                    <p style="color: #666; margin-top: 10px;">If the demo doesn't load, 
+                    <a href="https://snapclass.ai/login" target="_blank" style="color: #2563eb; text-decoration: underline;">
+                        click here to open SnapClass.ai
+                    </a></p>
+                `;
+            }
+        }, 15000); // 15 second timeout
+        
         // Hide loading spinner when iframe loads
         iframe.addEventListener('load', function() {
-            if (loadingDiv) {
-                loadingDiv.style.display = 'none';
+            clearTimeout(loadTimeout);
+            
+            // Attempt auto-login after iframe loads
+            if (!loginAttempted && demoEmail && demoPassword) {
+                loginAttempted = true;
+                
+                // Try to auto-fill and submit login form
+                setTimeout(function() {
+                    try {
+                        // Send message to iframe for auto-login
+                        iframe.contentWindow.postMessage({
+                            action: 'autoLogin',
+                            email: demoEmail,
+                            password: demoPassword
+                        }, 'https://snapclass.ai');
+                        
+                        // Alternative: Try to fill form fields directly if same-origin allows
+                        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                        if (iframeDoc) {
+                            const emailField = iframeDoc.querySelector('input[type="email"], input[name="email"], input[id*="email"]');
+                            const passwordField = iframeDoc.querySelector('input[type="password"], input[name="password"], input[id*="password"]');
+                            const submitButton = iframeDoc.querySelector('button[type="submit"], input[type="submit"], button[id*="login"]');
+                            
+                            if (emailField && passwordField) {
+                                emailField.value = demoEmail;
+                                passwordField.value = demoPassword;
+                                
+                                // Trigger input events
+                                emailField.dispatchEvent(new Event('input', { bubbles: true }));
+                                passwordField.dispatchEvent(new Event('input', { bubbles: true }));
+                                
+                                // Try to submit the form
+                                if (submitButton) {
+                                    submitButton.click();
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        // Cross-origin restrictions - this is expected
+                        console.log('Auto-login attempted via postMessage');
+                    }
+                    
+                    // Hide loading after attempting login
+                    if (loadingDiv) {
+                        setTimeout(function() {
+                            loadingDiv.style.display = 'none';
+                        }, 2000);
+                    }
+                }, 1500); // Wait 1.5 seconds for page to fully load
+            } else {
+                // Hide loading immediately if no auto-login
+                if (loadingDiv) {
+                    loadingDiv.style.display = 'none';
+                }
             }
         });
         
         // Handle iframe error
         iframe.addEventListener('error', function() {
+            clearTimeout(loadTimeout);
             if (loadingDiv) {
-                loadingDiv.innerHTML = '<p>Unable to load demo. Please try again later.</p>';
+                loadingDiv.innerHTML = `
+                    <p style="color: #ef4444; font-weight: 600;">Unable to load embedded demo</p>
+                    <a href="https://snapclass.ai/login" target="_blank" 
+                       style="display: inline-block; margin-top: 16px; padding: 12px 24px; 
+                              background: #2563eb; color: white; text-decoration: none; 
+                              border-radius: 8px; font-weight: 600;">
+                        Open SnapClass.ai Demo →
+                    </a>
+                    <p style="color: #666; margin-top: 12px; font-size: 14px;">
+                        Demo credentials will be provided after opening
+                    </p>
+                `;
             }
         });
+        
+        // Add fallback button for manual access
+        const container = document.querySelector('.iframe-container');
+        if (container && !container.querySelector('.demo-fallback')) {
+            const fallbackDiv = document.createElement('div');
+            fallbackDiv.className = 'demo-fallback';
+            fallbackDiv.style.cssText = 'text-align: center; margin-top: 20px;';
+            fallbackDiv.innerHTML = `
+                <p style="color: #666; font-size: 14px; margin-bottom: 12px;">
+                    Having trouble with the embedded demo?
+                </p>
+                <a href="https://snapclass.ai/login" target="_blank" 
+                   style="display: inline-block; padding: 10px 20px; 
+                          background: #f3f4f6; color: #1a1a2e; text-decoration: none; 
+                          border-radius: 6px; font-weight: 500; border: 1px solid #e5e7eb;">
+                    Open Demo in New Tab
+                </a>
+                <details style="margin-top: 12px; text-align: left; max-width: 500px; margin-left: auto; margin-right: auto;">
+                    <summary style="cursor: pointer; color: #6366f1; font-size: 14px;">
+                        View Demo Credentials
+                    </summary>
+                    <div style="margin-top: 8px; padding: 12px; background: #f9fafb; border-radius: 6px; font-size: 14px;">
+                        <p style="margin: 4px 0;"><strong>Email:</strong> ${demoEmail}</p>
+                        <p style="margin: 4px 0;"><strong>Password:</strong> ${demoPassword}</p>
+                    </div>
+                </details>
+            `;
+            container.appendChild(fallbackDiv);
+        }
     }
 });
