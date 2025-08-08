@@ -1,0 +1,88 @@
+{
+  "variations": {
+    "default": {
+      "name": "Original",
+      "content": {
+        "hero_title": "See what's really driving customer behavior",
+        "hero_subtitle": "Get instant insights that actually make sense",
+        "cta_primary": "Start Free Trial",
+        "cta_secondary": "Watch Demo",
+        "value_prop_1": "Understand your customers better",
+        "value_prop_2": "Make data-driven decisions",
+        "value_prop_3": "Grow your business faster",
+        "testimonial_highlight": "This changed how we understand our customers",
+        "feature_highlight": "Real-time analytics that anyone can understand"
+      }
+    },
+    "trust": {
+      "name": "Trust & Simplicity",
+      "content": {
+        "hero_title": "Simple insights anyone can understand",
+        "hero_subtitle": "No complicated dashboards. Just clear answers.",
+        "cta_primary": "Try It Free",
+        "cta_secondary": "See How It Works",
+        "value_prop_1": "Setup in 5 minutes, no training needed",
+        "value_prop_2": "Plain English insights, not confusing charts",
+        "value_prop_3": "Trusted by 10,000+ businesses like yours",
+        "testimonial_highlight": "Finally, analytics that make sense to everyone on our team",
+        "feature_highlight": "So simple, your whole team will actually use it"
+      }
+    },
+    "roi": {
+      "name": "ROI Focus",
+      "content": {
+        "hero_title": "Turn your data into revenue",
+        "hero_subtitle": "Average customer sees 3.2x ROI in 90 days",
+        "cta_primary": "Calculate Your ROI",
+        "cta_secondary": "View Case Studies",
+        "value_prop_1": "Increase conversion rates by 47% on average",
+        "value_prop_2": "Reduce churn by up to 31%",
+        "value_prop_3": "Save 15 hours per week on reporting",
+        "testimonial_highlight": "We doubled our revenue in 6 months using these insights",
+        "feature_highlight": "Proven to deliver measurable business impact"
+      }
+    },
+    "empowerment": {
+      "name": "Empowerment",
+      "content": {
+        "hero_title": "Give your entire team superpowers",
+        "hero_subtitle": "Transform everyone into a data expert",
+        "cta_primary": "Empower Your Team",
+        "cta_secondary": "Book a Workshop",
+        "value_prop_1": "No more waiting for the data team",
+        "value_prop_2": "Everyone gets their own insights dashboard",
+        "value_prop_3": "Make confident decisions without guessing",
+        "testimonial_highlight": "Now everyone on our team makes data-driven decisions",
+        "feature_highlight": "Democratize data across your entire organization"
+      }
+    },
+    "speed": {
+      "name": "Speed & Efficiency",
+      "content": {
+        "hero_title": "Get answers in seconds, not weeks",
+        "hero_subtitle": "Stop waiting for reports. Start moving faster.",
+        "cta_primary": "Start Moving Faster",
+        "cta_secondary": "See Live Demo",
+        "value_prop_1": "Real-time insights, updated every second",
+        "value_prop_2": "5-minute setup, instant results",
+        "value_prop_3": "Automated reports save you 20+ hours/week",
+        "testimonial_highlight": "What used to take days now takes minutes",
+        "feature_highlight": "Lightning-fast insights at your fingertips"
+      }
+    },
+    "competition": {
+      "name": "Competitive Edge",
+      "content": {
+        "hero_title": "Stay ahead while competitors guess",
+        "hero_subtitle": "Know what customers want before they do",
+        "cta_primary": "Get Your Edge",
+        "cta_secondary": "Compare Solutions",
+        "value_prop_1": "Spot trends 3x faster than traditional tools",
+        "value_prop_2": "Predict customer behavior with 89% accuracy",
+        "value_prop_3": "Outsmart competitors with deeper insights",
+        "testimonial_highlight": "We're now 6 months ahead of our competition",
+        "feature_highlight": "The unfair advantage your business needs"
+      }
+    }
+  }
+}
