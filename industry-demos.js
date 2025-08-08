@@ -381,6 +381,11 @@ ORDER BY correlation DESC;`,
                     industry: industryKey
                 });
             }
+            
+            // Track with UserEngagement if available
+            if (window.UserEngagement) {
+                window.UserEngagement.trackSignal('industryChanges');
+            }
         }
 
         scrollToMainDemo() {

@@ -775,6 +775,41 @@
         function showExitPopup(triggerType = 'mouse_leave') {
             debugLog('showExitPopup called - trigger:', triggerType);
             
+            // Use the progressive exit system if available
+            if (window.EnhancedExitPopup) {
+                debugLog('Using EnhancedExitPopup system');
+                const shown = window.EnhancedExitPopup.show(triggerType);
+                if (shown) {
+                    exitIntentShown = true;
+                    window.exitIntentShownTime = Date.now();
+                    
+                    // Try to use sessionStorage, fall back to window variable
+                    try {
+                        sessionStorage.setItem('exitIntentShown', 'true');
+                    } catch (e) {
+                        debugLog('Could not save to sessionStorage:', e.message);
+                        window.__exitIntentShown = true;
+                    }
+                    
+                    // Apply animations
+                    overlay.style.animation = 'fadeIn 0.3s ease-out';
+                    const popup = document.getElementById('exit-popup');
+                    if (popup) {
+                        popup.style.animation = 'slideUp 0.4s ease-out';
+                    }
+                    
+                    // Initialize ROI calculator if needed
+                    const content = window.ProgressiveExitContent.getContent();
+                    if (content.showCalculator && window.initROICalculator) {
+                        window.initROICalculator();
+                    }
+                }
+                return;
+            }
+            
+            // Fallback to original implementation if progressive system not available
+            debugLog('Falling back to original exit popup implementation');
+            
             // Get current industry from sessionStorage
             const currentIndustry = sessionStorage.getItem('currentIndustry') || 'ecommerce';
             

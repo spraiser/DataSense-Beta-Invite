@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progressive Exit Intent Test Suite</title>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            min-height: 100vh;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 32px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .test-section h2 {
+            font-size: 20px;
+            margin-bottom: 16px;
+            color: #fbbf24;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .metric-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #10b981;
+        }
+        
+        .metric-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 4px;
+        }
+        
+        .test-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        
+        .test-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .test-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .test-btn.primary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+        }
+        
+        .test-btn.danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            border: none;
+        }
+        
+        .log-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 16px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+        
+        .log-entry {
+            margin-bottom: 8px;
+            padding: 4px 8px;
+            border-left: 3px solid #60a5fa;
+        }
+        
+        .log-entry.success {
+            border-left-color: #10b981;
+        }
+        
+        .log-entry.warning {
+            border-left-color: #fbbf24;
+        }
+        
+        .log-entry.error {
+            border-left-color: #ef4444;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-indicator.active {
+            background: #10b981;
+        }
+        
+        .status-indicator.inactive {
+            background: #6b7280;
+            animation: none;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .engagement-bar {
+            background: rgba(0, 0, 0, 0.2);
+            height: 40px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        .engagement-fill {
+            background: linear-gradient(90deg, #10b981 0%, #fbbf24 50%, #ef4444 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 12px;
+        }
+        
+        .engagement-label {
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Progressive Exit Intent Test Suite</h1>
+        
+        <!-- Engagement Metrics -->
+        <div class="test-section">
+            <h2>📊 Engagement Metrics</h2>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value" id="engagement-score">0</div>
+                    <div class="metric-label">Engagement Score</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="engagement-level">Cold</div>
+                    <div class="metric-label">Engagement Level</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="popup-views">0</div>
+                    <div class="metric-label">Popup Views</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="content-type">-</div>
+                    <div class="metric-label">Next Content Type</div>
+                </div>
+            </div>
+            
+            <div class="engagement-bar">
+                <div class="engagement-fill" id="engagement-bar">
+                    <span class="engagement-label" id="engagement-percent">0%</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Simulation Actions -->
+        <div class="test-section">
+            <h2>🎮 Simulate User Actions</h2>
+            <div class="test-actions">
+                <button class="test-btn" onclick="simulateAction('pageView')">📄 Page View</button>
+                <button class="test-btn" onclick="simulateAction('demoInteraction')">🖱️ Demo Click</button>
+                <button class="test-btn" onclick="simulateAction('industryChange')">🔄 Change Industry</button>
+                <button class="test-btn" onclick="simulateAction('copyCredentials')">📋 Copy Credentials</button>
+                <button class="test-btn" onclick="simulateAction('formInteraction')">📝 Form Interaction</button>
+                <button class="test-btn" onclick="simulateAction('scrollDeep')">📜 Scroll Deep (70%)</button>
+                <button class="test-btn" onclick="simulateAction('timeOnPage')">⏱️ Add 30s Time</button>
+                <button class="test-btn" onclick="simulateAction('queryView')">🔍 View Query</button>
+                <button class="test-btn primary" onclick="triggerExitPopup()">🚪 Trigger Exit Popup</button>
+                <button class="test-btn danger" onclick="resetAll()">🔄 Reset Everything</button>
+            </div>
+        </div>
+        
+        <!-- Progressive Content Preview -->
+        <div class="test-section">
+            <h2>👁️ Progressive Content Preview</h2>
+            <div id="content-preview" style="padding: 20px; background: rgba(0, 0, 0, 0.2); border-radius: 8px;">
+                <p>Content will be shown here based on engagement level and view count...</p>
+            </div>
+        </div>
+        
+        <!-- Test Log -->
+        <div class="test-section">
+            <h2>📜 Test Log</h2>
+            <div class="log-container" id="test-log">
+                <div class="log-entry">Test suite initialized. Ready for testing...</div>
+            </div>
+        </div>
+        
+        <!-- System Status -->
+        <div class="test-section">
+            <h2>🔧 System Status</h2>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div>
+                    <span class="status-indicator" id="engagement-status"></span>
+                    UserEngagement Module
+                </div>
+                <div>
+                    <span class="status-indicator" id="progressive-status"></span>
+                    Progressive Content Module
+                </div>
+                <div>
+                    <span class="status-indicator" id="reset-status"></span>
+                    Smart Reset Module
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Include the actual scripts -->
+    <script src="progressive-exit-intent.js"></script>
+    
+    <script>
+        // Test suite implementation
+        const TestSuite = {
+            init() {
+                this.log('Test suite initializing...', 'info');
+                this.checkModules();
+                this.updateMetrics();
+                this.setupAutoRefresh();
+                this.log('Test suite ready!', 'success');
+            },
+            
+            checkModules() {
+                // Check if modules are loaded
+                const modules = {
+                    'engagement-status': window.UserEngagement,
+                    'progressive-status': window.ProgressiveExitContent,
+                    'reset-status': window.SmartExitReset
+                };
+                
+                Object.entries(modules).forEach(([id, module]) => {
+                    const indicator = document.getElementById(id);
+                    if (module) {
+                        indicator.classList.add('active');
+                        this.log(`✓ ${id.replace('-status', '')} module loaded`, 'success');
+                    } else {
+                        indicator.classList.add('inactive');
+                        this.log(`✗ ${id.replace('-status', '')} module not found`, 'error');
+                    }
+                });
+            },
+            
+            updateMetrics() {
+                if (!window.UserEngagement) return;
+                
+                // Update engagement score
+                const score = window.UserEngagement.score;
+                document.getElementById('engagement-score').textContent = score;
+                
+                // Update engagement level
+                const level = window.UserEngagement.getEngagementLevel();
+                document.getElementById('engagement-level').textContent = 
+                    level.charAt(0).toUpperCase() + level.slice(1);
+                
+                // Update engagement bar
+                const maxScore = 100;
+                const percentage = Math.min((score / maxScore) * 100, 100);
+                document.getElementById('engagement-bar').style.width = percentage + '%';
+                document.getElementById('engagement-percent').textContent = Math.round(percentage) + '%';
+                
+                // Update popup views
+                const views = parseInt(sessionStorage.getItem('exitPopupViewCount') || 0);
+                document.getElementById('popup-views').textContent = views;
+                
+                // Get next content type
+                if (window.ProgressiveExitContent) {
+                    const content = window.ProgressiveExitContent.getContent();
+                    document.getElementById('content-type').textContent = content.type.replace(/_/g, ' ');
+                    this.updateContentPreview(content);
+                }
+            },
+            
+            updateContentPreview(content) {
+                const preview = document.getElementById('content-preview');
+                preview.innerHTML = `
+                    <h3 style="color: #fbbf24; margin-bottom: 12px;">${content.title}</h3>
+                    <p style="color: rgba(255,255,255,0.9); margin-bottom: 16px;">${content.subtitle}</p>
+                    <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 6px;">
+                        <strong>Content Type:</strong> ${content.type}<br>
+                        <strong>CTA Text:</strong> ${content.ctaText}<br>
+                        <strong>Show Calculator:</strong> ${content.showCalculator ? 'Yes' : 'No'}<br>
+                        <strong>Engagement Level:</strong> ${window.UserEngagement.getEngagementLevel()}<br>
+                        <strong>View Count:</strong> ${sessionStorage.getItem('exitPopupViewCount') || 0}
+                    </div>
+                `;
+            },
+            
+            setupAutoRefresh() {
+                // Auto-refresh metrics every second
+                setInterval(() => this.updateMetrics(), 1000);
+            },
+            
+            log(message, type = 'info') {
+                const logContainer = document.getElementById('test-log');
+                const entry = document.createElement('div');
+                entry.className = `log-entry ${type}`;
+                const timestamp = new Date().toLocaleTimeString();
+                entry.textContent = `[${timestamp}] ${message}`;
+                logContainer.insertBefore(entry, logContainer.firstChild);
+                
+                // Keep only last 50 entries
+                while (logContainer.children.length > 50) {
+                    logContainer.removeChild(logContainer.lastChild);
+                }
+            }
+        };
+        
+        // Simulation functions
+        function simulateAction(action) {
+            if (!window.UserEngagement) {
+                TestSuite.log('UserEngagement module not loaded!', 'error');
+                return;
+            }
+            
+            switch(action) {
+                case 'pageView':
+                    window.UserEngagement.trackSignal('pageViews');
+                    TestSuite.log('Simulated: Page view tracked', 'success');
+                    break;
+                case 'demoInteraction':
+                    window.UserEngagement.trackSignal('demoInteractions');
+                    TestSuite.log('Simulated: Demo interaction tracked', 'success');
+                    break;
+                case 'industryChange':
+                    window.UserEngagement.trackSignal('industryChanges');
+                    TestSuite.log('Simulated: Industry change tracked', 'success');
+                    break;
+                case 'copyCredentials':
+                    window.UserEngagement.trackSignal('credentialsCopied', true);
+                    TestSuite.log('Simulated: Credentials copied', 'success');
+                    break;
+                case 'formInteraction':
+                    window.UserEngagement.trackSignal('formInteractions');
+                    TestSuite.log('Simulated: Form interaction tracked', 'success');
+                    break;
+                case 'scrollDeep':
+                    window.UserEngagement.signals.scrollDepth = 75;
+                    window.UserEngagement.calculateScore();
+                    window.UserEngagement.saveSignals();
+                    TestSuite.log('Simulated: Deep scroll (75%)', 'success');
+                    break;
+                case 'timeOnPage':
+                    window.UserEngagement.trackSignal('timeOnPage', 30);
+                    TestSuite.log('Simulated: +30 seconds on page', 'success');
+                    break;
+                case 'queryView':
+                    const query = 'Test Query ' + Math.floor(Math.random() * 100);
+                    window.UserEngagement.trackSignal('queriesViewed', query);
+                    TestSuite.log(`Simulated: Viewed query "${query}"`, 'success');
+                    break;
+            }
+            
+            TestSuite.updateMetrics();
+        }
+        
+        function triggerExitPopup() {
+            if (!window.EnhancedExitPopup) {
+                TestSuite.log('EnhancedExitPopup module not loaded!', 'error');
+                return;
+            }
+            
+            // Create a minimal popup structure if it doesn't exist
+            if (!document.getElementById('exit-popup-overlay')) {
+                const overlay = document.createElement('div');
+                overlay.id = 'exit-popup-overlay';
+                overlay.style.cssText = 'display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); z-index:9999;';
+                
+                const popup = document.createElement('div');
+                popup.id = 'exit-popup';
+                popup.style.cssText = 'position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:40px; border-radius:12px; max-width:600px; color:black;';
+                popup.innerHTML = `
+                    <h3 class="exit-popup-title" style="font-size:24px; margin-bottom:12px;">Test Popup</h3>
+                    <p class="exit-popup-subtitle" style="margin-bottom:20px;">Test subtitle</p>
+                    <div class="roi-calculator" style="display:none;">ROI Calculator Placeholder</div>
+                    <button class="btn-primary" style="background:#10b981; color:white; padding:12px 24px; border:none; border-radius:6px; cursor:pointer;">CTA Button</button>
+                `;
+                
+                overlay.appendChild(popup);
+                document.body.appendChild(overlay);
+                
+                // Close on overlay click
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        overlay.style.display = 'none';
+                    }
+                });
+            }
+            
+            const shown = window.EnhancedExitPopup.show('test_trigger');
+            if (shown) {
+                TestSuite.log('Exit popup triggered successfully!', 'success');
+                
+                // Show the overlay for visual feedback
+                const overlay = document.getElementById('exit-popup-overlay');
+                if (overlay) {
+                    overlay.style.display = 'block';
+                    setTimeout(() => {
+                        overlay.style.display = 'none';
+                        TestSuite.log('Exit popup closed automatically after 3 seconds', 'info');
+                    }, 3000);
+                }
+            } else {
+                TestSuite.log('Exit popup not shown (max views reached or conditions not met)', 'warning');
+            }
+            
+            TestSuite.updateMetrics();
+        }
+        
+        function resetAll() {
+            // Reset UserEngagement
+            if (window.UserEngagement) {
+                window.UserEngagement.reset();
+                TestSuite.log('UserEngagement reset', 'success');
+            }
+            
+            // Reset sessionStorage
+            sessionStorage.removeItem('exitPopupViewCount');
+            sessionStorage.removeItem('lastExitPopupTime');
+            sessionStorage.removeItem('engagementSignals');
+            sessionStorage.removeItem('engagementScore');
+            sessionStorage.removeItem('currentIndustry');
+            sessionStorage.removeItem('exitIntentShown');
+            TestSuite.log('Session storage cleared', 'success');
+            
+            TestSuite.updateMetrics();
+            TestSuite.log('Full reset complete!', 'success');
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            TestSuite.init();
+        });
+    </script>
+</body>
+</html>

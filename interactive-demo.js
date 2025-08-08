@@ -287,6 +287,13 @@ ORDER BY LTV_CAC_ratio DESC;`
                     // Update active state
                     this.container.querySelectorAll('.query-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
+                    
+                    // Track with UserEngagement if available
+                    if (window.UserEngagement) {
+                        window.UserEngagement.trackSignal('demoInteractions');
+                        const queryText = btn.textContent || query;
+                        window.UserEngagement.trackSignal('queriesViewed', queryText);
+                    }
                 });
             });
 
