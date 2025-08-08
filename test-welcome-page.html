@@ -291,6 +291,52 @@
         </div>
     </div>
     
+    <!-- Exit Intent Popup -->
+    <div class="exit-popup-overlay" id="exit-popup-overlay" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999;">
+        <div class="exit-popup" id="exit-popup" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 40px; border-radius: 20px; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+            <button class="exit-popup-close" id="exit-popup-close" style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 30px; cursor: pointer; color: #666;">&times;</button>
+            
+            <div class="exit-popup-content">
+                <h3 class="exit-popup-title" style="font-size: 28px; margin-bottom: 10px; color: #1a1a1a;">Wait! Calculate Your ROI First</h3>
+                <p class="exit-popup-subtitle" style="font-size: 16px; color: #666; margin-bottom: 30px;">See exactly how much DataSense could save your business</p>
+                
+                <div class="roi-calculator">
+                    <div class="calc-input-group" style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 5px; color: #333; font-size: 14px;">Monthly revenue ($)</label>
+                        <input type="number" id="revenue-input" placeholder="50,000" value="50000" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px;">
+                    </div>
+                    
+                    <div class="calc-input-group" style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 5px; color: #333; font-size: 14px;">Hours spent on reports/month</label>
+                        <input type="number" id="hours-input" placeholder="40" value="40" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px;">
+                    </div>
+                    
+                    <div class="roi-results" id="roi-results" style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                        <div class="roi-metric" style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                            <span class="roi-label" style="color: #666; font-size: 14px;">Potential Monthly Savings</span>
+                            <span class="roi-value" id="savings-value" style="font-size: 20px; font-weight: bold; color: #10b981;">$8,000</span>
+                        </div>
+                        <div class="roi-metric" style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                            <span class="roi-label" style="color: #666; font-size: 14px;">Time Saved Per Month</span>
+                            <span class="roi-value" id="time-value" style="font-size: 20px; font-weight: bold; color: #10b981;">35 hours</span>
+                        </div>
+                        <div class="roi-metric highlight" style="display: flex; justify-content: space-between; padding-top: 15px; border-top: 2px solid #e5e7eb;">
+                            <span class="roi-label" style="color: #333; font-size: 16px; font-weight: 600;">Annual ROI</span>
+                            <span class="roi-value" id="roi-value" style="font-size: 28px; font-weight: bold; color: #10b981;">412%</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary btn-large" onclick="document.getElementById('exit-popup-overlay').style.display='none';" style="width: 100%; padding: 15px; background: #4f46e5; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: 600; cursor: pointer;">
+                        Claim Your ROI Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Include the main script with exit intent functionality -->
+    <script src="script-professional.js"></script>
+    
     <script>
         function clearTestData() {
             // Clear cookies
