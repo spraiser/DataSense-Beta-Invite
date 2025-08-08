@@ -54,6 +54,19 @@
         </div>
     </nav>
 
+    <!-- Variation Switcher -->
+    <div class="variation-switcher" id="variation-switcher">
+        <span class="variation-label">Variation:</span>
+        <div class="variation-pills">
+            <button class="variation-pill active" data-variation="default">Original</button>
+            <button class="variation-pill" data-variation="trust">Trust</button>
+            <button class="variation-pill" data-variation="roi">ROI</button>
+            <button class="variation-pill" data-variation="empowerment">Empowerment</button>
+            <button class="variation-pill" data-variation="speed">Speed</button>
+            <button class="variation-pill" data-variation="competition">Competition</button>
+        </div>
+    </div>
+
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-container">
@@ -806,11 +819,58 @@
     </div>
 
     <!-- Scripts -->
+    <script src="content-injection.js"></script>
     <script src="ab-testing-framework.js"></script>
     <script src="progressive-exit-intent.js"></script>
     <script src="script-professional.js"></script>
     <script src="interactive-demo.js"></script>
     <script src="industry-demos.js"></script>
     <script src="demo-performance.js"></script>
+    <script>
+        // Variation Switcher functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize content injection
+            window.contentInjection = new ContentInjection();
+            
+            // Handle variation switching
+            const variationPills = document.querySelectorAll('.variation-pill');
+            
+            variationPills.forEach(pill => {
+                pill.addEventListener('click', function() {
+                    const variation = this.dataset.variation;
+                    
+                    // Update active state
+                    variationPills.forEach(p => p.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Apply variation
+                    if (window.contentInjection) {
+                        window.contentInjection.applyVariation(variation);
+                    }
+                    
+                    // Save to sessionStorage
+                    sessionStorage.setItem('selectedVariation', variation);
+                });
+            });
+            
+            // Restore saved variation on page load
+            const savedVariation = sessionStorage.getItem('selectedVariation');
+            if (savedVariation) {
+                // Update active button
+                variationPills.forEach(pill => {
+                    if (pill.dataset.variation === savedVariation) {
+                        pill.classList.add('active');
+                    } else {
+                        pill.classList.remove('active');
+                    }
+                });
+                
+                // Apply the saved variation
+                if (window.contentInjection) {
+                    window.contentInjection.applyVariation(savedVariation);
+                }
+            }
+        });
+    </script>
 </body>
 </html>
