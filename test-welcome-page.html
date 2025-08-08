@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Warm Referral Landing Page</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #f7fafc;
+        }
+        
+        h1 {
+            color: #1a202c;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 16px;
+        }
+        
+        .test-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .test-links {
+            display: grid;
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .test-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: #edf2f7;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #2d3748;
+            transition: all 0.3s ease;
+        }
+        
+        .test-link:hover {
+            background: #e2e8f0;
+            transform: translateX(5px);
+        }
+        
+        .link-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .link-description {
+            font-size: 14px;
+            color: #718096;
+            margin-top: 4px;
+        }
+        
+        .referrer-name {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .test-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        
+        .metrics-display {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .metric-label {
+            font-weight: 600;
+            color: #4a5568;
+        }
+        
+        .metric-value {
+            color: #2d3748;
+            font-family: monospace;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-active {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .status-pending {
+            background: #ed8936;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Warm Referral Landing Page Test Suite</h1>
+    
+    <div class="test-section">
+        <h2>📋 Test Scenarios</h2>
+        <p>Click on any link below to test different referrer scenarios:</p>
+        
+        <div class="test-links">
+            <a href="welcome.html?ref=maria_rodriguez" class="test-link">
+                <div>
+                    <div class="link-title">
+                        <span class="referrer-name">Maria Rodriguez</span> - Professional Services
+                    </div>
+                    <div class="link-description">
+                        CEO of Rodriguez Consulting • 47% revenue growth • Client reporting use case
+                    </div>
+                </div>
+                <span>→</span>
+            </a>
+            
+            <a href="welcome.html?ref=john_chen" class="test-link">
+                <div>
+                    <div class="link-title">
+                        <span class="referrer-name">John Chen</span> - Manufacturing
+                    </div>
+                    <div class="link-description">
+                        Operations Director at Chen Manufacturing • 32% cost reduction • Operations optimization
+                    </div>
+                </div>
+                <span>→</span>
+            </a>
+            
+            <a href="welcome.html?ref=sarah_thompson" class="test-link">
+                <div>
+                    <div class="link-title">
+                        <span class="referrer-name">Sarah Thompson</span> - Retail
+                    </div>
+                    <div class="link-description">
+                        VP of Sales at Thompson Retail Group • 23% sales increase • Sales analytics
+                    </div>
+                </div>
+                <span>→</span>
+            </a>
+            
+            <a href="welcome.html?ref=michael_davis" class="test-link">
+                <div>
+                    <div class="link-title">
+                        <span class="referrer-name">Michael Davis</span> - Marketing Agency
+                    </div>
+                    <div class="link-description">
+                        Founder of Davis Digital Agency • 2.8x ROI improvement • Marketing analytics
+                    </div>
+                </div>
+                <span>→</span>
+            </a>
+            
+            <a href="welcome.html?ref=emily_wilson" class="test-link">
+                <div>
+                    <div class="link-title">
+                        <span class="referrer-name">Emily Wilson</span> - Healthcare
+                    </div>
+                    <div class="link-description">
+                        Administrator at Wilson Healthcare • 35% wait time reduction • Operations analytics
+                    </div>
+                </div>
+                <span>→</span>
+            </a>
+            
+            <a href="welcome.html" class="test-link">
+                <div>
+                    <div class="link-title">
+                        Unknown Referrer (Fallback)
+                    </div>
+                    <div class="link-description">
+                        Tests the default experience when no referrer code is provided
+                    </div>
+                </div>
+                <span>→</span>
+            </a>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🎯 URL Path Testing</h2>
+        <p>Test the dynamic routing pattern /welcome/[referrer-code]:</p>
+        
+        <div style="margin-top: 20px;">
+            <a href="welcome/maria_rodriguez" class="test-button">Test Path: /welcome/maria_rodriguez</a>
+            <a href="welcome/john_chen" class="test-button">Test Path: /welcome/john_chen</a>
+            <a href="welcome/sarah_thompson" class="test-button">Test Path: /welcome/sarah_thompson</a>
+        </div>
+        
+        <p style="margin-top: 20px; color: #718096; font-size: 14px;">
+            Note: Path-based routing requires server configuration. These links test the URL structure.
+        </p>
+    </div>
+    
+    <div class="test-section">
+        <h2>📊 A/B Test Monitor</h2>
+        <p>Current test configuration and results:</p>
+        
+        <div class="metrics-display">
+            <div class="metric-row">
+                <span class="metric-label">Test Name:</span>
+                <span class="metric-value">warm_referral_landing</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Status:</span>
+                <span class="status-badge status-active">Active</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Traffic Split:</span>
+                <span class="metric-value">Control: 30% | Warm Referral: 70%</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Target Conversion Rate:</span>
+                <span class="metric-value">15% → 35% (2.3x improvement)</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label">Success Metrics:</span>
+                <span class="metric-value">Conversion rate, Time to conversion, Referral-to-referral rate</span>
+            </div>
+        </div>
+        
+        <button onclick="clearTestData()" class="test-button" style="margin-top: 20px; background: #f56565;">
+            Clear Test Data & Cookies
+        </button>
+    </div>
+    
+    <div class="test-section">
+        <h2>✅ Key Features to Verify</h2>
+        <ul style="line-height: 2;">
+            <li>✓ Dynamic personalization based on referrer code</li>
+            <li>✓ Referrer badge with name and company</li>
+            <li>✓ Customized testimonial and success metrics</li>
+            <li>✓ Industry-specific features and templates</li>
+            <li>✓ 25% exclusive partner discount messaging</li>
+            <li>✓ Countdown timer for urgency (48 hours)</li>
+            <li>✓ Cookie-based referral tracking (30 days)</li>
+            <li>✓ A/B test variant assignment and tracking</li>
+            <li>✓ Form submission with referral attribution</li>
+            <li>✓ Responsive design on mobile devices</li>
+        </ul>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔍 Console Commands</h2>
+        <p>Open browser console on the landing page and use these commands:</p>
+        
+        <div style="background: #2d3748; color: #48bb78; padding: 20px; border-radius: 8px; font-family: monospace; margin-top: 20px;">
+            <div style="margin-bottom: 12px;">// Check A/B test variant</div>
+            <div style="color: white;">referralABTest.variant</div>
+            
+            <div style="margin-bottom: 12px; margin-top: 20px;">// Get test results</div>
+            <div style="color: white;">referralABTest.getResults()</div>
+            
+            <div style="margin-bottom: 12px; margin-top: 20px;">// View current metrics</div>
+            <div style="color: white;">referralABTest.metrics</div>
+            
+            <div style="margin-bottom: 12px; margin-top: 20px;">// Get referrer code</div>
+            <div style="color: white;">referralABTest.getReferrerCode()</div>
+        </div>
+    </div>
+    
+    <script>
+        function clearTestData() {
+            // Clear cookies
+            document.cookie.split(";").forEach(function(c) { 
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+            });
+            
+            // Clear storage
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            alert('Test data cleared! Refresh the page to start fresh.');
+        }
+    </script>
+</body>
+</html>
