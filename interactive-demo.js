@@ -188,7 +188,19 @@ ORDER BY LTV_CAC_ratio DESC;`
                 <div class="demo-container">
                     <div class="demo-header">
                         <h3>Try DataSense Live</h3>
-                        <p>Click any question below or type your own</p>
+                        <p>Click any question below or select your industry for tailored examples</p>
+                    </div>
+                    
+                    <div class="industry-selector">
+                        <label class="industry-label">Select Your Industry:</label>
+                        <select class="industry-dropdown" id="industry-select">
+                            <option value="general">General Business</option>
+                            <option value="ecommerce">E-commerce</option>
+                            <option value="saas">SaaS / Software</option>
+                            <option value="services">Professional Services</option>
+                            <option value="restaurant">Restaurant / Food</option>
+                            <option value="healthcare">Healthcare</option>
+                        </select>
                     </div>
                     
                     <div class="query-selector">
@@ -324,6 +336,8 @@ ORDER BY LTV_CAC_ratio DESC;`
             const thinkingElement = this.container.querySelector('.thinking-process');
             const stepsContainer = this.container.querySelector('.thinking-steps');
             const sqlCode = this.container.querySelector('.sql-display code');
+            const sqlDisplay = this.container.querySelector('.sql-display');
+            const sqlToggle = this.container.querySelector('.sql-toggle');
             
             thinkingElement.style.display = 'block';
             stepsContainer.innerHTML = '';
@@ -345,14 +359,19 @@ ORDER BY LTV_CAC_ratio DESC;`
                 await this.delay(100);
                 stepElement.style.opacity = '1';
                 stepElement.style.transform = 'translateX(0)';
-                await this.delay(400);
+                await this.delay(300);
             }
             
-            // Show SQL with syntax highlighting
+            // Automatically expand SQL display to show transparency
             sqlCode.textContent = thinking.sql;
             this.highlightSQL(sqlCode);
             
-            await this.delay(500);
+            // Auto-expand SQL after steps complete
+            await this.delay(200);
+            sqlDisplay.classList.add('expanded');
+            sqlToggle.textContent = 'Hide Details';
+            
+            await this.delay(800);
         }
 
         async showResults(queryData) {
@@ -626,7 +645,7 @@ ORDER BY LTV_CAC_ratio DESC;`
     }
 
     function initializeDemo() {
-        // Replace static mockup with interactive demo
+        // Replace static mockup with interactive demo in hero
         const heroVisual = document.querySelector('.hero-visual');
         if (heroVisual) {
             const demoContainer = document.createElement('div');
@@ -636,6 +655,17 @@ ORDER BY LTV_CAC_ratio DESC;`
             
             // Initialize the interactive demo
             new InteractiveDemo(demoContainer);
+        }
+        
+        // Also initialize demo in dedicated section if exists
+        const mainDemoContainer = document.getElementById('main-interactive-demo');
+        if (mainDemoContainer) {
+            const demoWrapper = document.createElement('div');
+            demoWrapper.className = 'interactive-demo-wrapper full-width';
+            mainDemoContainer.appendChild(demoWrapper);
+            
+            // Initialize another instance for the dedicated section
+            new InteractiveDemo(demoWrapper);
         }
     }
 
