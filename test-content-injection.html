@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Injection Module Test</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-content {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        button {
+            padding: 0.5rem 1rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #5a67d8;
+        }
+        select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .status {
+            padding: 1rem;
+            background: #e6fffa;
+            border: 1px solid #81e6d9;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+        .error {
+            background: #fed7d7;
+            border-color: #fc8181;
+        }
+        .success {
+            background: #c6f6d5;
+            border-color: #68d391;
+        }
+        pre {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .test-element {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Content Injection Module Test</h1>
+    
+    <div class="controls">
+        <button onclick="testLoadVariations()">Load Variations</button>
+        <select id="variationSelector" onchange="testApplyVariation(this.value)">
+            <option value="">Select Variation</option>
+            <option value="default">Default</option>
+            <option value="trust">Trust & Simplicity</option>
+            <option value="roi">ROI Focus</option>
+            <option value="empowerment">Empowerment</option>
+            <option value="speed">Speed & Efficiency</option>
+            <option value="competition">Competitive Edge</option>
+        </select>
+        <button onclick="testGetCurrent()">Get Current Variation</button>
+        <button onclick="testSaveVariation()">Save Custom Variation</button>
+    </div>
+
+    <div id="status" class="status">Ready for testing</div>
+
+    <div class="test-section">
+        <h2>Test Elements with data-content-id</h2>
+        <div class="test-content">
+            <h3 data-content-id="hero_title" class="test-element">Original Hero Title</h3>
+            <p data-content-id="hero_subtitle" class="test-element">Original Hero Subtitle</p>
+            <button data-content-id="cta_primary" class="test-element">Original Primary CTA</button>
+            <button data-content-id="cta_secondary" class="test-element">Original Secondary CTA</button>
+            <div data-content-id="value_prop_1" class="test-element">Original Value Prop 1</div>
+            <div data-content-id="value_prop_2" class="test-element">Original Value Prop 2</div>
+            <div data-content-id="value_prop_3" class="test-element">Original Value Prop 3</div>
+            <blockquote data-content-id="testimonial_highlight" class="test-element">Original Testimonial</blockquote>
+            <p data-content-id="feature_highlight" class="test-element">Original Feature Highlight</p>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Output</h2>
+        <pre id="output">Test output will appear here...</pre>
+    </div>
+
+    <script src="content-injection.js"></script>
+    <script>
+        const output = document.getElementById('output');
+        const status = document.getElementById('status');
+
+        function updateStatus(message, type = 'info') {
+            status.className = 'status ' + type;
+            status.textContent = message;
+        }
+
+        function log(message, data = null) {
+            const timestamp = new Date().toLocaleTimeString();
+            let logMessage = `[${timestamp}] ${message}`;
+            if (data) {
+                logMessage += '\n' + JSON.stringify(data, null, 2);
+            }
+            output.textContent = logMessage + '\n\n' + output.textContent;
+        }
+
+        async function testLoadVariations() {
+            updateStatus('Loading variations...', 'info');
+            try {
+                const variations = await contentInjection.loadVariations();
+                if (variations) {
+                    updateStatus('Variations loaded successfully', 'success');
+                    log('Loaded variations:', Object.keys(variations));
+                } else {
+                    updateStatus('Failed to load variations', 'error');
+                    log('Error: Could not load variations');
+                }
+            } catch (error) {
+                updateStatus('Error loading variations', 'error');
+                log('Error:', error.message);
+            }
+        }
+
+        function testApplyVariation(variationId) {
+            if (!variationId) return;
+            
+            updateStatus(`Applying variation: ${variationId}`, 'info');
+            const result = contentInjection.applyVariation(variationId);
+            
+            if (result) {
+                updateStatus(`Variation "${variationId}" applied successfully`, 'success');
+                log(`Applied variation: ${variationId}`);
+            } else {
+                updateStatus(`Failed to apply variation: ${variationId}`, 'error');
+                log(`Error applying variation: ${variationId}`);
+            }
+        }
+
+        function testGetCurrent() {
+            const current = contentInjection.getCurrentVariation();
+            updateStatus(`Current variation: ${typeof current === 'object' ? current.id : current}`, 'info');
+            log('Current variation:', current);
+        }
+
+        async function testSaveVariation() {
+            const customContent = {
+                hero_title: "Custom Test Title",
+                hero_subtitle: "Custom Test Subtitle",
+                cta_primary: "Custom Primary Button",
+                cta_secondary: "Custom Secondary Button"
+            };
+            
+            updateStatus('Saving custom variation...', 'info');
+            const result = await contentInjection.saveVariation('custom_test', customContent);
+            
+            if (result) {
+                updateStatus('Custom variation saved successfully', 'success');
+                log('Saved custom variation:', customContent);
+                
+                const option = document.createElement('option');
+                option.value = 'custom_test';
+                option.textContent = 'Custom Test';
+                document.getElementById('variationSelector').appendChild(option);
+            } else {
+                updateStatus('Failed to save custom variation', 'error');
+                log('Error saving variation');
+            }
+        }
+
+        window.addEventListener('load', async () => {
+            await testLoadVariations();
+            log('Content Injection module loaded and ready');
+        });
+    </script>
+</body>
+</html>
