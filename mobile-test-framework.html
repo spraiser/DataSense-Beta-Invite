@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Mobile Device Testing Framework - Exit Intent Popup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .test-header {
+            background: white;
+            padding: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .device-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+            padding: 8px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        .test-container {
+            padding: 20px;
+            max-width: 100%;
+        }
+
+        .test-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .test-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #333;
+        }
+
+        .test-button {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            margin: 10px 0;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            touch-action: manipulation;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 44px; /* iOS minimum touch target */
+        }
+
+        .test-button:active {
+            transform: scale(0.98);
+            background: #5a67d8;
+        }
+
+        .test-button.secondary {
+            background: #e5e7eb;
+            color: #333;
+        }
+
+        .test-button.danger {
+            background: #ef4444;
+        }
+
+        .scroll-content {
+            height: 2000px;
+            background: linear-gradient(180deg, white 0%, #f3f4f6 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .scroll-marker {
+            height: 100px;
+            margin: 50px 0;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #667eea;
+        }
+
+        .touch-area {
+            background: #f0f9ff;
+            border: 2px dashed #3b82f6;
+            border-radius: 12px;
+            padding: 40px 20px;
+            margin: 20px 0;
+            text-align: center;
+            touch-action: none;
+            position: relative;
+        }
+
+        .touch-feedback {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.3);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            animation: touchRipple 0.6s ease-out;
+            z-index: 10;
+        }
+
+        @keyframes touchRipple {
+            to {
+                transform: translate(-50%, -50%) scale(3);
+                opacity: 0;
+            }
+        }
+
+        .gesture-indicator {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+            margin: 5px;
+        }
+
+        .test-log {
+            background: #1f2937;
+            color: #10b981;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 20px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .log-entry {
+            margin: 4px 0;
+            padding: 4px;
+            border-left: 2px solid #10b981;
+            padding-left: 8px;
+        }
+
+        .log-entry.error {
+            border-left-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .log-entry.warning {
+            border-left-color: #f59e0b;
+            color: #f59e0b;
+        }
+
+        /* Exit Intent Popup Styles */
+        .exit-popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .exit-popup {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 90%;
+            width: 400px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s ease;
+        }
+
+        .exit-popup-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .exit-popup h3 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: #1f2937;
+        }
+
+        .exit-popup p {
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                transform: translate(-50%, -40%);
+                opacity: 0;
+            }
+            to { 
+                transform: translate(-50%, -50%);
+                opacity: 1;
+            }
+        }
+
+        /* ROI Calculator in Popup */
+        .roi-input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            -webkit-appearance: none;
+        }
+
+        .roi-result {
+            background: #f0f9ff;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        .roi-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        /* Status Indicators */
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.active {
+            background: #10b981;
+        }
+
+        .status-indicator.inactive {
+            background: #6b7280;
+        }
+
+        .status-indicator.error {
+            background: #ef4444;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Mobile Sticky CTA */
+        .mobile-sticky-cta {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 12px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 90;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-sticky-cta {
+                display: block;
+            }
+        }
+
+        /* Viewport Meta Test */
+        .viewport-test {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-family: monospace;
+            z-index: 1000;
+        }
+
+        /* Touch Target Visualization */
+        .touch-target-test {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .touch-target {
+            aspect-ratio: 1;
+            background: #e5e7eb;
+            border: 2px solid #9ca3af;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            position: relative;
+        }
+
+        .touch-target.min-size {
+            width: 44px;
+            height: 44px;
+            background: #dcfce7;
+            border-color: #10b981;
+        }
+
+        .touch-target.small {
+            width: 30px;
+            height: 30px;
+            background: #fee2e2;
+            border-color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-header">
+        <h1 style="font-size: 20px; margin-bottom: 8px;">📱 Mobile Testing Framework</h1>
+        <div class="device-info" id="device-info">
+            Detecting device...
+        </div>
+    </div>
+
+    <div class="test-container">
+        <!-- Test Controls -->
+        <div class="test-section">
+            <h2 class="test-title">🎮 Test Controls</h2>
+            <button class="test-button" onclick="testBackButton()">
+                Test Back Button Detection
+            </button>
+            <button class="test-button" onclick="testScrollVelocity()">
+                Test Scroll Velocity Trigger
+            </button>
+            <button class="test-button" onclick="testTouchGestures()">
+                Test Touch Gestures
+            </button>
+            <button class="test-button secondary" onclick="resetTests()">
+                Reset All Tests
+            </button>
+            <button class="test-button danger" onclick="forceShowPopup()">
+                Force Show Popup
+            </button>
+        </div>
+
+        <!-- Touch Testing Area -->
+        <div class="test-section">
+            <h2 class="test-title">👆 Touch Gesture Testing</h2>
+            <div class="touch-area" id="touch-area">
+                <p>Swipe up quickly from bottom to trigger exit intent</p>
+                <p style="margin-top: 10px; font-size: 14px; color: #6b7280;">
+                    Touch and drag to test gestures
+                </p>
+                <div id="gesture-feedback" style="margin-top: 20px;"></div>
+            </div>
+        </div>
+
+        <!-- Touch Target Testing -->
+        <div class="test-section">
+            <h2 class="test-title">🎯 Touch Target Sizes</h2>
+            <p style="margin-bottom: 16px; font-size: 14px; color: #6b7280;">
+                iOS requires minimum 44x44px touch targets
+            </p>
+            <div class="touch-target-test">
+                <div class="touch-target min-size">44x44<br>✅</div>
+                <div class="touch-target min-size">44x44<br>✅</div>
+                <div class="touch-target min-size">44x44<br>✅</div>
+                <div class="touch-target small">30x30<br>❌</div>
+                <div class="touch-target small">30x30<br>❌</div>
+                <div class="touch-target small">30x30<br>❌</div>
+            </div>
+        </div>
+
+        <!-- Scroll Test Area -->
+        <div class="test-section">
+            <h2 class="test-title">📜 Scroll Behavior Testing</h2>
+            <p style="margin-bottom: 16px; font-size: 14px; color: #6b7280;">
+                Scroll down slowly, then scroll up quickly at the top to trigger exit intent
+            </p>
+            <div class="scroll-content">
+                <div class="scroll-marker">Top of content</div>
+                <div class="scroll-marker">25% scroll depth</div>
+                <div class="scroll-marker">50% scroll depth</div>
+                <div class="scroll-marker">75% scroll depth</div>
+                <div class="scroll-marker">Bottom of content</div>
+            </div>
+        </div>
+
+        <!-- Test Log -->
+        <div class="test-section">
+            <h2 class="test-title">📝 Test Log</h2>
+            <div class="test-log" id="test-log">
+                <div class="log-entry">Test framework initialized</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Sticky CTA -->
+    <div class="mobile-sticky-cta">
+        <button class="test-button" style="margin: 0;">
+            Get Early Access →
+        </button>
+    </div>
+
+    <!-- Exit Intent Popup -->
+    <div class="exit-popup-overlay" id="exit-popup-overlay">
+        <div class="exit-popup" id="exit-popup">
+            <button class="exit-popup-close" id="exit-popup-close">×</button>
+            <h3>📱 Mobile Exit Intent Triggered!</h3>
+            <p id="trigger-info">Popup was triggered successfully</p>
+            
+            <div style="margin-top: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-size: 14px;">
+                    Monthly Revenue ($)
+                </label>
+                <input type="number" class="roi-input" id="revenue-input" placeholder="50000" value="50000">
+                
+                <div class="roi-result">
+                    <div style="font-size: 14px; color: #6b7280;">Potential Annual Savings</div>
+                    <div class="roi-value">$96,000</div>
+                </div>
+            </div>
+            
+            <button class="test-button" style="margin-top: 20px;" onclick="closePopup()">
+                Claim Your ROI Now
+            </button>
+        </div>
+    </div>
+
+    <!-- Viewport indicator -->
+    <div class="viewport-test" id="viewport-test">
+        Viewport: --
+    </div>
+
+    <script>
+        // Device Detection
+        function detectDevice() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            const platform = navigator.platform;
+            const maxTouchPoints = navigator.maxTouchPoints || 0;
+            
+            let deviceInfo = {
+                type: 'Unknown',
+                os: 'Unknown',
+                browser: 'Unknown',
+                isMobile: false,
+                isTablet: false,
+                screen: `${window.screen.width}x${window.screen.height}`,
+                viewport: `${window.innerWidth}x${window.innerHeight}`,
+                pixelRatio: window.devicePixelRatio || 1,
+                touchPoints: maxTouchPoints
+            };
+
+            // OS Detection
+            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                deviceInfo.os = 'iOS';
+                deviceInfo.isMobile = true;
+                if (/iPad/.test(userAgent)) {
+                    deviceInfo.type = 'iPad';
+                    deviceInfo.isTablet = true;
+                } else {
+                    deviceInfo.type = 'iPhone';
+                }
+            } else if (/android/i.test(userAgent)) {
+                deviceInfo.os = 'Android';
+                deviceInfo.isMobile = true;
+                if (/tablet/i.test(userAgent) || (window.innerWidth > 600 && window.innerHeight > 600)) {
+                    deviceInfo.type = 'Android Tablet';
+                    deviceInfo.isTablet = true;
+                } else {
+                    deviceInfo.type = 'Android Phone';
+                }
+            } else if (/Mac/.test(platform)) {
+                deviceInfo.os = 'macOS';
+                deviceInfo.type = 'Mac';
+            } else if (/Win/.test(platform)) {
+                deviceInfo.os = 'Windows';
+                deviceInfo.type = 'PC';
+            }
+
+            // Browser Detection
+            if (/CriOS/.test(userAgent)) {
+                deviceInfo.browser = 'Chrome iOS';
+            } else if (/FxiOS/.test(userAgent)) {
+                deviceInfo.browser = 'Firefox iOS';
+            } else if (/Safari/.test(userAgent) && !/Chrome/.test(userAgent)) {
+                deviceInfo.browser = 'Safari';
+            } else if (/Chrome/.test(userAgent)) {
+                deviceInfo.browser = 'Chrome';
+            } else if (/Firefox/.test(userAgent)) {
+                deviceInfo.browser = 'Firefox';
+            } else if (/SamsungBrowser/.test(userAgent)) {
+                deviceInfo.browser = 'Samsung Internet';
+            }
+
+            return deviceInfo;
+        }
+
+        // Initialize device info
+        const deviceInfo = detectDevice();
+        document.getElementById('device-info').innerHTML = `
+            <span class="status-indicator active"></span>
+            ${deviceInfo.type} | ${deviceInfo.os} | ${deviceInfo.browser} | 
+            Screen: ${deviceInfo.screen} | Viewport: ${deviceInfo.viewport} | 
+            DPR: ${deviceInfo.pixelRatio} | Touch: ${deviceInfo.touchPoints}
+        `;
+
+        // Logging function
+        function log(message, type = 'info') {
+            const logContainer = document.getElementById('test-log');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            const timestamp = new Date().toLocaleTimeString();
+            entry.textContent = `[${timestamp}] ${message}`;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            
+            // Also log to console
+            console.log(`[Mobile Test] ${message}`);
+        }
+
+        // Viewport monitoring
+        function updateViewport() {
+            const viewport = `${window.innerWidth}x${window.innerHeight}`;
+            document.getElementById('viewport-test').textContent = `Viewport: ${viewport}`;
+        }
+        
+        window.addEventListener('resize', updateViewport);
+        window.addEventListener('orientationchange', () => {
+            log(`Orientation changed to ${window.orientation}°`);
+            updateViewport();
+        });
+        updateViewport();
+
+        // Exit Intent Implementation
+        let exitIntentShown = false;
+        const overlay = document.getElementById('exit-popup-overlay');
+        const popup = document.getElementById('exit-popup');
+        const closeBtn = document.getElementById('exit-popup-close');
+
+        function showExitPopup(triggerType) {
+            if (exitIntentShown) {
+                log(`Exit intent already shown (trigger: ${triggerType})`, 'warning');
+                return;
+            }
+
+            exitIntentShown = true;
+            overlay.style.display = 'block';
+            document.getElementById('trigger-info').textContent = `Triggered by: ${triggerType}`;
+            log(`Exit popup shown! Trigger: ${triggerType}`, 'success');
+            
+            // Prevent body scroll when popup is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePopup() {
+            overlay.style.display = 'none';
+            document.body.style.overflow = '';
+            log('Exit popup closed');
+        }
+
+        closeBtn.addEventListener('click', closePopup);
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closePopup();
+        });
+
+        // Back Button Detection
+        let backButtonPressed = false;
+        
+        window.history.pushState({page: 1}, '', '');
+        window.history.pushState({page: 2}, '', '');
+        
+        window.addEventListener('popstate', (e) => {
+            if (!backButtonPressed) {
+                backButtonPressed = true;
+                log('Back button pressed!');
+                showExitPopup('Back Button');
+                // Push state again to prevent actual navigation
+                window.history.pushState({page: 2}, '', '');
+            }
+        });
+
+        // Scroll Velocity Detection
+        let lastScrollY = window.scrollY;
+        let lastScrollTime = Date.now();
+        let scrollVelocity = 0;
+        
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            const currentTime = Date.now();
+            const timeDiff = currentTime - lastScrollTime;
+            const scrollDiff = currentScrollY - lastScrollY;
+            
+            if (timeDiff > 0) {
+                scrollVelocity = Math.abs(scrollDiff / timeDiff) * 1000;
+                
+                // Trigger on fast upward scroll near top
+                if (currentScrollY < 100 && scrollDiff < -50 && scrollVelocity > 500) {
+                    log(`Fast upward scroll detected! Velocity: ${scrollVelocity.toFixed(0)}px/s`);
+                    showExitPopup('Scroll Velocity');
+                }
+            }
+            
+            lastScrollY = currentScrollY;
+            lastScrollTime = currentTime;
+        }, { passive: true });
+
+        // Touch Gesture Detection
+        const touchArea = document.getElementById('touch-area');
+        let touchStartY = 0;
+        let touchStartTime = 0;
+
+        touchArea.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+            touchStartTime = Date.now();
+            
+            // Visual feedback
+            const feedback = document.createElement('div');
+            feedback.className = 'touch-feedback';
+            feedback.style.left = e.touches[0].clientX + 'px';
+            feedback.style.top = e.touches[0].clientY + 'px';
+            touchArea.appendChild(feedback);
+            setTimeout(() => feedback.remove(), 600);
+            
+            log(`Touch started at Y: ${touchStartY}`);
+        }, { passive: true });
+
+        touchArea.addEventListener('touchmove', (e) => {
+            const currentY = e.touches[0].clientY;
+            const diffY = currentY - touchStartY;
+            
+            document.getElementById('gesture-feedback').innerHTML = `
+                <span class="gesture-indicator">Y Diff: ${diffY.toFixed(0)}px</span>
+            `;
+        }, { passive: true });
+
+        touchArea.addEventListener('touchend', (e) => {
+            const touchEndY = e.changedTouches[0].clientY;
+            const touchEndTime = Date.now();
+            const swipeDistance = touchStartY - touchEndY;
+            const swipeTime = touchEndTime - touchStartTime;
+            const swipeVelocity = Math.abs(swipeDistance / swipeTime) * 1000;
+            
+            log(`Touch gesture: Distance=${swipeDistance.toFixed(0)}px, Velocity=${swipeVelocity.toFixed(0)}px/s`);
+            
+            // Detect quick upward swipe
+            if (swipeDistance > 100 && swipeVelocity > 500) {
+                log('Quick upward swipe detected!');
+                showExitPopup('Touch Swipe');
+            }
+            
+            document.getElementById('gesture-feedback').innerHTML = `
+                <span class="gesture-indicator">Swipe: ${swipeDistance > 0 ? '↑' : '↓'} ${Math.abs(swipeDistance).toFixed(0)}px</span>
+                <span class="gesture-indicator">Speed: ${swipeVelocity.toFixed(0)}px/s</span>
+            `;
+        }, { passive: true });
+
+        // Test Functions
+        function testBackButton() {
+            log('Testing back button... Press device back button now');
+            window.history.back();
+        }
+
+        function testScrollVelocity() {
+            log('Testing scroll velocity... Scroll down then quickly up');
+            window.scrollTo(0, 200);
+            setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 500);
+        }
+
+        function testTouchGestures() {
+            log('Testing touch gestures... Swipe up quickly in the blue area');
+            touchArea.style.background = '#dbeafe';
+            setTimeout(() => {
+                touchArea.style.background = '#f0f9ff';
+            }, 2000);
+        }
+
+        function resetTests() {
+            exitIntentShown = false;
+            backButtonPressed = false;
+            sessionStorage.clear();
+            log('All tests reset', 'warning');
+        }
+
+        function forceShowPopup() {
+            exitIntentShown = false;
+            showExitPopup('Manual Trigger');
+        }
+
+        // ROI Calculator
+        document.getElementById('revenue-input').addEventListener('input', (e) => {
+            const revenue = parseFloat(e.target.value) || 0;
+            const savings = revenue * 0.16; // 16% average improvement
+            document.querySelector('.roi-value').textContent = `$${savings.toLocaleString()}`;
+        });
+
+        // Page visibility API for mobile
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                log('Page became hidden (user switched apps/tabs)');
+            } else {
+                log('Page became visible again');
+            }
+        });
+
+        // Orientation lock test (if supported)
+        if (screen.orientation) {
+            log(`Current orientation: ${screen.orientation.type}`);
+        }
+
+        // Performance monitoring
+        if (window.performance && window.performance.memory) {
+            setInterval(() => {
+                const memory = window.performance.memory;
+                const used = (memory.usedJSHeapSize / 1048576).toFixed(2);
+                const total = (memory.totalJSHeapSize / 1048576).toFixed(2);
+                console.log(`Memory: ${used}MB / ${total}MB`);
+            }, 5000);
+        }
+
+        log('Mobile testing framework ready!', 'success');
+    </script>
+</body>
+</html>
