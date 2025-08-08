@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Exit Intent Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            min-height: 200vh; /* Make page scrollable */
+            background: linear-gradient(to bottom, #f0f0f0, #e0e0e0);
+        }
+        
+        .content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #333;
+        }
+        
+        .test-info {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .test-info h3 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        
+        .test-info ul {
+            margin: 10px 0;
+        }
+        
+        .scroll-content {
+            margin-top: 50px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        #exit-popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+        }
+        
+        #exit-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        #exit-popup h2 {
+            color: #ff6b6b;
+            margin-top: 0;
+        }
+        
+        #exit-popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .console-log {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: black;
+            color: #0f0;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translate(-50%, -40%); opacity: 0; }
+            to { transform: translate(-50%, -50%); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>Mobile Exit Intent Test Page</h1>
+        
+        <div class="test-info">
+            <h3>Test Instructions:</h3>
+            <ul>
+                <li><strong>Scroll Test:</strong> Scroll down, then quickly scroll up near the top</li>
+                <li><strong>Touch Test:</strong> Swipe down from the top of the page (pull-to-refresh gesture)</li>
+                <li><strong>Back Button Test:</strong> Press the browser back button</li>
+                <li><strong>Desktop Test:</strong> Move mouse to top edge of window</li>
+            </ul>
+        </div>
+        
+        <div class="test-info">
+            <h3>Expected Behaviors:</h3>
+            <ul>
+                <li>Popup should appear only once per session</li>
+                <li>Mobile triggers work on screens ≤768px wide</li>
+                <li>Scroll velocity must be >50px for trigger</li>
+                <li>Touch swipe must be >100px downward from top</li>
+            </ul>
+        </div>
+        
+        <div class="scroll-content">
+            <h2>Scroll down to test scroll-based exit intent</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Keep scrolling down...</p>
+            <br><br><br><br><br><br><br><br><br><br>
+            <p>Now scroll up quickly to trigger the exit intent!</p>
+            <br><br><br><br><br><br><br><br><br><br>
+            <p>More content to enable scrolling...</p>
+        </div>
+    </div>
+    
+    <!-- Exit Popup -->
+    <div id="exit-popup-overlay">
+        <div id="exit-popup">
+            <button id="exit-popup-close">×</button>
+            <h2>Wait! Don't Leave Yet!</h2>
+            <p>Get 25% off your first order!</p>
+            <p style="color: #0066cc; font-weight: bold;">Exit intent triggered successfully!</p>
+        </div>
+    </div>
+    
+    <!-- Console Log Display -->
+    <div class="console-log" id="console-display"></div>
+    
+    <script>
+        // Mock DataSenseTracking
+        window.DataSenseTracking = {
+            trackEvent: function(eventName) {
+                console.log('Tracking event: ' + eventName);
+            }
+        };
+        
+        // Override console.log to display on page
+        const consoleDisplay = document.getElementById('console-display');
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
+            ).join(' ');
+            const timestamp = new Date().toLocaleTimeString();
+            consoleDisplay.innerHTML += `[${timestamp}] ${message}<br>`;
+            consoleDisplay.scrollTop = consoleDisplay.scrollHeight;
+        };
+        
+        // Log initial state
+        console.log('Page loaded. Window width: ' + window.innerWidth + 'px');
+        console.log('User Agent: ' + navigator.userAgent);
+        console.log('Is Mobile: ' + (window.innerWidth <= 768));
+    </script>
+    
+    <!-- Include the main script -->
+    <script src="script-professional.js"></script>
+</body>
+</html>

@@ -487,28 +487,97 @@
         // Mobile exit intent - detect back button or scroll up fast
         let lastScrollY = window.scrollY;
         let scrollVelocity = 0;
+        let scrollTimer = null;
         
+        // Enhanced scroll detection with proper velocity calculation
         window.addEventListener('scroll', () => {
             const currentScrollY = window.scrollY;
+            // Calculate velocity - positive value means scrolling up
             scrollVelocity = lastScrollY - currentScrollY;
             
-            // Show popup if scrolling up fast near top of page
-            if (scrollVelocity > 50 && currentScrollY < 200 && !exitIntentShown && window.innerWidth <= 768) {
-                console.log('Triggering exit popup on mobile scroll:', { scrollVelocity, currentScrollY });
-                showExitPopup();
-            }
+            // Clear previous timer to debounce
+            if (scrollTimer) clearTimeout(scrollTimer);
+            
+            scrollTimer = setTimeout(() => {
+                // Check if exit intent was already shown (handle both string and boolean)
+                const wasShown = exitIntentShown === 'true' || exitIntentShown === true;
+                
+                // Trigger on fast upward scroll near top of page on mobile devices
+                if (scrollVelocity > 50 && currentScrollY < 200 && !wasShown && window.innerWidth <= 768) {
+                    console.log('Mobile scroll trigger detected:', { 
+                        scrollVelocity, 
+                        currentScrollY, 
+                        windowWidth: window.innerWidth 
+                    });
+                    showExitPopup();
+                }
+                scrollVelocity = 0; // Reset velocity after check
+            }, 100); // Small debounce to avoid false positives
             
             lastScrollY = currentScrollY;
         }, { passive: true });
         
-        // Mobile back button detection
-        window.addEventListener('popstate', () => {
-            if (!exitIntentShown && window.innerWidth <= 768) {
+        // Enhanced mobile back button detection with popstate
+        // Push initial state to enable back button detection
+        if (window.innerWidth <= 768) {
+            history.pushState({ page: 'initial' }, '', window.location.href);
+        }
+        
+        window.addEventListener('popstate', (e) => {
+            const wasShown = exitIntentShown === 'true' || exitIntentShown === true;
+            
+            if (!wasShown && window.innerWidth <= 768) {
+                console.log('Mobile back button detected via popstate');
                 showExitPopup();
-                // Push state back to prevent actual navigation
-                history.pushState(null, null, window.location.href);
+                // Re-push state to prevent actual navigation
+                setTimeout(() => {
+                    history.pushState({ page: 'exit-shown' }, '', window.location.href);
+                }, 100);
             }
         });
+        
+        // Add touch-based exit intent detection
+        let touchStartY = 0;
+        let touchStartTime = 0;
+        
+        document.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) { // Single touch only
+                touchStartY = e.touches[0].clientY;
+                touchStartTime = Date.now();
+            }
+        }, { passive: true });
+        
+        document.addEventListener('touchend', (e) => {
+            if (e.changedTouches.length === 1) { // Single touch only
+                const touchEndY = e.changedTouches[0].clientY;
+                const touchEndTime = Date.now();
+                const swipeDistance = touchEndY - touchStartY;
+                const swipeTime = touchEndTime - touchStartTime;
+                const swipeVelocity = Math.abs(swipeDistance / swipeTime);
+                
+                const wasShown = exitIntentShown === 'true' || exitIntentShown === true;
+                
+                // Detect downward swipe from top of page (pull-to-refresh gesture)
+                // This indicates user might want to leave
+                if (swipeDistance > 100 && // Swipe down at least 100px
+                    touchStartY < 50 && // Started near top
+                    window.scrollY < 100 && // Page is near top
+                    swipeVelocity > 0.3 && // Fast enough swipe
+                    swipeTime < 500 && // Quick swipe
+                    !wasShown && 
+                    window.innerWidth <= 768) {
+                    
+                    console.log('Touch swipe exit intent detected:', {
+                        swipeDistance,
+                        swipeVelocity,
+                        swipeTime,
+                        startY: touchStartY,
+                        scrollY: window.scrollY
+                    });
+                    showExitPopup();
+                }
+            }
+        }, { passive: true });
         
         function showExitPopup() {
             console.log('showExitPopup called');
