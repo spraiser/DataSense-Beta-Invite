@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Industry-Specific Exit Popup - DataSense</title>
+    <link rel="stylesheet" href="styles-professional.css">
+    <style>
+        body {
+            padding: 40px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f8f9fa;
+        }
+        .test-controls {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            max-width: 800px;
+            margin: 0 auto 40px;
+        }
+        h1 {
+            color: #1a1a1a;
+            margin-bottom: 24px;
+            font-size: 28px;
+        }
+        .industry-selector {
+            margin: 20px 0;
+        }
+        .industry-selector label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        .industry-selector select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+        }
+        .test-button {
+            display: inline-block;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-right: 12px;
+            margin-top: 16px;
+        }
+        .test-button:hover {
+            transform: scale(1.05);
+        }
+        .test-button.secondary {
+            background: #64748b;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 16px;
+            background: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            border-radius: 8px;
+        }
+        .status h3 {
+            margin: 0 0 8px 0;
+            color: #1e40af;
+            font-size: 16px;
+        }
+        .status p {
+            margin: 4px 0;
+            color: #475569;
+            font-size: 14px;
+        }
+        .instructions {
+            background: #fefce8;
+            border-left: 4px solid #facc15;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+        .instructions h3 {
+            margin: 0 0 8px 0;
+            color: #854d0e;
+            font-size: 16px;
+        }
+        .instructions ul {
+            margin: 8px 0;
+            padding-left: 24px;
+            color: #713f12;
+        }
+        .instructions li {
+            margin: 4px 0;
+        }
+        .demo-content {
+            min-height: 1500px;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-controls">
+        <h1>🧪 Test Industry-Specific Exit Popup</h1>
+        
+        <div class="instructions">
+            <h3>📋 Testing Instructions</h3>
+            <ul>
+                <li>Select an industry from the dropdown below</li>
+                <li>Click "Set Industry & Test Popup" to see the industry-specific content</li>
+                <li>Each industry has unique title, subtitle, testimonial, and CTA text</li>
+                <li>The popup tracks which industry content was shown</li>
+            </ul>
+        </div>
+        
+        <div class="industry-selector">
+            <label for="industry-select">Select Industry:</label>
+            <select id="industry-select">
+                <option value="ecommerce">E-commerce</option>
+                <option value="saas">SaaS</option>
+                <option value="services">Professional Services</option>
+                <option value="restaurant">Restaurant</option>
+                <option value="healthcare">Healthcare</option>
+            </select>
+        </div>
+        
+        <button class="test-button" onclick="setIndustryAndTest()">Set Industry & Test Popup</button>
+        <button class="test-button secondary" onclick="clearIndustryData()">Clear Industry Data</button>
+        <button class="test-button secondary" onclick="showCurrentStatus()">Show Current Status</button>
+        
+        <div id="status" class="status" style="display: none;">
+            <h3>Current Session Status</h3>
+            <p id="status-content"></p>
+        </div>
+    </div>
+    
+    <div class="demo-content">
+        <h2>Demo Content Area</h2>
+        <p>This is demo content to fill the page. The exit intent popup will appear when you:</p>
+        <ul>
+            <li>Move your mouse to the top of the browser window (as if to close the tab)</li>
+            <li>Press the Escape key (development mode)</li>
+            <li>Click the test button above</li>
+        </ul>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    </div>
+    
+    <!-- Exit Intent Popup -->
+    <div id="exit-popup-overlay" class="exit-popup-overlay">
+        <div id="exit-popup" class="exit-popup">
+            <button id="exit-popup-close" class="exit-popup-close">&times;</button>
+            <div class="exit-popup-content">
+                <h2 class="exit-popup-title">Wait! Don't miss out on these insights</h2>
+                <p class="exit-popup-subtitle">Join thousands of businesses making data-driven decisions</p>
+                
+                <!-- Testimonial will be inserted here dynamically -->
+                
+                <!-- ROI Calculator -->
+                <div class="roi-calculator">
+                    <h3>Calculate Your ROI</h3>
+                    <div class="calc-input-group">
+                        <label for="revenue-input">Monthly Revenue ($)</label>
+                        <input type="number" id="revenue-input" value="50000" min="0">
+                    </div>
+                    <div class="calc-input-group">
+                        <label for="hours-input">Hours Analyzing Data (per week)</label>
+                        <input type="number" id="hours-input" value="40" min="0">
+                    </div>
+                    <div class="calc-results">
+                        <div class="calc-result">
+                            <span>Monthly Savings:</span>
+                            <strong id="savings-value">$3,625</strong>
+                        </div>
+                        <div class="calc-result">
+                            <span>Time Saved:</span>
+                            <strong id="time-value">35 hours</strong>
+                        </div>
+                        <div class="calc-result">
+                            <span>ROI:</span>
+                            <strong id="roi-value">1,113%</strong>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary">Get Started with DataSense</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script-professional.js"></script>
+    <script>
+        // Test helper functions
+        function setIndustryAndTest() {
+            const industry = document.getElementById('industry-select').value;
+            
+            // Set the industry in sessionStorage
+            sessionStorage.setItem('currentIndustry', industry);
+            sessionStorage.setItem('industryChangeCount', 
+                (parseInt(sessionStorage.getItem('industryChangeCount') || 0) + 1).toString()
+            );
+            
+            // Clear the exit intent shown flag to allow testing
+            sessionStorage.removeItem('exitIntentShown');
+            
+            // Trigger the exit popup
+            const event = new Event('mouseleave');
+            event.clientY = -1;
+            document.dispatchEvent(event);
+            
+            console.log(`Industry set to: ${industry}`);
+            showCurrentStatus();
+        }
+        
+        function clearIndustryData() {
+            sessionStorage.removeItem('currentIndustry');
+            sessionStorage.removeItem('industryChangeCount');
+            sessionStorage.removeItem('exitIntentShown');
+            
+            alert('Industry data cleared!');
+            showCurrentStatus();
+        }
+        
+        function showCurrentStatus() {
+            const status = {
+                currentIndustry: sessionStorage.getItem('currentIndustry'),
+                industryChangeCount: sessionStorage.getItem('industryChangeCount'),
+                exitIntentShown: sessionStorage.getItem('exitIntentShown')
+            };
+            
+            const statusDiv = document.getElementById('status');
+            const statusContent = document.getElementById('status-content');
+            
+            statusContent.innerHTML = `
+                <strong>Current Industry:</strong> ${status.currentIndustry || 'none'}<br>
+                <strong>Industry Change Count:</strong> ${status.industryChangeCount || '0'}<br>
+                <strong>Exit Intent Shown:</strong> ${status.exitIntentShown || 'false'}
+            `;
+            
+            statusDiv.style.display = 'block';
+        }
+        
+        // Show initial status on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            showCurrentStatus();
+            console.log('Test page loaded. Ready for testing industry-specific exit popups.');
+        });
+    </script>
+</body>
+</html>

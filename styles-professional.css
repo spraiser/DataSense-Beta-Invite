@@ -1673,6 +1673,38 @@ body {
   margin-bottom: 24px;
 }
 
+/* Exit Popup Testimonial Section */
+.exit-popup-testimonial {
+  margin: 20px 0;
+  padding: 20px;
+  background: #f8fafc;
+  border-left: 4px solid #667eea;
+  border-radius: 8px;
+}
+
+.exit-popup-testimonial .testimonial-card {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+}
+
+.exit-popup-testimonial .testimonial-text {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #334155;
+  font-style: italic;
+  margin-bottom: 12px;
+}
+
+.exit-popup-testimonial .testimonial-author {
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 600;
+  display: block;
+}
+
 /* ROI Calculator */
 .roi-calculator {
   background: var(--secondary-background);

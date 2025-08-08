@@ -381,6 +381,94 @@
         }, 45000);
     }
 
+    // Industry-specific exit popup content
+    const industryExitContent = {
+        ecommerce: {
+            title: "Wait! See how e-commerce businesses increased revenue 47%",
+            subtitle: "ShopStyle doubled their conversion rate in 30 days",
+            testimonial: "DataSense showed us that Tuesday customers spend 34% more. We shifted our marketing and revenue jumped 28%.",
+            author: "Sarah Chen, CEO of ShopStyle",
+            cta: "Get Your E-commerce Insights"
+        },
+        saas: {
+            title: "Before you go - reduce churn by 62% like TechCo",
+            subtitle: "See which features drive 94% retention",
+            testimonial: "We discovered our API users retain at 94% vs 67% average. This insight alone saved us $2M in ARR.",
+            author: "Mike Roberts, CPO at TechCo",
+            cta: "Analyze Your SaaS Metrics"
+        },
+        services: {
+            title: "Wait! Your competitors found 68% profit margins",
+            subtitle: "Professional services firms increased margins by 26%",
+            testimonial: "DataSense revealed our consulting projects have 68% margins vs 42% for implementation. We restructured and profits soared.",
+            author: "James Liu, Partner at ConsultPro",
+            cta: "Unlock Your Profit Potential"
+        },
+        restaurant: {
+            title: "Don't leave hungry for insights!",
+            subtitle: "RestaurantX increased table turnover by 23%",
+            testimonial: "We found Thursday lunch specials drive 3x more repeat visits. One insight, $18K monthly increase.",
+            author: "Maria Garcia, Owner of Bella Vista",
+            cta: "Optimize Your Restaurant"
+        },
+        healthcare: {
+            title: "Wait! Reduce no-shows by 41% like MedCenter",
+            subtitle: "Healthcare practices saving 15 hours weekly",
+            testimonial: "DataSense predicted which patients would no-show with 85% accuracy. We now overbook intelligently.",
+            author: "Dr. Patel, MedCenter Group",
+            cta: "Improve Your Practice"
+        }
+    };
+
+    function customizeExitPopupContent(industry) {
+        const content = industryExitContent[industry] || industryExitContent.ecommerce;
+        
+        // Update popup title
+        const titleEl = document.querySelector('.exit-popup-title');
+        if (titleEl) titleEl.textContent = content.title;
+        
+        // Update subtitle
+        const subtitleEl = document.querySelector('.exit-popup-subtitle');
+        if (subtitleEl) subtitleEl.textContent = content.subtitle;
+        
+        // Add testimonial section if not exists
+        let testimonialSection = document.querySelector('.exit-popup-testimonial');
+        if (!testimonialSection) {
+            const popupContent = document.querySelector('.exit-popup-content');
+            if (popupContent) {
+                testimonialSection = document.createElement('div');
+                testimonialSection.className = 'exit-popup-testimonial';
+                
+                // Find the roi-calculator to insert before it
+                const roiCalc = popupContent.querySelector('.roi-calculator');
+                if (roiCalc) {
+                    popupContent.insertBefore(testimonialSection, roiCalc);
+                } else {
+                    // Otherwise insert before the last element
+                    const lastChild = popupContent.lastElementChild;
+                    if (lastChild) {
+                        popupContent.insertBefore(testimonialSection, lastChild);
+                    } else {
+                        popupContent.appendChild(testimonialSection);
+                    }
+                }
+            }
+        }
+        
+        if (testimonialSection) {
+            testimonialSection.innerHTML = `
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"${content.testimonial}"</p>
+                    <p class="testimonial-author">— ${content.author}</p>
+                </div>
+            `;
+        }
+        
+        // Update CTA button
+        const ctaBtn = document.querySelector('.exit-popup .btn-primary');
+        if (ctaBtn) ctaBtn.textContent = content.cta;
+    }
+
     // Enhanced Exit Intent Popup with A/B Testing
     function initExitIntent() {
         const overlay = document.getElementById('exit-popup-overlay');
@@ -687,6 +775,9 @@
         function showExitPopup(triggerType = 'mouse_leave') {
             debugLog('showExitPopup called - trigger:', triggerType);
             
+            // Get current industry from sessionStorage
+            const currentIndustry = sessionStorage.getItem('currentIndustry') || 'ecommerce';
+            
             // Get timing delay from A/B test
             let delay = 0;
             if (window.ExitIntentAB) {
@@ -698,6 +789,9 @@
             // Apply delay based on A/B test variant
             setTimeout(() => {
                 exitIntentShown = true;
+                
+                // Customize popup content based on industry
+                customizeExitPopupContent(currentIndustry);
                 
                 // Apply A/B test design variant
                 if (window.ExitIntentAB) {
@@ -742,9 +836,11 @@
                     clearTimeout(mouseMoveThrottle);
                 }
                 
-                // Track event with A/B test data
+                // Track event with A/B test data and industry context
                 const trackingData = {
                     trigger_type: triggerType,
+                    industry: currentIndustry,
+                    industry_changes: sessionStorage.getItem('industryChangeCount') || 0,
                     page_depth: Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100),
                     time_on_page: Math.round((Date.now() - window.pageLoadTime) / 1000)
                 };
