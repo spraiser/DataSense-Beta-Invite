@@ -106,6 +106,35 @@ body {
   transform: translateY(-1px);
 }
 
+/* Edit Variations Button */
+.edit-variations-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 15px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.edit-variations-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #764ba2, #667eea);
+}
+
+.edit-variations-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
 /* Responsive - hide on mobile */
 @media (max-width: 768px) {
   .variation-switcher {
