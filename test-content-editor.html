@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Content Editor</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Content Editor System Test</h1>
+    
+    <div class="test-section">
+        <h2>1. File Availability Tests</h2>
+        <div id="file-tests"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Functionality Tests</h2>
+        <div id="function-tests"></div>
+        <button onclick="testLocalStorage()">Test LocalStorage</button>
+        <button onclick="testVariationLoading()">Test Variation Loading</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Live Editor Preview</h2>
+        <button onclick="openEditor()">Open Content Editor</button>
+        <iframe id="editor-frame" style="display:none;"></iframe>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. Content Verification</h2>
+        <div id="content-verification"></div>
+        <button onclick="verifyContent()">Verify All Content Blocks</button>
+    </div>
+    
+    <script>
+        // Test file availability
+        async function testFiles() {
+            const files = [
+                'content-editor.html',
+                'variations-data.json',
+                'content-injection.js'
+            ];
+            
+            const testResults = document.getElementById('file-tests');
+            
+            for (const file of files) {
+                try {
+                    const response = await fetch(file);
+                    if (response.ok) {
+                        testResults.innerHTML += `<div class="test-result success">✓ ${file} loaded successfully</div>`;
+                    } else {
+                        testResults.innerHTML += `<div class="test-result error">✗ ${file} failed to load (${response.status})</div>`;
+                    }
+                } catch (error) {
+                    testResults.innerHTML += `<div class="test-result error">✗ ${file} error: ${error.message}</div>`;
+                }
+            }
+        }
+        
+        // Test localStorage functionality
+        function testLocalStorage() {
+            const testResults = document.getElementById('function-tests');
+            try {
+                const testData = { test: 'data', timestamp: new Date().toISOString() };
+                localStorage.setItem('test_key', JSON.stringify(testData));
+                const retrieved = JSON.parse(localStorage.getItem('test_key'));
+                
+                if (retrieved && retrieved.test === 'data') {
+                    testResults.innerHTML += `<div class="test-result success">✓ LocalStorage working correctly</div>`;
+                    localStorage.removeItem('test_key');
+                } else {
+                    testResults.innerHTML += `<div class="test-result error">✗ LocalStorage data mismatch</div>`;
+                }
+            } catch (error) {
+                testResults.innerHTML += `<div class="test-result error">✗ LocalStorage error: ${error.message}</div>`;
+            }
+        }
+        
+        // Test variation loading
+        async function testVariationLoading() {
+            const testResults = document.getElementById('function-tests');
+            try {
+                const response = await fetch('variations-data.json');
+                const data = await response.json();
+                
+                if (data.variations) {
+                    const variationCount = Object.keys(data.variations).length;
+                    testResults.innerHTML += `<div class="test-result success">✓ Loaded ${variationCount} variations</div>`;
+                    
+                    // Check each variation has all required fields
+                    const requiredFields = [
+                        'hero_title', 'hero_subtitle', 'badge_text',
+                        'cta_primary', 'cta_secondary',
+                        'value_prop_1', 'value_prop_2', 'value_prop_3',
+                        'testimonial_highlight', 'feature_highlight',
+                        'urgency_text', 'social_proof'
+                    ];
+                    
+                    for (const [key, variation] of Object.entries(data.variations)) {
+                        const missingFields = requiredFields.filter(field => !variation.content[field]);
+                        if (missingFields.length === 0) {
+                            testResults.innerHTML += `<div class="test-result success">✓ ${variation.name}: All 12 content blocks present</div>`;
+                        } else {
+                            testResults.innerHTML += `<div class="test-result error">✗ ${variation.name}: Missing ${missingFields.join(', ')}</div>`;
+                        }
+                    }
+                } else {
+                    testResults.innerHTML += `<div class="test-result error">✗ No variations found in data</div>`;
+                }
+            } catch (error) {
+                testResults.innerHTML += `<div class="test-result error">✗ Variation loading error: ${error.message}</div>`;
+            }
+        }
+        
+        // Open editor in iframe
+        function openEditor() {
+            const frame = document.getElementById('editor-frame');
+            frame.src = 'content-editor.html';
+            frame.style.display = 'block';
+        }
+        
+        // Verify all content blocks
+        async function verifyContent() {
+            const testResults = document.getElementById('content-verification');
+            testResults.innerHTML = '<div class="test-result info">Checking content blocks...</div>';
+            
+            try {
+                const response = await fetch('variations-data.json');
+                const data = await response.json();
+                
+                const expectedBlocks = 12;
+                let totalBlocks = 0;
+                
+                for (const [key, variation] of Object.entries(data.variations)) {
+                    const blockCount = Object.keys(variation.content).length;
+                    totalBlocks += blockCount;
+                    
+                    if (blockCount === expectedBlocks) {
+                        testResults.innerHTML += `<div class="test-result success">✓ ${variation.name}: ${blockCount} blocks (correct)</div>`;
+                    } else {
+                        testResults.innerHTML += `<div class="test-result error">✗ ${variation.name}: ${blockCount} blocks (expected ${expectedBlocks})</div>`;
+                    }
+                }
+                
+                testResults.innerHTML += `<div class="test-result info">Total content blocks across all variations: ${totalBlocks}</div>`;
+                
+            } catch (error) {
+                testResults.innerHTML += `<div class="test-result error">✗ Content verification error: ${error.message}</div>`;
+            }
+        }
+        
+        // Run initial tests on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            testFiles();
+        });
+    </script>
+</body>
+</html>

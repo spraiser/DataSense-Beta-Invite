@@ -334,8 +334,11 @@
             </div>
         </header>
 
-        <div class="content-grid" id="content-grid">
-            <!-- Content boxes will be dynamically generated here -->
+        <div class="content-sections">
+            <h2 style="margin: 20px 0 10px; color: #666; font-size: 16px; font-weight: 600;">📋 Content Blocks (12 Key Elements)</h2>
+            <div class="content-grid" id="content-grid">
+                <!-- Content boxes will be dynamically generated here -->
+            </div>
         </div>
     </div>
 
@@ -404,37 +407,41 @@
             // Create content boxes for each content item
             const contentKeys = Object.keys(variation.content);
             
-            // Map the keys to more readable labels
+            // Map the keys to more readable labels with categories
             const labelMap = {
-                'hero_title': 'Hero Title',
-                'hero_subtitle': 'Hero Subtitle',
-                'cta_primary': 'Primary CTA Button',
-                'cta_secondary': 'Secondary CTA Button',
-                'value_prop_1': 'Value Proposition 1',
-                'value_prop_2': 'Value Proposition 2',
-                'value_prop_3': 'Value Proposition 3',
-                'testimonial_highlight': 'Testimonial Highlight',
-                'feature_highlight': 'Feature Highlight'
+                'hero_title': '🎯 Hero Title',
+                'hero_subtitle': '📝 Hero Subtitle',
+                'badge_text': '🏷️ Hero Badge',
+                'cta_primary': '🔵 Primary CTA Button',
+                'cta_secondary': '⚪ Secondary CTA Button',
+                'value_prop_1': '1️⃣ Value Proposition 1',
+                'value_prop_2': '2️⃣ Value Proposition 2',
+                'value_prop_3': '3️⃣ Value Proposition 3',
+                'testimonial_highlight': '💬 Testimonial Highlight',
+                'feature_highlight': '⭐ Feature Highlight',
+                'urgency_text': '⏰ Urgency Banner',
+                'social_proof': '👥 Social Proof Text'
             };
             
-            // Add more content fields to reach 10-12 boxes
-            const additionalFields = {
-                'urgency_text': 'Urgency Banner',
-                'social_proof': 'Social Proof Text',
-                'badge_text': 'Hero Badge'
-            };
+            // Ensure all fields exist with proper defaults
+            const fieldOrder = [
+                'hero_title', 'hero_subtitle', 'badge_text',
+                'cta_primary', 'cta_secondary',
+                'value_prop_1', 'value_prop_2', 'value_prop_3',
+                'testimonial_highlight', 'feature_highlight',
+                'urgency_text', 'social_proof'
+            ];
             
-            // Merge additional fields if they don't exist
-            for (const [key, label] of Object.entries(additionalFields)) {
+            // Ensure all fields exist
+            for (const key of fieldOrder) {
                 if (!variation.content[key]) {
                     variation.content[key] = '';
                 }
-                if (!labelMap[key]) {
-                    labelMap[key] = label;
-                }
             }
             
-            for (const [key, value] of Object.entries(variation.content)) {
+            // Create content boxes in the specified order
+            for (const key of fieldOrder) {
+                const value = variation.content[key] || '';
                 const box = createContentBox(key, labelMap[key] || key, value);
                 grid.appendChild(box);
             }
