@@ -330,6 +330,7 @@
                     <button class="btn-download" onclick="downloadBackup()">Download Backup</button>
                     <button class="btn-reset" onclick="resetToDefault()">Reset</button>
                     <button class="btn-preview" onclick="previewInNewTab()">Preview</button>
+                    <button class="btn-feedback" onclick="openFeedbackForm()">📊 View Feedback</button>
                 </div>
             </div>
         </header>
@@ -875,6 +876,17 @@
                 }
             }, 30000);
         });
+        
+        // Feedback system integration
+        function openFeedbackForm() {
+            const feedbackWindow = window.open('feedback-dashboard.html', 'FeedbackDashboard', 'width=1200,height=800');
+            if (!feedbackWindow) {
+                alert('Please allow popups to view the feedback dashboard');
+            }
+        }
     </script>
+    
+    <!-- Add feedback system for editor preview -->
+    <script src="feedback-system.js"></script>
 </body>
 </html>

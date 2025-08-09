@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback System Test - DataSense</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #1e293b;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .content-block {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .content-block h2 {
+            color: #334155;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .content-block p {
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        .variation-selector {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f1f5f9;
+            border-radius: 12px;
+        }
+
+        .variation-selector h3 {
+            margin-bottom: 15px;
+            color: #334155;
+        }
+
+        .variation-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .variation-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .variation-btn:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .variation-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .test-controls {
+            margin-top: 30px;
+            padding: 20px;
+            background: #fef3c7;
+            border-radius: 12px;
+            border: 2px solid #fbbf24;
+        }
+
+        .test-controls h3 {
+            color: #92400e;
+            margin-bottom: 15px;
+        }
+
+        .test-controls button {
+            margin-right: 10px;
+            margin-bottom: 10px;
+            padding: 10px 20px;
+            background: #fbbf24;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .test-controls button:hover {
+            background: #f59e0b;
+            transform: translateY(-2px);
+        }
+
+        .stats-display {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        [data-content-id] {
+            background: #fef3c7;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>DataSense Focus Group Testing</h1>
+        <p class="subtitle">Test the feedback collection system with different content variations</p>
+
+        <div class="content-block">
+            <h2 data-content-id="headline">Transform Your Small Business with Enterprise-Level Data Insights</h2>
+            <p data-content-id="subheadline">Get instant answers to business questions in 30 seconds, not 30 days.</p>
+        </div>
+
+        <div class="content-block">
+            <h2>Value Proposition</h2>
+            <p data-content-id="value-prop">DataSense brings Fortune 500 data capabilities to Main Street businesses. Ask questions in plain English, get answers that drive growth.</p>
+        </div>
+
+        <div class="variation-selector">
+            <h3>Select Content Variation to Test:</h3>
+            <div class="variation-buttons">
+                <button class="variation-btn active" onclick="applyTestVariation('default')">Default</button>
+                <button class="variation-btn" onclick="applyTestVariation('enterprise')">Enterprise Focus</button>
+                <button class="variation-btn" onclick="applyTestVariation('simple')">Simplified</button>
+                <button class="variation-btn" onclick="applyTestVariation('technical')">Technical</button>
+                <button class="variation-btn" onclick="applyTestVariation('emotional')">Emotional Appeal</button>
+            </div>
+        </div>
+
+        <div class="test-controls">
+            <h3>🧪 Test Controls</h3>
+            <button onclick="openFeedbackWithParam()">Open with ?feedback=true</button>
+            <button onclick="feedbackSystem.openFeedbackForm()">Open Feedback Directly</button>
+            <button onclick="showFeedbackStats()">Show Feedback Stats</button>
+            <button onclick="feedbackSystem.exportToCSV()">Export CSV</button>
+            <button onclick="feedbackSystem.clearAllFeedback()">Clear All Data</button>
+            
+            <div id="stats-display" class="stats-display" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script src="content-injection.js"></script>
+    <script src="feedback-system.js"></script>
+    <script>
+        const testVariations = {
+            'default': {
+                'headline': 'Transform Your Small Business with Enterprise-Level Data Insights',
+                'subheadline': 'Get instant answers to business questions in 30 seconds, not 30 days.',
+                'value-prop': 'DataSense brings Fortune 500 data capabilities to Main Street businesses. Ask questions in plain English, get answers that drive growth.'
+            },
+            'enterprise': {
+                'headline': 'Enterprise Analytics for Growing Businesses',
+                'subheadline': 'Leverage the same data tools that power Fortune 500 companies.',
+                'value-prop': 'Professional-grade analytics without the enterprise price tag. Scale your insights as you grow.'
+            },
+            'simple': {
+                'headline': 'Business Data Made Simple',
+                'subheadline': 'Ask questions. Get answers. Make better decisions.',
+                'value-prop': 'No more spreadsheets. No more guessing. Just clear insights for your business.'
+            },
+            'technical': {
+                'headline': 'AI-Powered Business Intelligence Platform',
+                'subheadline': 'Machine learning meets natural language processing for instant data analysis.',
+                'value-prop': 'Advanced algorithms analyze your data in real-time, delivering actionable insights through an intuitive interface.'
+            },
+            'emotional': {
+                'headline': 'Finally, Data Insights That Actually Make Sense',
+                'subheadline': 'Stop drowning in spreadsheets. Start making confident decisions.',
+                'value-prop': 'We believe every business owner deserves to understand their data. DataSense makes it possible.'
+            }
+        };
+
+        function applyTestVariation(variationId) {
+            const buttons = document.querySelectorAll('.variation-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const variation = testVariations[variationId];
+            if (variation) {
+                Object.keys(variation).forEach(contentId => {
+                    const element = document.querySelector(`[data-content-id="${contentId}"]`);
+                    if (element) {
+                        element.textContent = variation[contentId];
+                    }
+                });
+                
+                sessionStorage.setItem('currentVariation', variationId);
+                sessionStorage.setItem('variationContent', JSON.stringify(variation));
+                
+                console.log(`Applied test variation: ${variationId}`);
+            }
+        }
+
+        function openFeedbackWithParam() {
+            const currentUrl = window.location.href.split('?')[0];
+            window.location.href = currentUrl + '?feedback=true';
+        }
+
+        function showFeedbackStats() {
+            const stats = feedbackSystem.getFeedbackSummary();
+            const display = document.getElementById('stats-display');
+            
+            if (stats.totalResponses === 0) {
+                display.textContent = 'No feedback collected yet. Submit some feedback first!';
+            } else {
+                let statsText = `📊 Feedback Summary\n`;
+                statsText += `═══════════════════════════════\n\n`;
+                statsText += `Total Responses: ${stats.totalResponses}\n`;
+                statsText += `Average Rating: ${stats.averageRating} ⭐\n\n`;
+                
+                if (stats.variationStats) {
+                    statsText += `Variation Breakdown:\n`;
+                    statsText += `─────────────────────\n`;
+                    Object.keys(stats.variationStats).forEach(varId => {
+                        const varStats = stats.variationStats[varId];
+                        statsText += `\n${varStats.name}:\n`;
+                        statsText += `  • Responses: ${varStats.count}\n`;
+                        statsText += `  • Avg Rating: ${varStats.averageRating} ⭐\n`;
+                    });
+                }
+                
+                if (stats.latestFeedback) {
+                    statsText += `\n\nLatest Feedback:\n`;
+                    statsText += `─────────────────────\n`;
+                    statsText += `Variation: ${stats.latestFeedback.variationName}\n`;
+                    statsText += `Rating: ${stats.latestFeedback.rating} ⭐\n`;
+                    statsText += `Participant: ${stats.latestFeedback.participantName}\n`;
+                }
+                
+                display.textContent = statsText;
+            }
+            
+            display.style.display = 'block';
+        }
+
+        window.addEventListener('load', () => {
+            console.log('✅ Feedback System Test Page Loaded');
+            console.log('💡 Try adding ?feedback=true to the URL to auto-open the feedback form');
+        });
+    </script>
+</body>
+</html>

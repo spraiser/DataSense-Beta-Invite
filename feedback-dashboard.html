@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Dashboard - DataSense Focus Groups</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dashboard-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .header-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .header-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .dashboard-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .stat-subtitle {
+            font-size: 14px;
+            color: #475569;
+            margin-top: 4px;
+        }
+
+        .variation-stats {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .variation-stats h2 {
+            margin-bottom: 20px;
+            color: #334155;
+        }
+
+        .variation-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .variation-item:last-child {
+            border-bottom: none;
+        }
+
+        .variation-name {
+            font-weight: 500;
+            color: #334155;
+        }
+
+        .variation-metrics {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .rating-stars {
+            color: #fbbf24;
+        }
+
+        .feedback-list {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .feedback-list h2 {
+            margin-bottom: 20px;
+            color: #334155;
+        }
+
+        .feedback-item {
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .feedback-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .feedback-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .feedback-meta {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .feedback-variation {
+            background: #f0f4ff;
+            color: #667eea;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .feedback-rating {
+            color: #fbbf24;
+            font-size: 16px;
+        }
+
+        .feedback-time {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .feedback-content {
+            margin-top: 10px;
+        }
+
+        .feedback-section {
+            margin-bottom: 12px;
+        }
+
+        .feedback-label {
+            font-weight: 500;
+            color: #475569;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .feedback-text {
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .filter-bar {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-bar select,
+        .filter-bar input {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .filter-bar button {
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .filter-bar button:hover {
+            background: #5a67d8;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-header">
+        <h1>📊 Focus Group Feedback Dashboard</h1>
+        <div class="header-actions">
+            <button class="header-btn" onclick="refreshDashboard()">🔄 Refresh</button>
+            <button class="header-btn" onclick="exportToCSV()">📥 Export CSV</button>
+            <button class="header-btn" onclick="clearAllFeedback()">🗑️ Clear All</button>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Responses</div>
+                <div class="stat-value" id="total-responses">0</div>
+                <div class="stat-subtitle">Focus group participants</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Average Rating</div>
+                <div class="stat-value" id="avg-rating">0.0</div>
+                <div class="stat-subtitle">Out of 5 stars</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Variations Tested</div>
+                <div class="stat-value" id="variations-tested">0</div>
+                <div class="stat-subtitle">Content variations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Latest Feedback</div>
+                <div class="stat-value" id="latest-time">--</div>
+                <div class="stat-subtitle" id="latest-participant">No feedback yet</div>
+            </div>
+        </div>
+
+        <div class="variation-stats">
+            <h2>Performance by Variation</h2>
+            <div id="variation-list">
+                <div class="empty-state">
+                    <h3>No variation data yet</h3>
+                    <p>Feedback will appear here once collected</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <select id="filter-variation">
+                <option value="">All Variations</option>
+            </select>
+            <select id="filter-rating">
+                <option value="">All Ratings</option>
+                <option value="5">5 Stars</option>
+                <option value="4">4 Stars</option>
+                <option value="3">3 Stars</option>
+                <option value="2">2 Stars</option>
+                <option value="1">1 Star</option>
+            </select>
+            <input type="text" id="search-text" placeholder="Search feedback...">
+            <button onclick="applyFilters()">Apply Filters</button>
+            <button onclick="resetFilters()">Reset</button>
+        </div>
+
+        <div class="feedback-list">
+            <h2>Individual Feedback Responses</h2>
+            <div id="feedback-items">
+                <div class="empty-state">
+                    <h3>No feedback collected yet</h3>
+                    <p>Start collecting feedback by adding ?feedback=true to your page URL</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="feedback-system.js"></script>
+    <script>
+        let allFeedback = [];
+        let filteredFeedback = [];
+
+        function loadDashboard() {
+            const stored = localStorage.getItem('datasense_feedback');
+            if (stored) {
+                try {
+                    allFeedback = JSON.parse(stored);
+                    filteredFeedback = [...allFeedback];
+                    updateDashboard();
+                } catch (e) {
+                    console.error('Error loading feedback:', e);
+                }
+            }
+        }
+
+        function updateDashboard() {
+            // Update stats
+            const totalResponses = allFeedback.length;
+            document.getElementById('total-responses').textContent = totalResponses;
+
+            if (totalResponses > 0) {
+                // Calculate average rating
+                const avgRating = (allFeedback.reduce((sum, f) => sum + f.rating, 0) / totalResponses).toFixed(1);
+                document.getElementById('avg-rating').textContent = avgRating;
+
+                // Count variations
+                const variations = new Set(allFeedback.map(f => f.variationId));
+                document.getElementById('variations-tested').textContent = variations.size;
+
+                // Latest feedback
+                const latest = allFeedback[allFeedback.length - 1];
+                const latestTime = new Date(latest.timestamp);
+                const timeAgo = getTimeAgo(latestTime);
+                document.getElementById('latest-time').textContent = timeAgo;
+                document.getElementById('latest-participant').textContent = latest.participantName;
+
+                // Variation stats
+                updateVariationStats();
+
+                // Feedback list
+                updateFeedbackList();
+
+                // Update filter options
+                updateFilterOptions();
+            }
+        }
+
+        function updateVariationStats() {
+            const variationStats = {};
+            
+            allFeedback.forEach(feedback => {
+                if (!variationStats[feedback.variationId]) {
+                    variationStats[feedback.variationId] = {
+                        name: feedback.variationName,
+                        count: 0,
+                        totalRating: 0
+                    };
+                }
+                variationStats[feedback.variationId].count++;
+                variationStats[feedback.variationId].totalRating += feedback.rating;
+            });
+
+            const variationList = document.getElementById('variation-list');
+            if (Object.keys(variationStats).length === 0) {
+                variationList.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No variation data yet</h3>
+                        <p>Feedback will appear here once collected</p>
+                    </div>
+                `;
+                return;
+            }
+
+            variationList.innerHTML = Object.entries(variationStats)
+                .map(([id, stats]) => {
+                    const avgRating = (stats.totalRating / stats.count).toFixed(1);
+                    return `
+                        <div class="variation-item">
+                            <div class="variation-name">${stats.name}</div>
+                            <div class="variation-metrics">
+                                <div class="metric">
+                                    <div class="metric-label">Responses</div>
+                                    <div class="metric-value">${stats.count}</div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-label">Avg Rating</div>
+                                    <div class="metric-value rating-stars">${'★'.repeat(Math.round(avgRating))}${'☆'.repeat(5 - Math.round(avgRating))} ${avgRating}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+        }
+
+        function updateFeedbackList() {
+            const feedbackItems = document.getElementById('feedback-items');
+            
+            if (filteredFeedback.length === 0) {
+                feedbackItems.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No feedback matches your filters</h3>
+                        <p>Try adjusting your filter criteria</p>
+                    </div>
+                `;
+                return;
+            }
+
+            feedbackItems.innerHTML = filteredFeedback
+                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                .map(feedback => {
+                    const time = new Date(feedback.timestamp);
+                    return `
+                        <div class="feedback-item">
+                            <div class="feedback-header">
+                                <div class="feedback-meta">
+                                    <span class="feedback-variation">${feedback.variationName}</span>
+                                    <span class="feedback-rating">${'★'.repeat(feedback.rating)}${'☆'.repeat(5 - feedback.rating)}</span>
+                                    <span class="feedback-time">${time.toLocaleString()}</span>
+                                </div>
+                                <div>${feedback.participantName}</div>
+                            </div>
+                            <div class="feedback-content">
+                                ${feedback.messagingFeedback ? `
+                                    <div class="feedback-section">
+                                        <div class="feedback-label">Messaging Feedback:</div>
+                                        <div class="feedback-text">${feedback.messagingFeedback}</div>
+                                    </div>
+                                ` : ''}
+                                ${feedback.resonates ? `
+                                    <div class="feedback-section">
+                                        <div class="feedback-label">What Resonates:</div>
+                                        <div class="feedback-text">${feedback.resonates}</div>
+                                    </div>
+                                ` : ''}
+                                ${feedback.doesntResonate ? `
+                                    <div class="feedback-section">
+                                        <div class="feedback-label">What Doesn't Resonate:</div>
+                                        <div class="feedback-text">${feedback.doesntResonate}</div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+        }
+
+        function updateFilterOptions() {
+            const variations = [...new Set(allFeedback.map(f => f.variationId))];
+            const filterSelect = document.getElementById('filter-variation');
+            
+            filterSelect.innerHTML = '<option value="">All Variations</option>' +
+                variations.map(v => {
+                    const name = allFeedback.find(f => f.variationId === v).variationName;
+                    return `<option value="${v}">${name}</option>`;
+                }).join('');
+        }
+
+        function applyFilters() {
+            const variationFilter = document.getElementById('filter-variation').value;
+            const ratingFilter = document.getElementById('filter-rating').value;
+            const searchText = document.getElementById('search-text').value.toLowerCase();
+
+            filteredFeedback = allFeedback.filter(feedback => {
+                if (variationFilter && feedback.variationId !== variationFilter) return false;
+                if (ratingFilter && feedback.rating !== parseInt(ratingFilter)) return false;
+                if (searchText) {
+                    const searchableText = [
+                        feedback.messagingFeedback,
+                        feedback.resonates,
+                        feedback.doesntResonate,
+                        feedback.participantName,
+                        feedback.variationName
+                    ].join(' ').toLowerCase();
+                    if (!searchableText.includes(searchText)) return false;
+                }
+                return true;
+            });
+
+            updateFeedbackList();
+        }
+
+        function resetFilters() {
+            document.getElementById('filter-variation').value = '';
+            document.getElementById('filter-rating').value = '';
+            document.getElementById('search-text').value = '';
+            filteredFeedback = [...allFeedback];
+            updateFeedbackList();
+        }
+
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)} min ago`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+            return `${Math.floor(seconds / 86400)} days ago`;
+        }
+
+        function refreshDashboard() {
+            loadDashboard();
+            const successMsg = document.createElement('div');
+            successMsg.className = 'feedback-success';
+            successMsg.textContent = '✓ Dashboard refreshed!';
+            successMsg.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #10b981;
+                color: white;
+                padding: 16px 24px;
+                border-radius: 8px;
+                box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+                animation: slideIn 0.4s ease;
+                z-index: 10000;
+            `;
+            document.body.appendChild(successMsg);
+            setTimeout(() => successMsg.remove(), 2000);
+        }
+
+        function exportToCSV() {
+            if (feedbackSystem) {
+                feedbackSystem.exportToCSV();
+            }
+        }
+
+        function clearAllFeedback() {
+            if (confirm('Are you sure you want to clear all feedback data? This action cannot be undone.')) {
+                localStorage.removeItem('datasense_feedback');
+                allFeedback = [];
+                filteredFeedback = [];
+                updateDashboard();
+            }
+        }
+
+        // Auto-refresh every 10 seconds
+        setInterval(loadDashboard, 10000);
+
+        // Load on page load
+        document.addEventListener('DOMContentLoaded', loadDashboard);
+    </script>
+</body>
+</html>
