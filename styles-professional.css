@@ -253,6 +253,7 @@ body {
 .hero-title-highlight {
   font-style: italic;
   color: var(--primary-blue);
+  margin-left: 8px;
 }
 
 .hero-subtitle {
