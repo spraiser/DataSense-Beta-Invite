@@ -25,7 +25,7 @@
 
 html {
   font-size: 16px;
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth; */ /* Disabled to prevent jumping */
 }
 
 body {
