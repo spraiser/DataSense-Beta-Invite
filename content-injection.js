@@ -6,8 +6,34 @@ class ContentInjection {
     }
 
     async loadVariations() {
+        // First check localStorage for edited variations
+        const storageKey = 'vibe_kanban_variations';
+        const localData = localStorage.getItem(storageKey);
+        
+        if (localData) {
+            try {
+                const parsedData = JSON.parse(localData);
+                if (parsedData.variations) {
+                    this.variations = parsedData.variations;
+                    console.log('Loaded edited variations from localStorage');
+                    
+                    // Merge with embedded data to ensure all variations exist
+                    if (window.VARIATIONS_DATA && window.VARIATIONS_DATA.variations) {
+                        for (const key in window.VARIATIONS_DATA.variations) {
+                            if (!this.variations[key]) {
+                                this.variations[key] = window.VARIATIONS_DATA.variations[key];
+                            }
+                        }
+                    }
+                    return this.variations;
+                }
+            } catch (e) {
+                console.warn('Failed to parse localStorage variations:', e);
+            }
+        }
+        
         try {
-            // First try to load from JSON files
+            // Try to load from JSON files
             const response = await fetch('variations-data.json');
             if (!response.ok) {
                 throw new Error(`Failed to load variations: ${response.status}`);

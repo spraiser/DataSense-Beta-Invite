@@ -312,6 +312,14 @@
     <div class="container">
         <header>
             <h1>Content Variation Editor</h1>
+        <div style="background: #e7f3ff; padding: 12px; border-radius: 6px; margin-left: 20px; font-size: 13px; color: #0066cc; max-width: 600px;">
+            💡 <strong>How to test variations:</strong><br>
+            1. Select a variation from dropdown<br>
+            2. Edit the text in any box below<br>
+            3. Click "Save Now" to save locally<br>
+            4. Click "Preview in New Tab" to see changes<br>
+            5. In the new tab, use variation switcher (top right) to see your edits
+        </div>
             <div class="header-controls">
                 <div class="variation-selector">
                     <label for="variation-select">Variation:</label>
@@ -327,9 +335,9 @@
                     <button class="btn-undo" id="btn-undo" onclick="undo()" title="Undo (Ctrl+Z)">↶</button>
                     <button class="btn-redo" id="btn-redo" onclick="redo()" title="Redo (Ctrl+Y)">↷</button>
                     <button class="btn-save" onclick="saveChanges()">Save Now</button>
-                    <button class="btn-download" onclick="downloadBackup()">Download Backup</button>
+                    <button class="btn-preview" onclick="previewInNewTab()">Preview in New Tab</button>
+                    <button class="btn-export" onclick="exportAsJSON()">Export JSON</button>
                     <button class="btn-reset" onclick="resetToDefault()">Reset</button>
-                    <button class="btn-preview" onclick="previewInNewTab()">Preview</button>
                     <button class="btn-feedback" onclick="openFeedbackForm()">📊 View Feedback</button>
                 </div>
             </div>
@@ -776,9 +784,33 @@
             // Save current changes to localStorage first
             saveChanges();
             
-            // Open index.html in a new tab with a query parameter to indicate preview mode
-            const previewUrl = `index.html?variation=${currentVariation}&preview=true`;
+            // Open index.html in a new tab
+            const previewUrl = `index.html`;
             window.open(previewUrl, '_blank');
+            
+            showStatus('Saved! Opening preview... Use the variation switcher (top right) to select "' + currentVariation + '"', 'success');
+        }
+        
+        // Export as JSON
+        function exportAsJSON() {
+            const exportData = {
+                variations: variationsData.variations,
+                exportDate: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `variations-export-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            showStatus('Variations exported as JSON file', 'success');
         }
 
         // Show status message
