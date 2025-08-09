@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Content Injection System Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .controls {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .control-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        button {
+            padding: 0.5rem 1rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            background: #5a67d8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+        
+        button.secondary {
+            background: #48bb78;
+        }
+        
+        button.secondary:hover {
+            background: #38a169;
+        }
+        
+        button.danger {
+            background: #f56565;
+        }
+        
+        button.danger:hover {
+            background: #e53e3e;
+        }
+        
+        select {
+            padding: 0.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .content-area {
+            padding: 2rem;
+        }
+        
+        .demo-section {
+            margin-bottom: 3rem;
+        }
+        
+        .demo-section h2 {
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #f6f9fc 0%, #e9ecef 100%);
+            padding: 3rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .hero-title {
+            font-size: 2.5rem;
+            color: #1a202c;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #4a5568;
+            margin-bottom: 2rem;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-primary, .btn-secondary {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .value-props {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .value-prop-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .value-prop-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+        }
+        
+        .value-prop-card h3 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        
+        .testimonial {
+            background: #f7fafc;
+            padding: 2rem;
+            border-left: 4px solid #667eea;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .feature-item {
+            background: #edf2f7;
+            padding: 1rem;
+            border-radius: 6px;
+            text-align: center;
+            transition: background 0.3s ease;
+        }
+        
+        .feature-item:hover {
+            background: #e2e8f0;
+        }
+        
+        .complex-structure {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        
+        .complex-structure .wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .complex-structure .icon {
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #2d3748;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #48bb78;
+            margin-right: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .output-console {
+            background: #1a202c;
+            color: #48bb78;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Dynamic Content Injection System</h1>
+            <p>Advanced text replacement with HTML structure preservation</p>
+        </header>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label>Select Variation:</label>
+                <select id="variationSelector" onchange="applySelectedVariation()">
+                    <option value="">Choose a variation...</option>
+                    <option value="default">Default</option>
+                    <option value="trust">Trust & Simplicity</option>
+                    <option value="roi">ROI Focus</option>
+                    <option value="empowerment">Empowerment</option>
+                    <option value="speed">Speed & Efficiency</option>
+                    <option value="competition">Competitive Edge</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <button onclick="loadVariations()">Load Variations</button>
+                <button class="secondary" onclick="highlightEditableAreas()">Highlight Editable</button>
+                <button class="secondary" onclick="unhighlightAreas()">Remove Highlights</button>
+            </div>
+            
+            <div class="control-group">
+                <button onclick="animateContentChange()">Animate Change</button>
+                <button onclick="extractContent()">Extract Content</button>
+                <button class="danger" onclick="clearVariation()">Clear</button>
+            </div>
+        </div>
+        
+        <div class="content-area">
+            <div class="demo-section">
+                <h2>Hero Section</h2>
+                <div class="hero-section">
+                    <h1 class="hero-title" data-content-id="hero_title">
+                        See what's really driving customer behavior
+                    </h1>
+                    <p class="hero-subtitle" data-content-id="hero_subtitle">
+                        Get instant insights that actually make sense
+                    </p>
+                    <div class="cta-buttons">
+                        <button class="btn-primary" data-content-id="cta_primary">
+                            <span>Start Free Trial</span>
+                        </button>
+                        <button class="btn-secondary" data-content-id="cta_secondary">
+                            <span>Watch Demo</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-section">
+                <h2>Value Propositions</h2>
+                <div class="value-props">
+                    <div class="value-prop-card">
+                        <h3>📊</h3>
+                        <p data-content-id="value_prop_1">Understand your customers better</p>
+                    </div>
+                    <div class="value-prop-card">
+                        <h3>🎯</h3>
+                        <p data-content-id="value_prop_2">Make data-driven decisions</p>
+                    </div>
+                    <div class="value-prop-card">
+                        <h3>🚀</h3>
+                        <p data-content-id="value_prop_3">Grow your business faster</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-section">
+                <h2>Customer Testimonial</h2>
+                <blockquote class="testimonial" data-content-id="testimonial_highlight">
+                    "This changed how we understand our customers"
+                </blockquote>
+            </div>
+            
+            <div class="demo-section">
+                <h2>Feature Highlight</h2>
+                <div class="feature-grid">
+                    <div class="feature-item" data-content-id="feature_highlight">
+                        Real-time analytics that anyone can understand
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-section">
+                <h2>Complex HTML Structure Test</h2>
+                <div class="complex-structure">
+                    <div class="wrapper">
+                        <div class="icon">1</div>
+                        <div data-content-id="hero_title" data-replace-mode="text">
+                            <strong>Bold text:</strong> Original content here
+                            <em>with nested</em> HTML elements
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="complex-structure">
+                    <p data-content-id="hero_subtitle" data-multi-text-strategy="first">
+                        This paragraph has <strong>multiple</strong> text nodes
+                        <span>inside a span</span> and more text after.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="demo-section">
+                <h2>Console Output</h2>
+                <div class="output-console" id="console">
+                    > Ready for testing...
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="status-bar">
+        <div>
+            <span class="status-indicator"></span>
+            <span id="status-text">System Ready</span>
+        </div>
+        <div>
+            <span id="variation-info">No variation applied</span>
+        </div>
+    </div>
+    
+    <script src="content-injection.js"></script>
+    <script>
+        function log(message) {
+            const console = document.getElementById('console');
+            const timestamp = new Date().toLocaleTimeString();
+            console.innerHTML += `\n> [${timestamp}] ${message}`;
+            console.scrollTop = console.scrollHeight;
+        }
+        
+        function updateStatus(message, variation = null) {
+            document.getElementById('status-text').textContent = message;
+            if (variation) {
+                document.getElementById('variation-info').textContent = `Current: ${variation}`;
+            }
+        }
+        
+        async function loadVariations() {
+            log('Loading variations from JSON...');
+            const variations = await contentInjection.loadVariations();
+            if (variations) {
+                log(`Successfully loaded ${Object.keys(variations).length} variations`);
+                updateStatus('Variations loaded');
+            } else {
+                log('Error: Failed to load variations');
+                updateStatus('Load failed');
+            }
+        }
+        
+        function applySelectedVariation() {
+            const selector = document.getElementById('variationSelector');
+            const variationId = selector.value;
+            
+            if (!variationId) {
+                log('No variation selected');
+                return;
+            }
+            
+            log(`Applying variation: ${variationId}`);
+            const result = contentInjection.applyVariation(variationId);
+            
+            if (result) {
+                log(`Successfully applied "${variationId}" variation`);
+                updateStatus('Variation applied', variationId);
+            } else {
+                log(`Failed to apply variation: ${variationId}`);
+                updateStatus('Apply failed');
+            }
+        }
+        
+        function highlightEditableAreas() {
+            log('Highlighting all editable content areas...');
+            const count = contentInjection.markEditableContent('[data-content-id]', {
+                highlightColor: 'rgba(102, 126, 234, 0.1)',
+                borderColor: 'rgba(102, 126, 234, 0.5)',
+                showLabels: true,
+                interactive: true
+            });
+            log(`Highlighted ${count} editable areas`);
+            updateStatus(`${count} areas highlighted`);
+        }
+        
+        function unhighlightAreas() {
+            log('Removing highlights...');
+            contentInjection.unmarkEditableContent();
+            updateStatus('Highlights removed');
+        }
+        
+        function animateContentChange() {
+            const variation = document.getElementById('variationSelector').value;
+            if (!variation || !contentInjection.variations) {
+                log('Please load variations and select one first');
+                return;
+            }
+            
+            const content = contentInjection.getVariationContent(variation);
+            if (content) {
+                log('Applying content with animation...');
+                const count = contentInjection.batchApplyContent(content, {
+                    animate: true,
+                    stagger: 100
+                });
+                log(`Animated ${count} content replacements`);
+                updateStatus('Animated change complete', variation);
+            }
+        }
+        
+        function extractContent() {
+            log('Extracting current page content...');
+            const content = contentInjection.extractCurrentContent();
+            log(`Extracted ${Object.keys(content).length} content blocks`);
+            console.log('Extracted content:', content);
+            updateStatus('Content extracted (see browser console)');
+        }
+        
+        function clearVariation() {
+            log('Clearing current variation...');
+            contentInjection.clearCurrentVariation();
+            document.getElementById('variationSelector').value = '';
+            updateStatus('Variation cleared');
+            document.getElementById('variation-info').textContent = 'No variation applied';
+        }
+        
+        window.addEventListener('load', async () => {
+            log('Content Injection System initialized');
+            await loadVariations();
+            
+            const current = contentInjection.getCurrentVariation();
+            if (current && typeof current === 'object') {
+                log(`Restored variation from session: ${current.id}`);
+                document.getElementById('variationSelector').value = current.id;
+                updateStatus('Session restored', current.id);
+            }
+        });
+    </script>
+</body>
+</html>

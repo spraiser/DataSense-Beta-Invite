@@ -43,39 +43,7 @@ class ContentInjection {
             const contentId = element.getAttribute('data-content-id');
             
             if (content[contentId]) {
-                const originalHTML = element.innerHTML;
-                const originalText = element.textContent.trim();
-                
-                if (element.children.length > 0) {
-                    const textNodes = [];
-                    const walker = document.createTreeWalker(
-                        element,
-                        NodeFilter.SHOW_TEXT,
-                        {
-                            acceptNode: function(node) {
-                                if (node.nodeValue.trim()) {
-                                    return NodeFilter.FILTER_ACCEPT;
-                                }
-                                return NodeFilter.FILTER_REJECT;
-                            }
-                        }
-                    );
-                    
-                    let node;
-                    while (node = walker.nextNode()) {
-                        textNodes.push(node);
-                    }
-                    
-                    if (textNodes.length > 0) {
-                        textNodes[0].nodeValue = content[contentId];
-                        for (let i = 1; i < textNodes.length; i++) {
-                            textNodes[i].nodeValue = '';
-                        }
-                    }
-                } else {
-                    element.textContent = content[contentId];
-                }
-                
+                this.replaceTextContent(element, content[contentId]);
                 appliedCount++;
             }
         });
@@ -200,6 +168,111 @@ class ContentInjection {
         return this.variations;
     }
 
+    replaceTextContent(element, newContent) {
+        const preserveAttributes = element.getAttribute('data-preserve-attributes') === 'true';
+        const replaceMode = element.getAttribute('data-replace-mode') || 'text';
+        
+        if (replaceMode === 'html') {
+            element.innerHTML = newContent;
+            return;
+        }
+        
+        if (element.children.length === 0 || replaceMode === 'text-only') {
+            element.textContent = newContent;
+            return;
+        }
+        
+        const hasNestedContent = element.querySelectorAll('[data-content-id]').length > 0;
+        if (hasNestedContent) {
+            const firstTextNode = this.findFirstTextNode(element);
+            if (firstTextNode) {
+                firstTextNode.nodeValue = newContent;
+            }
+            return;
+        }
+        
+        const textNodes = this.getAllTextNodes(element);
+        
+        if (textNodes.length === 0) {
+            const textNode = document.createTextNode(newContent);
+            if (element.firstChild) {
+                element.insertBefore(textNode, element.firstChild);
+            } else {
+                element.appendChild(textNode);
+            }
+        } else if (textNodes.length === 1) {
+            textNodes[0].nodeValue = newContent;
+        } else {
+            const strategy = element.getAttribute('data-multi-text-strategy') || 'first';
+            
+            switch (strategy) {
+                case 'all':
+                    const parts = newContent.split(' ');
+                    textNodes.forEach((node, index) => {
+                        if (index < parts.length) {
+                            node.nodeValue = parts[index];
+                        } else {
+                            node.nodeValue = '';
+                        }
+                    });
+                    break;
+                    
+                case 'join':
+                    textNodes.forEach((node, index) => {
+                        node.nodeValue = index === 0 ? newContent : '';
+                    });
+                    break;
+                    
+                case 'first':
+                default:
+                    textNodes[0].nodeValue = newContent;
+                    for (let i = 1; i < textNodes.length; i++) {
+                        textNodes[i].nodeValue = '';
+                    }
+                    break;
+            }
+        }
+    }
+
+    findFirstTextNode(element) {
+        for (let child of element.childNodes) {
+            if (child.nodeType === Node.TEXT_NODE && child.nodeValue.trim()) {
+                return child;
+            }
+            if (child.nodeType === Node.ELEMENT_NODE && !child.hasAttribute('data-content-id')) {
+                const found = this.findFirstTextNode(child);
+                if (found) return found;
+            }
+        }
+        return null;
+    }
+
+    getAllTextNodes(element) {
+        const textNodes = [];
+        const walker = document.createTreeWalker(
+            element,
+            NodeFilter.SHOW_TEXT,
+            {
+                acceptNode: function(node) {
+                    if (node.parentElement.closest('[data-content-id]') !== element) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+                    if (node.nodeValue.trim()) {
+                        return NodeFilter.FILTER_ACCEPT;
+                    }
+                    return NodeFilter.FILTER_REJECT;
+                }
+            }
+        );
+        
+        let node;
+        while (node = walker.nextNode()) {
+            textNodes.push(node);
+        }
+        
+        return textNodes;
+    }
+
     clearCurrentVariation() {
         this.currentVariation = null;
         sessionStorage.removeItem('currentVariation');
@@ -236,6 +309,141 @@ class ContentInjection {
             console.error('Error importing variations:', error);
             return false;
         }
+    }
+
+    markEditableContent(selector = '[data-content-id]', options = {}) {
+        const elements = document.querySelectorAll(selector);
+        const { 
+            highlightColor = 'rgba(102, 126, 234, 0.1)',
+            borderColor = 'rgba(102, 126, 234, 0.3)',
+            showLabels = false,
+            interactive = false
+        } = options;
+        
+        elements.forEach(element => {
+            const contentId = element.getAttribute('data-content-id');
+            
+            if (interactive) {
+                element.style.transition = 'all 0.2s ease';
+                element.style.cursor = 'pointer';
+                
+                element.addEventListener('mouseenter', () => {
+                    element.style.backgroundColor = highlightColor;
+                    element.style.outline = `2px solid ${borderColor}`;
+                    element.style.outlineOffset = '2px';
+                });
+                
+                element.addEventListener('mouseleave', () => {
+                    element.style.backgroundColor = '';
+                    element.style.outline = '';
+                });
+            } else {
+                element.style.backgroundColor = highlightColor;
+                element.style.outline = `1px dashed ${borderColor}`;
+                element.style.outlineOffset = '2px';
+            }
+            
+            if (showLabels && contentId) {
+                const label = document.createElement('span');
+                label.className = 'content-id-label';
+                label.textContent = contentId;
+                label.style.cssText = `
+                    position: absolute;
+                    top: -20px;
+                    left: 0;
+                    font-size: 10px;
+                    background: ${borderColor};
+                    color: white;
+                    padding: 2px 6px;
+                    border-radius: 3px;
+                    z-index: 1000;
+                    pointer-events: none;
+                `;
+                
+                if (element.style.position === 'static' || !element.style.position) {
+                    element.style.position = 'relative';
+                }
+                element.appendChild(label);
+            }
+        });
+        
+        return elements.length;
+    }
+
+    unmarkEditableContent() {
+        const elements = document.querySelectorAll('[data-content-id]');
+        
+        elements.forEach(element => {
+            element.style.backgroundColor = '';
+            element.style.outline = '';
+            element.style.outlineOffset = '';
+            element.style.transition = '';
+            element.style.cursor = '';
+            
+            const label = element.querySelector('.content-id-label');
+            if (label) {
+                label.remove();
+            }
+        });
+    }
+
+    batchApplyContent(contentMap, options = {}) {
+        const { animate = false, stagger = 50 } = options;
+        let appliedCount = 0;
+        let index = 0;
+        
+        Object.entries(contentMap).forEach(([contentId, value]) => {
+            const elements = document.querySelectorAll(`[data-content-id="${contentId}"]`);
+            
+            elements.forEach(element => {
+                if (animate) {
+                    setTimeout(() => {
+                        element.style.transition = 'opacity 0.3s ease';
+                        element.style.opacity = '0';
+                        
+                        setTimeout(() => {
+                            this.replaceTextContent(element, value);
+                            element.style.opacity = '1';
+                            appliedCount++;
+                        }, 300);
+                    }, index * stagger);
+                    index++;
+                } else {
+                    this.replaceTextContent(element, value);
+                    appliedCount++;
+                }
+            });
+        });
+        
+        return appliedCount;
+    }
+
+    getAllContentIds() {
+        const elements = document.querySelectorAll('[data-content-id]');
+        const contentIds = new Set();
+        
+        elements.forEach(element => {
+            const contentId = element.getAttribute('data-content-id');
+            if (contentId) {
+                contentIds.add(contentId);
+            }
+        });
+        
+        return Array.from(contentIds);
+    }
+
+    extractCurrentContent() {
+        const content = {};
+        const elements = document.querySelectorAll('[data-content-id]');
+        
+        elements.forEach(element => {
+            const contentId = element.getAttribute('data-content-id');
+            if (contentId && !content[contentId]) {
+                content[contentId] = element.textContent.trim();
+            }
+        });
+        
+        return content;
     }
 }
 
