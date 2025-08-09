@@ -1025,54 +1025,12 @@
             });
         });
         
-        // Add debug test button for development mode only
+        // Add helpful instructions for development mode (test button removed for production)
         if (isDevelopment) {
-            debugLog('Adding test button for exit popup (development mode detected)');
-            const testButton = document.createElement('button');
-            testButton.id = 'test-exit-popup-btn';
-            testButton.textContent = 'Test Exit Popup';
-            testButton.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                z-index: 10000;
-                background-color: #dc2626;
-                color: white;
-                padding: 12px 24px;
-                border: none;
-                border-radius: 8px;
-                font-weight: 600;
-                font-size: 14px;
-                cursor: pointer;
-                box-shadow: 0 4px 6px rgba(220, 38, 38, 0.3);
-                transition: all 0.3s ease;
-            `;
-            
-            testButton.addEventListener('mouseover', () => {
-                testButton.style.backgroundColor = '#b91c1c';
-                testButton.style.transform = 'scale(1.05)';
-            });
-            
-            testButton.addEventListener('mouseout', () => {
-                testButton.style.backgroundColor = '#dc2626';
-                testButton.style.transform = 'scale(1)';
-            });
-            
-            testButton.addEventListener('click', () => {
-                debugLog('Test button clicked - triggering exit popup');
-                exitIntentShown = false; // Reset flag to allow testing multiple times
-                showExitPopup('test_button');
-            });
-            
-            document.body.appendChild(testButton);
-            debugLog('Test button added to page');
-            
-            // Add helpful instructions for development mode
             console.log('%c📋 Exit Intent Testing Instructions (development mode)', 'color: #4CAF50; font-weight: bold; font-size: 14px');
             console.log('%c1. Press Escape key to trigger the exit popup', 'color: #2196F3');
             console.log('%c2. Switch tabs and return to trigger the popup', 'color: #2196F3');
-            console.log('%c3. Click the red "Test Exit Popup" button', 'color: #2196F3');
-            console.log('%c4. Try moving mouse to top of window', 'color: #2196F3');
+            console.log('%c3. Try moving mouse to top of window', 'color: #2196F3');
         }
         
         // Lazy load ROI Calculator
