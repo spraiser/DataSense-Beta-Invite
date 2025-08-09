@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Content Editor - Vibe Kanban</title>
+    <title>Content Editor - DataSense Variations</title>
     <style>
         * {
             margin: 0;
@@ -345,8 +345,9 @@
 
     <div class="status-message" id="status-message"></div>
 
+    <script src="variations-embedded.js"></script>
     <script>
-        let variationsData = {};
+        let variationsData = window.VARIATIONS_DATA || {};
         let currentVariation = 'default';
         let originalData = {};
         
@@ -367,11 +368,22 @@
 
         // Load variations data on page load
         async function loadVariations() {
+            // Check if embedded data is available
+            if (window.VARIATIONS_DATA) {
+                variationsData = window.VARIATIONS_DATA;
+                populateVariationSelector();
+                loadVariation('default');
+                showStatus('Variations loaded successfully', 'success');
+                return;
+            }
+            
             try {
+                // Try to load from JSON for production
                 const response = await fetch('variations-data.json');
                 variationsData = await response.json();
                 populateVariationSelector();
                 loadVariation('default');
+                showStatus('Variations loaded from server', 'success');
             } catch (error) {
                 console.error('Error loading variations:', error);
                 showStatus('Error loading variations data', 'error');

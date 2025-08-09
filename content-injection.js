@@ -7,6 +7,7 @@ class ContentInjection {
 
     async loadVariations() {
         try {
+            // First try to load from JSON files
             const response = await fetch('variations-data.json');
             if (!response.ok) {
                 throw new Error(`Failed to load variations: ${response.status}`);
@@ -22,7 +23,16 @@ class ContentInjection {
             
             return this.variations;
         } catch (error) {
-            console.error('Error loading variations:', error);
+            console.warn('Error loading variations from JSON, using embedded data:', error.message);
+            
+            // Fallback to embedded data for file:// protocol
+            if (window.VARIATIONS_DATA) {
+                this.variations = window.VARIATIONS_DATA.variations;
+                console.log('Loaded variations from embedded data');
+                return this.variations;
+            }
+            
+            console.error('No variations data available');
             return null;
         }
     }
@@ -447,7 +457,26 @@ class ContentInjection {
     }
 }
 
-const contentInjection = new ContentInjection();
+// Initialize and auto-load variations
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('ContentInjection: Initializing...');
+    
+    // Create global instance
+    window.contentInjection = new ContentInjection();
+    
+    // Load variations data
+    await window.contentInjection.loadVariations();
+    console.log('ContentInjection: Variations loaded', window.contentInjection.variations ? Object.keys(window.contentInjection.variations) : 'none');
+    
+    // Check for saved variation
+    const savedVariation = sessionStorage.getItem('selectedVariation') || 'default';
+    console.log('ContentInjection: Applying variation:', savedVariation);
+    
+    // Apply the variation
+    if (window.contentInjection.variations) {
+        window.contentInjection.applyVariation(savedVariation);
+    }
+});
 
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = ContentInjection;

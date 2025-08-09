@@ -1,4 +1,5 @@
-{
+// Embedded variations data to avoid CORS issues with file:// protocol
+window.VARIATIONS_DATA = {
   "variations": {
     "default": {
       "name": "Original",
@@ -99,10 +100,10 @@
         "roi_label_1": "Prediction accuracy",
         "social_proof": "Our users are 6 months ahead of their competition",
         "exit_popup_title": "Don't Let Competitors Win",
-        "exit_popup_subtitle": "See exactly how you'll stay ahead",
-        "social_proof": "Industry leaders' secret weapon",
-        "badge_text": "Exclusive Access"
+        "exit_popup_subtitle": "See exactly how you'll stay ahead"
       }
     }
   }
-}
+};
+
+console.log('Variations data embedded and ready');

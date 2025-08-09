@@ -819,6 +819,7 @@
     </div>
 
     <!-- Scripts -->
+    <script src="variations-embedded.js"></script>
     <script src="content-injection.js"></script>
     <script src="ab-testing-framework.js"></script>
     <script src="progressive-exit-intent.js"></script>
@@ -827,49 +828,59 @@
     <script src="industry-demos.js"></script>
     <script src="demo-performance.js"></script>
     <script>
-        // Variation Switcher functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize content injection
-            window.contentInjection = new ContentInjection();
+        // Variation Switcher functionality  
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('Variation switcher: Initializing...');
             
-            // Handle variation switching
-            const variationPills = document.querySelectorAll('.variation-pill');
-            
-            variationPills.forEach(pill => {
-                pill.addEventListener('click', function() {
-                    const variation = this.dataset.variation;
+            // Wait for content injection to be ready
+            let attempts = 0;
+            const waitForContentInjection = setInterval(async () => {
+                attempts++;
+                if (window.contentInjection && window.contentInjection.variations) {
+                    clearInterval(waitForContentInjection);
+                    console.log('Variation switcher: Content injection ready');
                     
-                    // Update active state
-                    variationPills.forEach(p => p.classList.remove('active'));
-                    this.classList.add('active');
+                    // Handle variation switching
+                    const variationPills = document.querySelectorAll('.variation-pill');
                     
-                    // Apply variation
-                    if (window.contentInjection) {
-                        window.contentInjection.applyVariation(variation);
-                    }
+                    variationPills.forEach(pill => {
+                        pill.addEventListener('click', async function() {
+                            const variation = this.dataset.variation;
+                            console.log('Switching to variation:', variation);
+                            
+                            // Update active state
+                            variationPills.forEach(p => p.classList.remove('active'));
+                            this.classList.add('active');
+                            
+                            // Apply variation
+                            const success = await window.contentInjection.applyVariation(variation);
+                            if (success) {
+                                // Save to sessionStorage
+                                sessionStorage.setItem('selectedVariation', variation);
+                                console.log('Variation applied successfully:', variation);
+                            } else {
+                                console.error('Failed to apply variation:', variation);
+                            }
+                        });
+                    });
                     
-                    // Save to sessionStorage
-                    sessionStorage.setItem('selectedVariation', variation);
-                });
-            });
-            
-            // Restore saved variation on page load
-            const savedVariation = sessionStorage.getItem('selectedVariation');
-            if (savedVariation) {
-                // Update active button
-                variationPills.forEach(pill => {
-                    if (pill.dataset.variation === savedVariation) {
-                        pill.classList.add('active');
-                    } else {
-                        pill.classList.remove('active');
-                    }
-                });
-                
-                // Apply the saved variation
-                if (window.contentInjection) {
-                    window.contentInjection.applyVariation(savedVariation);
+                    // Restore saved variation on page load
+                    const savedVariation = sessionStorage.getItem('selectedVariation') || 'default';
+                    console.log('Restoring saved variation:', savedVariation);
+                    
+                    // Update active button
+                    variationPills.forEach(pill => {
+                        if (pill.dataset.variation === savedVariation) {
+                            pill.classList.add('active');
+                        } else {
+                            pill.classList.remove('active');
+                        }
+                    });
+                } else if (attempts > 50) { // 5 seconds timeout
+                    clearInterval(waitForContentInjection);
+                    console.error('Variation switcher: Timeout waiting for content injection');
                 }
-            }
+            }, 100);
         });
     </script>
     
