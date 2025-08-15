@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataSense - Visual Page Builder with Editor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* Left Sidebar Controls */
+        .sidebar {
+            width: 320px;
+            background: #1a1a1a;
+            color: white;
+            overflow-y: auto;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: #0d0d0d;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        /* Device Controls */
+        .device-controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .device-btn {
+            flex: 1;
+            padding: 8px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .device-btn:hover {
+            background: #333;
+        }
+
+        .device-btn.active {
+            background: #667eea;
+            border-color: #667eea;
+        }
+
+        /* Variation Tabs */
+        .variation-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .variation-tab {
+            padding: 6px 10px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.2s;
+        }
+
+        .variation-tab:hover {
+            background: #333;
+        }
+
+        .variation-tab.active {
+            background: #764ba2;
+            border-color: #764ba2;
+        }
+
+        /* Panel Controls */
+        .panel-controls {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .panel-item {
+            background: #2a2a2a;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            border: 1px solid #333;
+            transition: all 0.2s;
+        }
+
+        .panel-item.disabled {
+            opacity: 0.5;
+        }
+
+        .panel-header {
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: grab;
+            user-select: none;
+        }
+
+        .panel-header:active {
+            cursor: grabbing;
+        }
+
+        .panel-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .panel-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .panel-name {
+            font-size: 13px;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .panel-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .edit-btn {
+            width: 28px;
+            height: 28px;
+            background: #333;
+            border: 1px solid #555;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .edit-btn:hover {
+            background: #667eea;
+            border-color: #667eea;
+        }
+
+        .panel-order {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .order-btn {
+            width: 24px;
+            height: 24px;
+            background: #1a1a1a;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .order-btn:hover {
+            background: #444;
+        }
+
+        .order-number {
+            width: 20px;
+            text-align: center;
+            color: #888;
+            font-size: 11px;
+        }
+
+        /* Preview Area */
+        .preview-area {
+            flex: 1;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .preview-header {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preview-title {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            background: #10b981;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .action-btn:hover {
+            background: #059669;
+        }
+
+        /* Device Frame */
+        .device-frame {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .device-wrapper {
+            background: white;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            transition: all 0.3s;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .device-wrapper.mobile {
+            width: 375px;
+            max-height: 812px;
+        }
+
+        .device-wrapper.tablet {
+            width: 768px;
+            max-height: 900px;
+        }
+
+        .device-wrapper.desktop {
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .device-content {
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Panel Styles in Preview */
+        .preview-panel {
+            border-bottom: 1px solid #e5e7eb;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .preview-panel:hover .panel-label-overlay {
+            opacity: 1;
+        }
+
+        .preview-panel.dragging {
+            opacity: 0.5;
+        }
+
+        .preview-panel.drag-over {
+            background: #f0f4ff;
+        }
+
+        .panel-label-overlay {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .inline-edit-btn {
+            background: #667eea;
+            border: none;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 10px;
+        }
+
+        .inline-edit-btn:hover {
+            background: #764ba2;
+        }
+
+        /* Content Editor Modal */
+        .editor-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .editor-modal.show {
+            display: flex;
+        }
+
+        .editor-container {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .editor-header {
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .editor-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .editor-close {
+            width: 32px;
+            height: 32px;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #6b7280;
+        }
+
+        .editor-close:hover {
+            background: #e5e7eb;
+        }
+
+        .editor-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .editor-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .editor-tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .editor-tab:hover {
+            color: #1f2937;
+        }
+
+        .editor-tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .editor-field {
+            margin-bottom: 20px;
+        }
+
+        .editor-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .editor-input,
+        .editor-textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .editor-input:focus,
+        .editor-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .editor-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .code-editor {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            background: #f9fafb;
+        }
+
+        .editor-footer {
+            padding: 20px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .editor-btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .editor-btn-cancel {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .editor-btn-cancel:hover {
+            background: #e5e7eb;
+        }
+
+        .editor-btn-save {
+            background: #667eea;
+            color: white;
+        }
+
+        .editor-btn-save:hover {
+            background: #764ba2;
+        }
+
+        /* Quick edit fields */
+        .quick-fields {
+            display: grid;
+            gap: 15px;
+        }
+
+        .quick-field {
+            display: grid;
+            gap: 5px;
+        }
+
+        /* Actual Content Styles */
+        .nav {
+            background: white;
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-logo {
+            width: 32px;
+            height: 32px;
+        }
+
+        .hero {
+            padding: 3rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .hero-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.125rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .urgency-banner {
+            background: #fef3c7;
+            padding: 1rem;
+            text-align: center;
+            color: #92400e;
+        }
+
+        .roi-banner {
+            background: #f9fafb;
+            padding: 2rem 1rem;
+        }
+
+        .roi-stats {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .roi-stat {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .roi-number {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #667eea;
+            display: block;
+        }
+
+        .roi-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+
+        /* Other styles... */
+        .social-proof {
+            padding: 2rem 1rem;
+            background: white;
+        }
+
+        .problem-solution {
+            padding: 2rem 1rem;
+            background: #f9fafb;
+        }
+
+        .features {
+            padding: 2rem 1rem;
+            background: white;
+        }
+
+        .features-grid {
+            display: grid;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            padding: 1.5rem;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .use-cases {
+            padding: 2rem 1rem;
+            background: #f9fafb;
+        }
+
+        .faq-section {
+            padding: 2rem 1rem;
+            background: white;
+        }
+
+        .beta-signup {
+            padding: 3rem 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .footer {
+            padding: 2rem 1rem;
+            background: #1f2937;
+            color: white;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Left Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">📐 DataSense Page Builder</div>
+            
+            <!-- Device Controls -->
+            <div class="device-controls">
+                <button class="device-btn active" data-device="mobile">📱 Mobile</button>
+                <button class="device-btn" data-device="tablet">📋 Tablet</button>
+                <button class="device-btn" data-device="desktop">🖥️ Desktop</button>
+            </div>
+
+            <!-- Variation Tabs -->
+            <div class="variation-tabs">
+                <button class="variation-tab active" data-variation="default">Default</button>
+                <button class="variation-tab" data-variation="trust">Trust</button>
+                <button class="variation-tab" data-variation="roi">ROI</button>
+                <button class="variation-tab" data-variation="empowerment">Power</button>
+                <button class="variation-tab" data-variation="speed">Speed</button>
+                <button class="variation-tab" data-variation="competition">Compete</button>
+            </div>
+        </div>
+
+        <!-- Panel Controls -->
+        <div class="panel-controls" id="panelControls">
+            <!-- Panels will be generated here -->
+        </div>
+    </div>
+
+    <!-- Preview Area -->
+    <div class="preview-area">
+        <div class="preview-header">
+            <div class="preview-title">Live Preview - Click edit buttons to modify content</div>
+            <div class="preview-actions">
+                <button class="action-btn" onclick="exportHTML()">Export HTML</button>
+                <button class="action-btn" onclick="resetContent()">Reset All</button>
+            </div>
+        </div>
+
+        <div class="device-frame">
+            <div class="device-wrapper mobile" id="deviceWrapper">
+                <div class="device-content" id="previewContent">
+                    <!-- Dynamic content will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Editor Modal -->
+    <div class="editor-modal" id="editorModal">
+        <div class="editor-container">
+            <div class="editor-header">
+                <div class="editor-title" id="editorTitle">Edit Panel</div>
+                <button class="editor-close" onclick="closeEditor()">&times;</button>
+            </div>
+            <div class="editor-body">
+                <div class="editor-tabs">
+                    <button class="editor-tab active" onclick="switchTab('quick')">Quick Edit</button>
+                    <button class="editor-tab" onclick="switchTab('html')">HTML Code</button>
+                </div>
+                
+                <div id="quickEditTab">
+                    <div class="quick-fields" id="quickFields">
+                        <!-- Dynamic quick edit fields -->
+                    </div>
+                </div>
+                
+                <div id="htmlEditTab" style="display: none;">
+                    <div class="editor-field">
+                        <label class="editor-label">HTML Content</label>
+                        <textarea class="editor-textarea code-editor" id="htmlEditor"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="editor-footer">
+                <button class="editor-btn editor-btn-cancel" onclick="closeEditor()">Cancel</button>
+                <button class="editor-btn editor-btn-save" onclick="saveEdits()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Panel configurations with editable fields
+        const panels = [
+            {
+                id: 'navigation',
+                name: 'Navigation',
+                order: 1,
+                visible: true,
+                fields: {
+                    brandName: 'DataSense',
+                    ctaText: 'Join Beta'
+                },
+                getContent: function() {
+                    return `
+                        <nav class="nav">
+                            <div class="nav-container">
+                                <div class="nav-brand">
+                                    <svg class="nav-logo" viewBox="0 0 32 32" fill="none">
+                                        <rect width="32" height="32" rx="8" fill="url(#gradient)"/>
+                                        <path d="M8 12h16v8H8z" fill="white" opacity="0.9"/>
+                                        <defs>
+                                            <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
+                                                <stop stop-color="#667eea"/>
+                                                <stop offset="1" stop-color="#764ba2"/>
+                                            </linearGradient>
+                                        </defs>
+                                    </svg>
+                                    <span>${this.fields.brandName}</span>
+                                </div>
+                                <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">${this.fields.ctaText}</button>
+                            </div>
+                        </nav>
+                    `;
+                }
+            },
+            {
+                id: 'hero',
+                name: 'Hero Section',
+                order: 2,
+                visible: true,
+                fields: {
+                    badge: '🚀 Join 500+ businesses in beta',
+                    title: "See what's really driving your business growth",
+                    subtitle: 'Connect your data. Ask questions in plain English. Get answers that grow revenue.',
+                    primaryCta: 'Start Free Analysis →',
+                    secondaryCta: 'Watch 2-Min Demo'
+                },
+                getContent: function() {
+                    return `
+                        <section class="hero">
+                            <div class="hero-badge">${this.fields.badge}</div>
+                            <h1 class="hero-title">${this.fields.title}</h1>
+                            <p class="hero-subtitle">${this.fields.subtitle}</p>
+                            <div class="hero-cta">
+                                <button class="btn btn-primary">${this.fields.primaryCta}</button>
+                                <button class="btn btn-secondary">${this.fields.secondaryCta}</button>
+                            </div>
+                        </section>
+                    `;
+                }
+            },
+            {
+                id: 'urgency',
+                name: 'Urgency Banner',
+                order: 3,
+                visible: true,
+                fields: {
+                    message: '⚡ Limited beta access: Only 12 spots remaining this week'
+                },
+                getContent: function() {
+                    return `
+                        <div class="urgency-banner">
+                            <strong>${this.fields.message}</strong>
+                        </div>
+                    `;
+                }
+            },
+            {
+                id: 'roi-banner',
+                name: 'ROI Statistics',
+                order: 4,
+                visible: true,
+                fields: {
+                    stat1Number: '3.2x',
+                    stat1Label: 'Average ROI in 90 days',
+                    stat2Number: '47%',
+                    stat2Label: 'Revenue increase',
+                    stat3Number: '$52k',
+                    stat3Label: 'Annual savings'
+                },
+                getContent: function() {
+                    return `
+                        <section class="roi-banner">
+                            <div class="roi-stats">
+                                <div class="roi-stat">
+                                    <span class="roi-number">${this.fields.stat1Number}</span>
+                                    <span class="roi-label">${this.fields.stat1Label}</span>
+                                </div>
+                                <div class="roi-stat">
+                                    <span class="roi-number">${this.fields.stat2Number}</span>
+                                    <span class="roi-label">${this.fields.stat2Label}</span>
+                                </div>
+                                <div class="roi-stat">
+                                    <span class="roi-number">${this.fields.stat3Number}</span>
+                                    <span class="roi-label">${this.fields.stat3Label}</span>
+                                </div>
+                            </div>
+                        </section>
+                    `;
+                }
+            },
+            {
+                id: 'social-proof',
+                name: 'Social Proof',
+                order: 5,
+                visible: true,
+                fields: {
+                    heading: 'Join 500+ growing businesses using DataSense',
+                    testimonial: '"DataSense showed us that our Tuesday customers spend 34% more. We shifted our marketing focus and revenue jumped 28% in one month."',
+                    authorName: 'Maria Rodriguez',
+                    authorTitle: 'CEO, Rodriguez Consulting'
+                },
+                getContent: function() {
+                    return `
+                        <section class="social-proof">
+                            <p style="text-align: center; color: #6b7280; margin-bottom: 1rem;">${this.fields.heading}</p>
+                            <div style="padding: 1.5rem; background: #f9fafb; border-radius: 8px;">
+                                <p style="font-style: italic; margin-bottom: 1rem;">${this.fields.testimonial}</p>
+                                <p style="font-weight: 600;">${this.fields.authorName}</p>
+                                <p style="color: #6b7280; font-size: 0.875rem;">${this.fields.authorTitle}</p>
+                            </div>
+                        </section>
+                    `;
+                }
+            },
+            {
+                id: 'problem-solution',
+                name: 'Problem/Solution',
+                order: 6,
+                visible: true,
+                fields: {
+                    heading: 'Stop drowning in data. Start dominating your market.',
+                    problemTitle: '😤 Your reality today',
+                    problem1: 'Wait weeks for simple answers',
+                    problem2: 'Make decisions based on gut feeling',
+                    problem3: 'Miss opportunities daily',
+                    solutionTitle: '🚀 With DataSense',
+                    solution1: 'Get instant answers',
+                    solution2: 'Make data-driven decisions',
+                    solution3: 'Spot opportunities first'
+                },
+                getContent: function() {
+                    return `
+                        <section class="problem-solution">
+                            <h2 style="text-align: center; margin-bottom: 2rem;">${this.fields.heading}</h2>
+                            <div style="display: grid; gap: 1rem;">
+                                <div style="padding: 1.5rem; background: #fee2e2; border-radius: 8px;">
+                                    <h3 style="margin-bottom: 1rem;">${this.fields.problemTitle}</h3>
+                                    <ul style="list-style: none; padding: 0;">
+                                        <li>• ${this.fields.problem1}</li>
+                                        <li>• ${this.fields.problem2}</li>
+                                        <li>• ${this.fields.problem3}</li>
+                                    </ul>
+                                </div>
+                                <div style="padding: 1.5rem; background: #dcfce7; border-radius: 8px;">
+                                    <h3 style="margin-bottom: 1rem;">${this.fields.solutionTitle}</h3>
+                                    <ul style="list-style: none; padding: 0;">
+                                        <li>• ${this.fields.solution1}</li>
+                                        <li>• ${this.fields.solution2}</li>
+                                        <li>• ${this.fields.solution3}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+                    `;
+                }
+            },
+            {
+                id: 'features',
+                name: 'Features',
+                order: 7,
+                visible: true,
+                fields: {
+                    heading: 'Everything you need to make smarter decisions',
+                    feature1Title: '🤖 AI-Powered Insights',
+                    feature1Desc: "Our AI analyzes your data 24/7, finding patterns and opportunities you'd never spot manually.",
+                    feature2Title: '👥 Team Empowerment',
+                    feature2Desc: 'Every team member gets their own insights. Everyone becomes data-driven.',
+                    feature3Title: '⭐ Predictive Intelligence',
+                    feature3Desc: 'Anticipate trends, prevent churn, and identify opportunities before competitors.'
+                },
+                getContent: function() {
+                    return `
+                        <section class="features">
+                            <h2 style="text-align: center; margin-bottom: 1rem;">${this.fields.heading}</h2>
+                            <div class="features-grid">
+                                <div class="feature-card">
+                                    <h3 style="margin-bottom: 0.5rem;">${this.fields.feature1Title}</h3>
+                                    <p style="color: #6b7280;">${this.fields.feature1Desc}</p>
+                                </div>
+                                <div class="feature-card">
+                                    <h3 style="margin-bottom: 0.5rem;">${this.fields.feature2Title}</h3>
+                                    <p style="color: #6b7280;">${this.fields.feature2Desc}</p>
+                                </div>
+                                <div class="feature-card">
+                                    <h3 style="margin-bottom: 0.5rem;">${this.fields.feature3Title}</h3>
+                                    <p style="color: #6b7280;">${this.fields.feature3Desc}</p>
+                                </div>
+                            </div>
+                        </section>
+                    `;
+                }
+            },
+            {
+                id: 'demo',
+                name: 'Product Demo',
+                order: 8,
+                visible: false,
+                fields: {
+                    heading: 'Try the Real Product Now'
+                },
+                getContent: function() {
+                    return `
+                        <section style="padding: 2rem 1rem; background: #f9fafb;">
+                            <h2 style="text-align: center; margin-bottom: 1rem;">${this.fields.heading}</h2>
+                            <div style="height: 300px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                <div style="text-align: center; color: white;">
+                                    <div style="font-size: 3rem; margin-bottom: 1rem;">▶️</div>
+                                    <p>Interactive Demo</p>
+                                </div>
+                            </div>
+                        </section>
+                    `;
+                }
+            },
+            {
+                id: 'comparison',
+                name: 'Comparison Table',
+                order: 9,
+                visible: true,
+                fields: {
+                    heading: 'Why businesses choose DataSense',
+                    item1: 'Setup Time',
+                    value1: '✓ 2 hours',
+                    item2: 'Time to Insight',
+                    value2: '✓ 30 seconds',
+                    item3: 'Technical Skills',
+                    value3: '✓ None required'
+                },
+                getContent: function() {
+                    return `
+                        <section style="padding: 2rem 1rem; background: white;">
+                            <h2 style="text-align: center; margin-bottom: 2rem;">${this.fields.heading}</h2>
+                            <div style="background: #f9fafb; border-radius: 8px; padding: 1rem;">
+                                <div style="display: grid; gap: 1rem;">
+                                    <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: white; border-radius: 4px;">
+                                        <span>${this.fields.item1}</span>
+                                        <span style="color: #10b981; font-weight: 600;">${this.fields.value1}</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: white; border-radius: 4px;">
+                                        <span>${this.fields.item2}</span>
+                                        <span style="color: #10b981; font-weight: 600;">${this.fields.value2}</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: white; border-radius: 4px;">
+                                        <span>${this.fields.item3}</span>
+                                        <span style="color: #10b981; font-weight: 600;">${this.fields.value3}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    `;
+                }
+            },
+            {
+                id: 'use-cases',
+                name: 'Use Cases',
+                order: 10,
+                visible: true,
+                fields: {
+                    heading: 'Built for every business',
+                    case1Title: '🛍️ E-commerce',
+                    case1Desc: 'Identify best-selling combinations, predict customer value',
+                    case2Title: '🏢 B2B Services',
+                    case2Desc: 'Track client profitability, forecast revenue',
+                    case3Title: '🍔 Restaurants',
+                    case3Desc: 'Optimize menu, predict busy periods'
+                },
+                getContent: function() {
+                    return `
+                        <section class="use-cases" style="padding: 2rem 1rem; background: #f9fafb;">
+                            <h2 style="text-align: center; margin-bottom: 2rem;">${this.fields.heading}</h2>
+                            <div style="display: grid; gap: 1rem;">
+                                <div style="padding: 1rem; background: white; border-radius: 8px;">
+                                    <h3>${this.fields.case1Title}</h3>
+                                    <p style="color: #6b7280; margin-top: 0.5rem;">${this.fields.case1Desc}</p>
+                                </div>
+                                <div style="padding: 1rem; background: white; border-radius: 8px;">
+                                    <h3>${this.fields.case2Title}</h3>
+                                    <p style="color: #6b7280; margin-top: 0.5rem;">${this.fields.case2Desc}</p>
+                                </div>
+                                <div style="padding: 1rem; background: white; border-radius: 8px;">
+                                    <h3>${this.fields.case3Title}</h3>
+                                    <p style="color: #6b7280; margin-top: 0.5rem;">${this.fields.case3Desc}</p>
+                                </div>
+                            </div>
+                        </section>
+                    `;
+                }
+            },
+            {
+                id: 'faq',
+                name: 'FAQ',
+                order: 11,
+                visible: true,
+                fields: {
+                    heading: 'Frequently asked questions',
+                    q1: 'How quickly can I get started?',
+                    a1: 'Most businesses are up and running in under 2 hours.',
+                    q2: 'What data sources can I connect?',
+                    a2: 'DataSense connects to 100+ popular business tools.',
+                    q3: 'Is my data secure?',
+                    a3: "We're SOC 2 compliant with bank-level encryption."
+                },
+                getContent: function() {
+                    return `
+                        <section class="faq-section">
+                            <h2 style="text-align: center; margin-bottom: 2rem;">${this.fields.heading}</h2>
+                            <div style="display: grid; gap: 1rem;">
+                                <details style="padding: 1rem; background: #f9fafb; border-radius: 8px;">
+                                    <summary style="font-weight: 600; cursor: pointer;">${this.fields.q1}</summary>
+                                    <p style="margin-top: 0.5rem; color: #6b7280;">${this.fields.a1}</p>
+                                </details>
+                                <details style="padding: 1rem; background: #f9fafb; border-radius: 8px;">
+                                    <summary style="font-weight: 600; cursor: pointer;">${this.fields.q2}</summary>
+                                    <p style="margin-top: 0.5rem; color: #6b7280;">${this.fields.a2}</p>
+                                </details>
+                                <details style="padding: 1rem; background: #f9fafb; border-radius: 8px;">
+                                    <summary style="font-weight: 600; cursor: pointer;">${this.fields.q3}</summary>
+                                    <p style="margin-top: 0.5rem; color: #6b7280;">${this.fields.a3}</p>
+                                </details>
+                            </div>
+                        </section>
+                    `;
+                }
+            },
+            {
+                id: 'signup',
+                name: 'Signup Form',
+                order: 12,
+                visible: true,
+                fields: {
+                    heading: 'Ready to transform your business?',
+                    subheading: 'Join our exclusive beta and start making data-driven decisions today.',
+                    placeholder: 'Enter your business email',
+                    buttonText: 'Get Early Access →',
+                    benefits: '✓ No credit card required ✓ Instant access ✓ Cancel anytime'
+                },
+                getContent: function() {
+                    return `
+                        <section class="beta-signup">
+                            <h2 style="margin-bottom: 1rem;">${this.fields.heading}</h2>
+                            <p style="margin-bottom: 2rem; opacity: 0.95;">${this.fields.subheading}</p>
+                            <div style="max-width: 400px; margin: 0 auto;">
+                                <input type="email" placeholder="${this.fields.placeholder}" style="width: 100%; padding: 0.75rem; border-radius: 6px; border: none; margin-bottom: 1rem;">
+                                <button class="btn btn-primary" style="width: 100%; background: white; color: #667eea;">${this.fields.buttonText}</button>
+                                <p style="margin-top: 1rem; font-size: 0.875rem; opacity: 0.9;">${this.fields.benefits}</p>
+                            </div>
+                        </section>
+                    `;
+                }
+            },
+            {
+                id: 'footer',
+                name: 'Footer',
+                order: 13,
+                visible: true,
+                fields: {
+                    brandName: 'DataSense',
+                    tagline: 'Enterprise insights for small business',
+                    copyright: '© 2024 DataSense. Built with ❤️ for small businesses.'
+                },
+                getContent: function() {
+                    return `
+                        <footer class="footer">
+                            <p style="margin-bottom: 0.5rem;">${this.fields.brandName}</p>
+                            <p style="font-size: 0.875rem; opacity: 0.8;">${this.fields.tagline}</p>
+                            <p style="margin-top: 1rem; font-size: 0.75rem; opacity: 0.6;">${this.fields.copyright}</p>
+                        </footer>
+                    `;
+                }
+            }
+        ];
+
+        // Variation configurations
+        const variations = {
+            default: ['navigation', 'hero', 'urgency', 'roi-banner', 'social-proof', 'problem-solution', 'features', 'comparison', 'use-cases', 'faq', 'signup', 'footer'],
+            trust: ['navigation', 'hero', 'social-proof', 'features', 'faq', 'signup', 'footer'],
+            roi: ['navigation', 'hero', 'roi-banner', 'urgency', 'problem-solution', 'comparison', 'signup', 'footer'],
+            empowerment: ['navigation', 'hero', 'features', 'use-cases', 'social-proof', 'signup', 'footer'],
+            speed: ['navigation', 'hero', 'urgency', 'features', 'comparison', 'signup', 'footer'],
+            competition: ['navigation', 'hero', 'comparison', 'problem-solution', 'features', 'signup', 'footer']
+        };
+
+        let currentDevice = 'mobile';
+        let currentVariation = 'default';
+        let currentEditingPanel = null;
+        let currentEditTab = 'quick';
+
+        // Initialize
+        function init() {
+            loadConfig();
+            renderPanelControls();
+            renderPreview();
+            setupEventListeners();
+        }
+
+        // Render panel controls
+        function renderPanelControls() {
+            const container = document.getElementById('panelControls');
+            container.innerHTML = '';
+
+            panels.sort((a, b) => a.order - b.order).forEach((panel, index) => {
+                const item = document.createElement('div');
+                item.className = `panel-item ${!panel.visible ? 'disabled' : ''}`;
+                item.draggable = true;
+                item.dataset.panelId = panel.id;
+
+                item.innerHTML = `
+                    <div class="panel-header">
+                        <div class="panel-left">
+                            <input type="checkbox" class="panel-checkbox" 
+                                   ${panel.visible ? 'checked' : ''} 
+                                   onchange="togglePanel('${panel.id}', this.checked)">
+                            <span class="panel-name">${panel.name}</span>
+                        </div>
+                        <div class="panel-actions">
+                            <button class="edit-btn" onclick="openEditor('${panel.id}')" title="Edit content">
+                                ✏️
+                            </button>
+                            <div class="panel-order">
+                                <button class="order-btn" onclick="movePanel('${panel.id}', -1)">↑</button>
+                                <span class="order-number">${panel.order}</span>
+                                <button class="order-btn" onclick="movePanel('${panel.id}', 1)">↓</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(item);
+            });
+        }
+
+        // Render preview
+        function renderPreview() {
+            const container = document.getElementById('previewContent');
+            container.innerHTML = '';
+
+            panels
+                .filter(p => p.visible)
+                .sort((a, b) => a.order - b.order)
+                .forEach(panel => {
+                    const div = document.createElement('div');
+                    div.className = 'preview-panel';
+                    div.dataset.panelId = panel.id;
+                    
+                    div.innerHTML = `
+                        <div class="panel-label-overlay">
+                            ${panel.name}
+                            <button class="inline-edit-btn" onclick="openEditor('${panel.id}')">Edit</button>
+                        </div>
+                        ${panel.getContent()}
+                    `;
+
+                    container.appendChild(div);
+                });
+        }
+
+        // Open editor
+        function openEditor(panelId) {
+            const panel = panels.find(p => p.id === panelId);
+            if (!panel) return;
+
+            currentEditingPanel = panel;
+            
+            // Set title
+            document.getElementById('editorTitle').textContent = `Edit ${panel.name}`;
+            
+            // Generate quick edit fields
+            const quickFields = document.getElementById('quickFields');
+            quickFields.innerHTML = '';
+            
+            Object.entries(panel.fields).forEach(([key, value]) => {
+                const field = document.createElement('div');
+                field.className = 'quick-field';
+                
+                // Create proper label from field key
+                const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                
+                const isLongText = value.length > 50;
+                
+                field.innerHTML = `
+                    <label class="editor-label">${label}</label>
+                    ${isLongText 
+                        ? `<textarea class="editor-textarea" data-field="${key}">${value}</textarea>`
+                        : `<input type="text" class="editor-input" data-field="${key}" value="${value}">`
+                    }
+                `;
+                
+                quickFields.appendChild(field);
+            });
+            
+            // Set HTML content
+            document.getElementById('htmlEditor').value = panel.getContent();
+            
+            // Show modal
+            document.getElementById('editorModal').classList.add('show');
+        }
+
+        // Close editor
+        function closeEditor() {
+            document.getElementById('editorModal').classList.remove('show');
+            currentEditingPanel = null;
+        }
+
+        // Switch tab
+        function switchTab(tab) {
+            currentEditTab = tab;
+            
+            // Update tab buttons
+            document.querySelectorAll('.editor-tab').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.toLowerCase().includes(tab));
+            });
+            
+            // Show/hide tabs
+            document.getElementById('quickEditTab').style.display = tab === 'quick' ? 'block' : 'none';
+            document.getElementById('htmlEditTab').style.display = tab === 'html' ? 'block' : 'none';
+        }
+
+        // Save edits
+        function saveEdits() {
+            if (!currentEditingPanel) return;
+            
+            if (currentEditTab === 'quick') {
+                // Save quick edit fields
+                document.querySelectorAll('#quickFields [data-field]').forEach(input => {
+                    const field = input.dataset.field;
+                    currentEditingPanel.fields[field] = input.value;
+                });
+            } else {
+                // For HTML edit, we'd need to parse it back - for now just save to custom content
+                currentEditingPanel.customContent = document.getElementById('htmlEditor').value;
+                currentEditingPanel.getContent = function() {
+                    return this.customContent;
+                };
+            }
+            
+            renderPreview();
+            saveConfig();
+            closeEditor();
+        }
+
+        // Toggle panel visibility
+        function togglePanel(id, visible) {
+            const panel = panels.find(p => p.id === id);
+            if (panel) {
+                panel.visible = visible;
+                renderPanelControls();
+                renderPreview();
+                saveConfig();
+            }
+        }
+
+        // Move panel
+        function movePanel(id, direction) {
+            const index = panels.findIndex(p => p.id === id);
+            const newIndex = index + direction;
+
+            if (newIndex >= 0 && newIndex < panels.length) {
+                // Swap orders
+                const currentPanel = panels[index];
+                const targetPanel = panels[newIndex];
+                
+                const tempOrder = currentPanel.order;
+                currentPanel.order = targetPanel.order;
+                targetPanel.order = tempOrder;
+
+                renderPanelControls();
+                renderPreview();
+                saveConfig();
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Device buttons
+            document.querySelectorAll('.device-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentDevice = this.dataset.device;
+                    
+                    const wrapper = document.getElementById('deviceWrapper');
+                    wrapper.className = `device-wrapper ${currentDevice}`;
+                    saveConfig();
+                });
+            });
+
+            // Variation tabs
+            document.querySelectorAll('.variation-tab').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.variation-tab').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentVariation = this.dataset.variation;
+                    
+                    applyVariation(currentVariation);
+                });
+            });
+        }
+
+        // Apply variation
+        function applyVariation(variation) {
+            const activePanels = variations[variation] || variations.default;
+            
+            panels.forEach(panel => {
+                panel.visible = activePanels.includes(panel.id);
+            });
+            
+            renderPanelControls();
+            renderPreview();
+            saveConfig();
+        }
+
+        // Save configuration
+        function saveConfig() {
+            const config = {
+                device: currentDevice,
+                variation: currentVariation,
+                panels: panels.map(p => ({
+                    id: p.id,
+                    order: p.order,
+                    visible: p.visible,
+                    fields: p.fields,
+                    customContent: p.customContent
+                }))
+            };
+            
+            localStorage.setItem('datasense-builder-editable-config', JSON.stringify(config));
+        }
+
+        // Load configuration
+        function loadConfig() {
+            const saved = localStorage.getItem('datasense-builder-editable-config');
+            if (saved) {
+                const config = JSON.parse(saved);
+                
+                currentDevice = config.device || 'mobile';
+                currentVariation = config.variation || 'default';
+                
+                if (config.panels) {
+                    config.panels.forEach(savedPanel => {
+                        const panel = panels.find(p => p.id === savedPanel.id);
+                        if (panel) {
+                            panel.order = savedPanel.order;
+                            panel.visible = savedPanel.visible;
+                            if (savedPanel.fields) {
+                                panel.fields = { ...panel.fields, ...savedPanel.fields };
+                            }
+                            if (savedPanel.customContent) {
+                                panel.customContent = savedPanel.customContent;
+                                panel.getContent = function() {
+                                    return this.customContent;
+                                };
+                            }
+                        }
+                    });
+                }
+                
+                // Update UI
+                document.querySelectorAll('.device-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.device === currentDevice);
+                });
+                
+                document.querySelectorAll('.variation-tab').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.variation === currentVariation);
+                });
+                
+                const wrapper = document.getElementById('deviceWrapper');
+                wrapper.className = `device-wrapper ${currentDevice}`;
+            }
+        }
+
+        // Export HTML
+        function exportHTML() {
+            const content = document.getElementById('previewContent').innerHTML;
+            const blob = new Blob([content], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `datasense-${currentVariation}-${Date.now()}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Reset content
+        function resetContent() {
+            if (confirm('Reset all content to defaults? This cannot be undone.')) {
+                localStorage.removeItem('datasense-builder-editable-config');
+                location.reload();
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

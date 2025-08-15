@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataSense - Mobile-First Wireframe Builder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            padding-bottom: 60px;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #1a1a1a;
+            color: white;
+            padding: 15px;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .control-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .device-switcher {
+            display: flex;
+            gap: 10px;
+        }
+
+        .device-btn {
+            padding: 8px 16px;
+            background: #333;
+            border: 1px solid #555;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .device-btn:hover {
+            background: #444;
+        }
+
+        .device-btn.active {
+            background: #667eea;
+            border-color: #667eea;
+        }
+
+        /* Variation Controls */
+        .variation-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .variation-btn {
+            padding: 6px 12px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .variation-btn:hover {
+            background: #3a3a3a;
+        }
+
+        .variation-btn.active {
+            background: #764ba2;
+            border-color: #764ba2;
+        }
+
+        /* Panel Controls */
+        .panel-controls {
+            max-height: 200px;
+            overflow-y: auto;
+            background: #2a2a2a;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .panel-control-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px;
+            margin-bottom: 5px;
+            background: #333;
+            border-radius: 5px;
+            cursor: move;
+        }
+
+        .panel-control-item.dragging {
+            opacity: 0.5;
+        }
+
+        .panel-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .panel-toggle {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .panel-name {
+            font-size: 14px;
+            flex: 1;
+        }
+
+        .panel-order {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .order-input {
+            width: 40px;
+            padding: 4px;
+            background: #222;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 3px;
+            text-align: center;
+        }
+
+        .order-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .order-btn {
+            width: 20px;
+            height: 18px;
+            background: #444;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .order-btn:hover {
+            background: #555;
+        }
+
+        /* Main Container */
+        .main-container {
+            margin-top: 280px;
+            transition: all 0.3s;
+        }
+
+        /* Wireframe Container */
+        .wireframe-container {
+            max-width: 375px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 50px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .wireframe-container.tablet {
+            max-width: 768px;
+        }
+
+        .wireframe-container.desktop {
+            max-width: 1200px;
+        }
+
+        /* Panel Styles */
+        .panel {
+            padding: 20px;
+            border: 2px dashed #ddd;
+            margin: 10px;
+            background: white;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .panel.hidden {
+            display: none;
+        }
+
+        .panel-label {
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            font-size: 11px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: white;
+            padding: 2px 5px;
+        }
+
+        .panel-content {
+            margin-top: 15px;
+        }
+
+        /* Specific Panel Wireframes */
+        .nav-wireframe {
+            height: 60px;
+            background: linear-gradient(90deg, #f0f0f0 30%, #e0e0e0 70%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo-placeholder {
+            width: 120px;
+            height: 30px;
+            background: #ccc;
+            border-radius: 4px;
+        }
+
+        .nav-cta-placeholder {
+            width: 80px;
+            height: 35px;
+            background: #667eea;
+            border-radius: 4px;
+        }
+
+        .hero-wireframe {
+            min-height: 400px;
+            background: linear-gradient(180deg, #f8f8f8 0%, #f0f0f0 100%);
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .hero-badge {
+            width: 150px;
+            height: 25px;
+            background: #e0e0e0;
+            border-radius: 20px;
+            margin: 0 auto 20px;
+        }
+
+        .hero-title {
+            width: 80%;
+            height: 60px;
+            background: #d0d0d0;
+            margin: 0 auto 20px;
+            border-radius: 4px;
+        }
+
+        .hero-subtitle {
+            width: 90%;
+            height: 40px;
+            background: #e0e0e0;
+            margin: 0 auto 30px;
+            border-radius: 4px;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-placeholder {
+            width: 140px;
+            height: 45px;
+            background: #667eea;
+            border-radius: 4px;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .stat-placeholder {
+            width: 80px;
+            height: 60px;
+            background: #f0f0f0;
+            border-radius: 4px;
+        }
+
+        .social-proof-wireframe {
+            padding: 30px 20px;
+            background: #f8f8f8;
+        }
+
+        .logos-row {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .logo-item {
+            width: 60px;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 4px;
+        }
+
+        .testimonial-wireframe {
+            width: 100%;
+            height: 120px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .features-wireframe {
+            padding: 40px 20px;
+        }
+
+        .features-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .feature-card-wireframe {
+            height: 150px;
+            background: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .form-wireframe {
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .form-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+        }
+
+        .form-title {
+            height: 30px;
+            background: #d0d0d0;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .form-input-wireframe {
+            height: 45px;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .form-button-wireframe {
+            height: 45px;
+            background: #667eea;
+            border-radius: 4px;
+        }
+
+        /* Responsive adjustments */
+        @media (min-width: 768px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .wireframe-container.tablet .features-grid,
+            .wireframe-container.desktop .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .wireframe-container.desktop .features-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Settings Panel */
+        .settings-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+            z-index: 999;
+        }
+
+        .settings-toggle:hover {
+            background: #764ba2;
+        }
+
+        /* Export Button */
+        .export-btn {
+            padding: 8px 16px;
+            background: #10b981;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .export-btn:hover {
+            background: #059669;
+        }
+
+        /* Drag and drop styles */
+        .panel.drag-over {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .sortable-ghost {
+            opacity: 0.4;
+        }
+
+        .sortable-chosen {
+            background: #f0f4ff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Control Panel -->
+    <div class="control-panel">
+        <div class="control-header">
+            <div class="control-title">DataSense Wireframe Builder</div>
+            <div class="device-switcher">
+                <button class="device-btn active" data-device="mobile">📱 Mobile</button>
+                <button class="device-btn" data-device="tablet">📋 Tablet</button>
+                <button class="device-btn" data-device="desktop">🖥️ Desktop</button>
+                <button class="export-btn" onclick="exportConfiguration()">📤 Export Config</button>
+            </div>
+        </div>
+
+        <!-- Variation Controls -->
+        <div class="variation-controls">
+            <button class="variation-btn active" data-variation="default">Default</button>
+            <button class="variation-btn" data-variation="trust">Trust Focus</button>
+            <button class="variation-btn" data-variation="roi">ROI Focus</button>
+            <button class="variation-btn" data-variation="empowerment">Empowerment</button>
+            <button class="variation-btn" data-variation="speed">Speed Focus</button>
+            <button class="variation-btn" data-variation="competition">Competition</button>
+        </div>
+
+        <!-- Panel Controls -->
+        <div class="panel-controls" id="panel-controls">
+            <!-- Dynamically generated panel controls -->
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <div class="wireframe-container" id="wireframe-container">
+            <!-- Panels will be dynamically generated here -->
+        </div>
+    </div>
+
+    <!-- Settings Toggle -->
+    <div class="settings-toggle" onclick="toggleSettings()">
+        ⚙️
+    </div>
+
+    <script>
+        // Panel Configuration
+        const panelConfig = [
+            {
+                id: 'navigation',
+                name: 'Navigation Bar',
+                order: 1,
+                visible: true,
+                content: `
+                    <div class="nav-wireframe">
+                        <div class="logo-placeholder"></div>
+                        <div class="nav-cta-placeholder"></div>
+                    </div>
+                `
+            },
+            {
+                id: 'hero',
+                name: 'Hero Section',
+                order: 2,
+                visible: true,
+                content: `
+                    <div class="hero-wireframe">
+                        <div class="hero-badge"></div>
+                        <div class="hero-title"></div>
+                        <div class="hero-subtitle"></div>
+                        <div class="hero-cta-group">
+                            <div class="cta-placeholder"></div>
+                            <div class="cta-placeholder" style="background: #e0e0e0;"></div>
+                        </div>
+                        <div class="stats-row">
+                            <div class="stat-placeholder"></div>
+                            <div class="stat-placeholder"></div>
+                            <div class="stat-placeholder"></div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'urgency',
+                name: 'Urgency Banner',
+                order: 3,
+                visible: true,
+                content: `
+                    <div style="background: #fef3c7; padding: 15px; text-align: center;">
+                        <div style="width: 250px; height: 20px; background: #f59e0b; margin: 0 auto; border-radius: 4px;"></div>
+                    </div>
+                `
+            },
+            {
+                id: 'roi-banner',
+                name: 'ROI Statistics',
+                order: 4,
+                visible: true,
+                content: `
+                    <div style="background: #f3f4f6; padding: 20px;">
+                        <div style="display: flex; justify-content: space-around; gap: 15px;">
+                            <div style="width: 80px; height: 50px; background: #e5e7eb; border-radius: 4px;"></div>
+                            <div style="width: 80px; height: 50px; background: #e5e7eb; border-radius: 4px;"></div>
+                            <div style="width: 80px; height: 50px; background: #e5e7eb; border-radius: 4px;"></div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'social-proof',
+                name: 'Social Proof',
+                order: 5,
+                visible: true,
+                content: `
+                    <div class="social-proof-wireframe">
+                        <div class="logos-row">
+                            <div class="logo-item"></div>
+                            <div class="logo-item"></div>
+                            <div class="logo-item"></div>
+                            <div class="logo-item"></div>
+                            <div class="logo-item"></div>
+                        </div>
+                        <div class="testimonial-wireframe"></div>
+                    </div>
+                `
+            },
+            {
+                id: 'problem-solution',
+                name: 'Problem/Solution',
+                order: 6,
+                visible: true,
+                content: `
+                    <div style="padding: 30px 20px;">
+                        <div style="display: grid; gap: 20px;">
+                            <div style="height: 200px; background: #fee2e2; border-radius: 8px; padding: 20px;"></div>
+                            <div style="height: 200px; background: #dcfce7; border-radius: 8px; padding: 20px;"></div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'features',
+                name: 'Features Grid',
+                order: 7,
+                visible: true,
+                content: `
+                    <div class="features-wireframe">
+                        <div class="features-grid">
+                            <div class="feature-card-wireframe"></div>
+                            <div class="feature-card-wireframe"></div>
+                            <div class="feature-card-wireframe"></div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'live-demo',
+                name: 'Live Product Demo',
+                order: 8,
+                visible: true,
+                content: `
+                    <div style="padding: 30px 20px; background: #f9fafb;">
+                        <div style="height: 400px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px;"></div>
+                        <div style="margin-top: 20px; padding: 20px; background: white; border-radius: 8px;">
+                            <div style="height: 40px; background: #f3f4f6; margin-bottom: 10px; border-radius: 4px;"></div>
+                            <div style="height: 40px; background: #f3f4f6; border-radius: 4px;"></div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'video-demo',
+                name: 'Video Demo',
+                order: 9,
+                visible: false,
+                content: `
+                    <div style="padding: 30px 20px;">
+                        <div style="height: 300px; background: #1f2937; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <div style="width: 80px; height: 80px; background: white; border-radius: 50%;"></div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'comparison',
+                name: 'Comparison Table',
+                order: 10,
+                visible: true,
+                content: `
+                    <div style="padding: 30px 20px;">
+                        <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px;">
+                            <div style="display: grid; gap: 10px;">
+                                <div style="height: 40px; background: #f3f4f6; border-radius: 4px;"></div>
+                                <div style="height: 40px; background: #f3f4f6; border-radius: 4px;"></div>
+                                <div style="height: 40px; background: #f3f4f6; border-radius: 4px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'use-cases',
+                name: 'Use Cases',
+                order: 11,
+                visible: true,
+                content: `
+                    <div style="padding: 30px 20px;">
+                        <div style="display: grid; gap: 20px;">
+                            <div style="height: 120px; background: #fef3c7; border-radius: 8px;"></div>
+                            <div style="height: 120px; background: #dbeafe; border-radius: 8px;"></div>
+                            <div style="height: 120px; background: #fce7f3; border-radius: 8px;"></div>
+                            <div style="height: 120px; background: #e0e7ff; border-radius: 8px;"></div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'faq',
+                name: 'FAQ Section',
+                order: 12,
+                visible: true,
+                content: `
+                    <div style="padding: 30px 20px; background: #f9fafb;">
+                        <div style="display: grid; gap: 15px;">
+                            <div style="height: 80px; background: white; border: 1px solid #e5e7eb; border-radius: 8px;"></div>
+                            <div style="height: 80px; background: white; border: 1px solid #e5e7eb; border-radius: 8px;"></div>
+                            <div style="height: 80px; background: white; border: 1px solid #e5e7eb; border-radius: 8px;"></div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'signup-form',
+                name: 'Beta Signup Form',
+                order: 13,
+                visible: true,
+                content: `
+                    <div class="form-wireframe">
+                        <div class="form-container">
+                            <div class="form-title"></div>
+                            <div class="form-input-wireframe"></div>
+                            <div class="form-button-wireframe"></div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'footer',
+                name: 'Footer',
+                order: 14,
+                visible: true,
+                content: `
+                    <div style="background: #1f2937; padding: 30px 20px;">
+                        <div style="display: grid; gap: 20px;">
+                            <div style="height: 60px; background: #374151; border-radius: 4px;"></div>
+                            <div style="height: 40px; background: #374151; border-radius: 4px;"></div>
+                        </div>
+                    </div>
+                `
+            }
+        ];
+
+        // Current variation
+        let currentVariation = 'default';
+        let currentDevice = 'mobile';
+
+        // Initialize the wireframe
+        function initializeWireframe() {
+            renderPanelControls();
+            renderWireframePanels();
+            setupEventListeners();
+            setupDragAndDrop();
+        }
+
+        // Render panel controls
+        function renderPanelControls() {
+            const controlsContainer = document.getElementById('panel-controls');
+            controlsContainer.innerHTML = '';
+
+            panelConfig.sort((a, b) => a.order - b.order).forEach(panel => {
+                const controlItem = document.createElement('div');
+                controlItem.className = 'panel-control-item';
+                controlItem.draggable = true;
+                controlItem.dataset.panelId = panel.id;
+                
+                controlItem.innerHTML = `
+                    <div class="panel-info">
+                        <input type="checkbox" class="panel-toggle" 
+                               ${panel.visible ? 'checked' : ''} 
+                               onchange="togglePanel('${panel.id}', this.checked)">
+                        <span class="panel-name">${panel.name}</span>
+                    </div>
+                    <div class="panel-order">
+                        <input type="number" class="order-input" 
+                               value="${panel.order}" 
+                               min="1" 
+                               max="${panelConfig.length}"
+                               onchange="updatePanelOrder('${panel.id}', this.value)">
+                        <div class="order-buttons">
+                            <button class="order-btn" onclick="movePanel('${panel.id}', 'up')">▲</button>
+                            <button class="order-btn" onclick="movePanel('${panel.id}', 'down')">▼</button>
+                        </div>
+                    </div>
+                `;
+                
+                controlsContainer.appendChild(controlItem);
+            });
+        }
+
+        // Render wireframe panels
+        function renderWireframePanels() {
+            const container = document.getElementById('wireframe-container');
+            container.innerHTML = '';
+
+            panelConfig
+                .filter(panel => panel.visible)
+                .sort((a, b) => a.order - b.order)
+                .forEach(panel => {
+                    const panelDiv = document.createElement('div');
+                    panelDiv.className = 'panel';
+                    panelDiv.dataset.panelId = panel.id;
+                    panelDiv.innerHTML = `
+                        <div class="panel-label">${panel.name}</div>
+                        <div class="panel-content">
+                            ${panel.content}
+                        </div>
+                    `;
+                    container.appendChild(panelDiv);
+                });
+        }
+
+        // Toggle panel visibility
+        function togglePanel(panelId, visible) {
+            const panel = panelConfig.find(p => p.id === panelId);
+            if (panel) {
+                panel.visible = visible;
+                renderWireframePanels();
+                saveConfiguration();
+            }
+        }
+
+        // Update panel order
+        function updatePanelOrder(panelId, newOrder) {
+            const panel = panelConfig.find(p => p.id === panelId);
+            if (panel) {
+                const oldOrder = panel.order;
+                newOrder = parseInt(newOrder);
+                
+                // Adjust other panels
+                panelConfig.forEach(p => {
+                    if (p.id !== panelId) {
+                        if (oldOrder < newOrder && p.order > oldOrder && p.order <= newOrder) {
+                            p.order--;
+                        } else if (oldOrder > newOrder && p.order >= newOrder && p.order < oldOrder) {
+                            p.order++;
+                        }
+                    }
+                });
+                
+                panel.order = newOrder;
+                renderPanelControls();
+                renderWireframePanels();
+                saveConfiguration();
+            }
+        }
+
+        // Move panel up or down
+        function movePanel(panelId, direction) {
+            const panel = panelConfig.find(p => p.id === panelId);
+            if (panel) {
+                const newOrder = direction === 'up' ? panel.order - 1 : panel.order + 1;
+                if (newOrder >= 1 && newOrder <= panelConfig.length) {
+                    updatePanelOrder(panelId, newOrder);
+                }
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Device switcher
+            document.querySelectorAll('.device-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentDevice = this.dataset.device;
+                    
+                    const container = document.getElementById('wireframe-container');
+                    container.className = `wireframe-container ${currentDevice}`;
+                    saveConfiguration();
+                });
+            });
+
+            // Variation switcher
+            document.querySelectorAll('.variation-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.variation-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentVariation = this.dataset.variation;
+                    loadVariationConfig(currentVariation);
+                });
+            });
+        }
+
+        // Setup drag and drop
+        function setupDragAndDrop() {
+            const controlItems = document.querySelectorAll('.panel-control-item');
+            
+            controlItems.forEach(item => {
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragover', handleDragOver);
+                item.addEventListener('drop', handleDrop);
+                item.addEventListener('dragend', handleDragEnd);
+            });
+        }
+
+        let draggedElement = null;
+
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            
+            const afterElement = getDragAfterElement(e.currentTarget.parentNode, e.clientY);
+            if (afterElement == null) {
+                e.currentTarget.parentNode.appendChild(draggedElement);
+            } else {
+                e.currentTarget.parentNode.insertBefore(draggedElement, afterElement);
+            }
+            
+            return false;
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            
+            // Update the order based on new position
+            const items = Array.from(document.querySelectorAll('.panel-control-item'));
+            items.forEach((item, index) => {
+                const panelId = item.dataset.panelId;
+                const panel = panelConfig.find(p => p.id === panelId);
+                if (panel) {
+                    panel.order = index + 1;
+                }
+            });
+            
+            renderPanelControls();
+            renderWireframePanels();
+            saveConfiguration();
+            
+            return false;
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            draggedElement = null;
+        }
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.panel-control-item:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        // Load variation configuration
+        function loadVariationConfig(variation) {
+            // This would load different configurations based on the variation
+            // For now, we'll just show/hide certain panels based on the variation
+            
+            const variationConfigs = {
+                default: ['navigation', 'hero', 'urgency', 'roi-banner', 'social-proof', 'problem-solution', 'features', 'live-demo', 'comparison', 'use-cases', 'faq', 'signup-form', 'footer'],
+                trust: ['navigation', 'hero', 'social-proof', 'features', 'testimonials', 'faq', 'signup-form', 'footer'],
+                roi: ['navigation', 'hero', 'roi-banner', 'urgency', 'problem-solution', 'features', 'comparison', 'signup-form', 'footer'],
+                empowerment: ['navigation', 'hero', 'features', 'use-cases', 'social-proof', 'signup-form', 'footer'],
+                speed: ['navigation', 'hero', 'urgency', 'features', 'comparison', 'signup-form', 'footer'],
+                competition: ['navigation', 'hero', 'comparison', 'problem-solution', 'features', 'signup-form', 'footer']
+            };
+            
+            const activeIds = variationConfigs[variation] || variationConfigs.default;
+            
+            panelConfig.forEach(panel => {
+                panel.visible = activeIds.includes(panel.id);
+            });
+            
+            renderPanelControls();
+            renderWireframePanels();
+            saveConfiguration();
+        }
+
+        // Save configuration
+        function saveConfiguration() {
+            const config = {
+                variation: currentVariation,
+                device: currentDevice,
+                panels: panelConfig.map(p => ({
+                    id: p.id,
+                    name: p.name,
+                    order: p.order,
+                    visible: p.visible
+                }))
+            };
+            
+            localStorage.setItem('datasense-wireframe-config', JSON.stringify(config));
+        }
+
+        // Load configuration
+        function loadConfiguration() {
+            const saved = localStorage.getItem('datasense-wireframe-config');
+            if (saved) {
+                const config = JSON.parse(saved);
+                currentVariation = config.variation || 'default';
+                currentDevice = config.device || 'mobile';
+                
+                // Update panel config
+                if (config.panels) {
+                    config.panels.forEach(savedPanel => {
+                        const panel = panelConfig.find(p => p.id === savedPanel.id);
+                        if (panel) {
+                            panel.order = savedPanel.order;
+                            panel.visible = savedPanel.visible;
+                        }
+                    });
+                }
+                
+                // Update UI
+                document.querySelectorAll('.device-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.device === currentDevice);
+                });
+                
+                document.querySelectorAll('.variation-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.variation === currentVariation);
+                });
+                
+                const container = document.getElementById('wireframe-container');
+                container.className = `wireframe-container ${currentDevice}`;
+            }
+        }
+
+        // Export configuration
+        function exportConfiguration() {
+            const config = {
+                variation: currentVariation,
+                device: currentDevice,
+                panels: panelConfig.map(p => ({
+                    id: p.id,
+                    name: p.name,
+                    order: p.order,
+                    visible: p.visible
+                })),
+                timestamp: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `datasense-wireframe-${currentVariation}-${Date.now()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Toggle settings (placeholder)
+        function toggleSettings() {
+            alert('Settings panel coming soon! Use the controls at the top to manage panels.');
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadConfiguration();
+            initializeWireframe();
+        });
+    </script>
+</body>
+</html>
